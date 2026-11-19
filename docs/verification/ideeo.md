@@ -1,6 +1,6 @@
-# Isolated Ideeo admission verification
+# Isolated Ideeo product verification
 
-This profile verifies the product-only startup and admission boundary. It does not start the upstream OpenMaus application or qualify conversation behavior. Other runtime changes continue to use the [standard isolated launcher](README.md).
+This profile verifies product-only startup, admission and the optional synthetic conversation store. It does not start the upstream OpenMaus application or qualify model conversation behavior. Other runtime changes continue to use the [standard isolated launcher](README.md).
 
 With the locked dependencies installed:
 
@@ -35,3 +35,23 @@ The explicit API checkout must contain `scripts/ideeo-admission-integration.ts` 
 The SDK journey exchanges a synthetic opaque session cookie at the real `/api/nico/token` route before calling the product. WhatsApp uses the actual tenant signer and current channel records. Checks cover success, signed cross-tenant/caller denial, expired proof, post-success revocation/rebinding, paused/expired source states, wrong workload proof, source/API outages, one bounded source call, malformed/oversized/unbound/stale/replayed responses and safe errors/logs. Native tenant-owned WhatsApp authority is checked against actual SQL; hosted Armoni/native SDK unsupported evidence must be unavailable. Assertions establish no generic bank calls, model turns, media inference or financial execution.
 
 The source status fixture is explicitly synthetic and implements the new `ideeo-bank-admission-1` extension. It does not prove a bank implements that protocol. Keep product real-destination restrictions and distinguish actual API code with synthetic resources from independent consumer or production acceptance. Run the original two-tenant suite separately; PayMe integration cannot replace tenant-isolation coverage.
+
+## Encrypted conversation storage
+
+With Node 24, the pinned `postgres` dependency and local PostgreSQL binaries installed:
+
+```powershell
+pnpm test:ideeo-storage
+pnpm test:ideeo-storage-mutation
+pnpm test:ideeo-payme-storage --api-root C:/path/to/isolated/payme-api
+```
+
+`scripts/testing/postgres-fixture.ts` invokes `initdb` for a fresh temporary cluster, generates all passwords, selects an ephemeral loopback port, verifies the owned postmaster PID before connecting, creates a randomly named disposable database, applies the actual migration twice and provisions restricted runtime/maintenance logins. It never discovers or connects to an existing database service. Default binary locations are `C:/Program Files/PostgreSQL/18/bin` on Windows and `/usr/lib/postgresql/18/bin` on Linux; `IDEEO_TEST_PG_BIN` can select an installed binary directory. PostgreSQL 18.0 on Windows was exercised. A restricted Windows token may prevent `initdb` from creating its own restricted token; run the same owned fixture in an approved execution context, not against an existing user database.
+
+The Node suite starts the actual product entry with generated encryption keys, explicit synthetic storage config and two independent tenant services. It covers SDK/WhatsApp writes, complete-scope RLS, restricted roles, encrypted field substitution, idempotency and concurrent writes, committed outbox identifiers, stable pagination, current revocation and channel rebinding, real commit failure, process death before and after commit, reload, key rotation/missing keys, retention/purge and actual database outage. No OpenAI/model configuration is supplied. Inputs are the two fixed synthetic tokens in the [storage contract](../ideeo/contracts/CONVERSATION_STORAGE.md).
+
+Fault injection is confined to the newly owned cluster. A deferred constraint trigger rejects COMMIT; a table lock forces bounded database failure; a weakened RLS policy must make the isolation assertion fail before restoration. `storage-mutation.mjs` copies the actual ciphertext-binding test and implementation to a checked temporary directory, verifies the original, removes turn-ID binding only in the copy, requires the expected assertion failure, then verifies the restored copy and unchanged original. It prints no keys or transcript. The process fixture can restart or terminate only its own child.
+
+`payme-storage.ts` launches the explicit API checkout through its installed TS loader. Its worker uses the actual API `admissionFixture`/signer/migrations and product entry, adding disposable real PostgreSQL for product records. It explicitly configures synthetic conversation scopes; SDK uses the actual cookie exchange. It checks WhatsApp, reload/replay, current scope intersection, logout, revocation, rebinding, cross-caller denial, wrong workload, source/API outages and native/hosted limits. API application source is unchanged. The PGlite tenant database and PostgreSQL product database are distinct resources.
+
+Cleanup closes owned clients/children/listeners and removes only resolved temporary paths with the expected prefix. Logs and the product home are checked for credential/transcript leakage. Run the original admission and PayMe suites as regressions; storage checks do not replace them. Record source hashes, commands, versions, failures and acceptance limits in the [candidate verification record](../ideeo/development/VERIFICATION.md). Do not infer real backend adoption, production retention or SDK/Meta UI compatibility from these developer fixtures.

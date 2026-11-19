@@ -117,6 +117,9 @@ importers:
       posthog-js:
         specifier: ^1.415.6
         version: 1.415.6
+      postgres:
+        specifier: 3.4.9
+        version: 3.4.9
       qrcode-terminal:
         specifier: 0.12.0
         version: 0.12.0
@@ -4735,6 +4738,10 @@ packages:
 
   posthog-js@1.415.6:
     resolution: {integrity: sha512-zOvUooIDyQEz+uS8zwmS229cMdGSqJVeC+1C1PEozUulxPcCR41EWpHtffWpv8t/yRzoR4tk43i6Xa5N9QnOtQ==}
+
+  postgres@3.4.9:
+    resolution: {integrity: sha512-GD3qdB0x1z9xgFI6cdRD6xu2Sp2WCOEoe3mtnyB5Ee0XrrL5Pe+e4CCnJrRMnL1zYtRDZmQQVbvOttLnKDLnaw==}
+    engines: {node: '>=12'}
 
   postject@1.0.0-alpha.6:
     resolution: {integrity: sha512-b9Eb8h2eVqNE8edvKdwqkrY6O7kAwmI8kcnBv1NScolYJbo59XUF0noFq+lxbC1yN20bmC0WBEbDC5H/7ASb0A==}
@@ -10239,6 +10246,8 @@ snapshots:
     dependencies:
       commander: 9.5.0
     optional: true
+
+  postgres@3.4.9: {}
 
   preact@10.29.8: {}
 

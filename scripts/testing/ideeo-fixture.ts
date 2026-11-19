@@ -6,6 +6,8 @@ import { tmpdir } from 'node:os';
 import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { exportSPKI, generateKeyPair, jwtVerify, SignJWT } from 'jose';
+import type { StorageConfiguration } from '../../server/ideeo/storage/config.ts';
+import type { TenantConfiguration } from '../../server/ideeo/config.ts';
 
 type Status = 'active' | 'inactive' | 'paused' | 'revoked' | 'expired';
 export type TenantFixtureState = {
@@ -51,8 +53,10 @@ async function createTenantFixture(id: string) {
   let calls = 0;
   let forbiddenHeaders = false;
   let previousReply: unknown;
+  let beforeReply: ((call: number) => Promise<void>) | undefined;
   const server = createServer(async (req, res) => {
     calls++;
+    const callNumber = calls;
     forbiddenHeaders ||= !!(req.headers.cookie || req.headers['x-tenant-id'] || req.headers['x-client-id']);
     const send = (code: number, body: unknown) => {
       if (!res.destroyed) { res.writeHead(code, { 'content-type': 'application/json' }); res.end(JSON.stringify(body)); }
@@ -83,6 +87,7 @@ async function createTenantFixture(id: string) {
       if (state.fault === 'redirect') { res.writeHead(307, { location: `${url}/redirect-target` }); res.end(); return; }
       if (state.fault === 'timeout') return;
       if (state.delayMs) await new Promise(resolve => setTimeout(resolve, state.delayMs));
+      await beforeReply?.(callNumber);
       const now = Math.floor(Date.now() / 1000);
       const reply = { api_version: 'ideeo-admission-1', request_id: body.request_id,
         context: state.fault === 'mismatch' ? { ...expected, tenant_id: 'wrong-tenant' } : expected,
@@ -107,7 +112,8 @@ async function createTenantFixture(id: string) {
       delegationAudiences: [audience], authority: { url: `${url}/v2/engine/admission`,
         credentialEnv: `IDEEO_${id.toUpperCase()}_CREDENTIAL`, delegationAudience: audience, timeoutMs: 3000, provenance: 'synthetic' } },
     set(patch: Partial<TenantFixtureState>) { Object.assign(state, patch); },
-    reset() { state = freshState(); calls = 0; forbiddenHeaders = false; previousReply = undefined; },
+    onCheck(hook?: (call: number) => Promise<void>) { beforeReply = hook; },
+    reset() { state = freshState(); calls = 0; forbiddenHeaders = false; previousReply = undefined; beforeReply = undefined; },
     observations() { return { calls, forbiddenHeaders }; },
     async token(channel: 'sdk' | 'whatsapp' = 'sdk', overrides: Record<string, unknown> = {}) {
       const now = Math.floor(Date.now() / 1000);
@@ -120,17 +126,21 @@ async function createTenantFixture(id: string) {
   };
 }
 
-export async function launchIdeeoFixture() {
+export async function launchIdeeoFixture(options: { storage?: StorageConfiguration; secrets?: Record<string, string>;
+  additionalTenants?: readonly { config: TenantConfiguration; credential: string }[] } = {}) {
   const root = await mkdtemp(join(tmpdir(), 'ideeo-admission-'));
   const tenants: Awaited<ReturnType<typeof createTenantFixture>>[] = [];
   let child: ReturnType<typeof spawn> | undefined;
-  const stop = async () => {
+  const kill = async () => {
     if (child && child.exitCode === null && child.signalCode === null) {
       const ownedChild = child;
       const exited = new Promise<void>(resolve => ownedChild.once('exit', () => resolve()));
       ownedChild.kill();
       await exited;
     }
+  };
+  const stop = async () => {
+    await kill();
     await Promise.all(tenants.map(tenant => stopServer(tenant.server)));
     const resolved = await realpath(root);
     if (dirname(resolved) !== await realpath(tmpdir()) || !basename(resolved).startsWith('ideeo-admission-')) {
@@ -140,20 +150,24 @@ export async function launchIdeeoFixture() {
   };
   try {
     for (const id of ['alpha', 'beta']) tenants.push(await createTenantFixture(id));
-    const config = { environment: 'development', listen: { host: '127.0.0.1', port: 0 }, tenants: tenants.map(t => t.config) };
+    const configuredTenants = [...tenants, ...options.additionalTenants ?? []];
+    const config = { environment: 'development', listen: { host: '127.0.0.1', port: 0 },
+      tenants: configuredTenants.map(t => ({ ...t.config, authority: { ...t.config.authority } })), ...(options.storage ? { storage: options.storage } : {}) };
     const configPath = join(root, 'config.json');
     await writeFile(configPath, JSON.stringify(config));
     const home = join(root, 'home');
     await mkdir(home);
     const environment: NodeJS.ProcessEnv = { SystemRoot: process.env.SystemRoot, WINDIR: process.env.WINDIR,
-      TEMP: root, TMP: root, HOME: home, USERPROFILE: home, APPDATA: home, LOCALAPPDATA: home };
-    for (const tenant of tenants) environment[tenant.config.authority.credentialEnv] = tenant.credential;
-    child = spawn(process.execPath, ['--experimental-strip-types', fileURLToPath(new URL('../../server/ideeo-main.ts', import.meta.url)), '--config', configPath],
+      TEMP: root, TMP: root, HOME: home, USERPROFILE: home, APPDATA: home, LOCALAPPDATA: home, ...options.secrets };
+    for (const tenant of configuredTenants) environment[tenant.config.authority.credentialEnv] = tenant.credential;
+    let logs = '';
+    const start = async () => {
+      await writeFile(configPath, JSON.stringify(config));
+      child = spawn(process.execPath, ['--experimental-strip-types', fileURLToPath(new URL('../../server/ideeo-main.ts', import.meta.url)), '--config', configPath],
       { cwd: root, env: environment, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
     const ownedChild = child;
-    let logs = '';
     child.stderr!.on('data', chunk => { logs = (logs + chunk.toString()).slice(-4096); });
-    const url = await new Promise<string>((resolve, reject) => {
+    return new Promise<string>((resolve, reject) => {
       const timer = setTimeout(() => reject(new Error('Fixture startup timed out')), 10000);
       ownedChild.once('error', () => { clearTimeout(timer); reject(new Error('Fixture startup failed')); });
       ownedChild.once('exit', () => { clearTimeout(timer); reject(new Error('Fixture exited before readiness')); });
@@ -168,7 +182,10 @@ export async function launchIdeeoFixture() {
         } catch { clearTimeout(timer); reject(new Error('Invalid fixture readiness')); }
       });
     });
-    return { url, root, tenants, config, environment, stop,
+    };
+    let url = await start();
+    return { get url() { return url; }, root, tenants, config, environment, stop, kill,
+      async restart() { await kill(); url = await start(); },
       diagnostics: () => logs,
       async configBytes() { return readFile(configPath); },
     };

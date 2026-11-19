@@ -935,17 +935,17 @@
     {
       "destination": "docs/ideeo/development/VERIFICATION.md",
       "treatment": "candidate-authored documentation or source-reference index",
-      "destination_sha256": "bafd84406e653497ee24ee45c9a715e0698aa93907edf169a13f300160399aa4"
+      "destination_sha256": "27bcf37450beb3125a30ee7cfa817b45da389230ca69c3e2dbb2cf6c2eee5ef8"
     },
     {
       "destination": "docs/ideeo/IMPLEMENTATION_STATUS.md",
       "treatment": "candidate-authored documentation or source-reference index",
-      "destination_sha256": "7aa401f30e982c467ad5955356f3221428090847bc1181cc91c1d718f9194f67"
+      "destination_sha256": "f33dd03a3c3c2d701fbe90b71f5f9f90381f2be529d2f19bf8d7b87a44682a53"
     },
     {
       "destination": "docs/ideeo/README.md",
       "treatment": "candidate-authored documentation or source-reference index",
-      "destination_sha256": "1363146d131893fd835fe3a107b1c75050a1468b919dea15fc833aa3e2762c2b"
+      "destination_sha256": "c4e917fec472fdf584c9306a720b6195f389819e03644512ab1dc4a4da96b20d"
     },
     {
       "destination": "docs/ideeo/reference/architecture/ideeo-ia-general-rev4.html",
@@ -965,12 +965,17 @@
     {
       "destination": "docs/ideeo/contracts/TENANT_SESSION_INTEGRATION.md",
       "treatment": "candidate-authored integration contract based on tenant_session_inspection",
-      "destination_sha256": "c2bfaddce7507e6b31d667005d88ae879b00118f1a1e41f8128f0570a425864c"
+      "destination_sha256": "9c70f18085bda623c8b2ade556cf1e7b3be94e0f325ea9c2bdc6888c20255459"
     },
     {
       "destination": "docs/ideeo/contracts/ADMISSION.md",
-      "treatment": "candidate-authored admission contract; tenant status endpoint remains a synthetic extension",
-      "destination_sha256": "828b46564473332b741ce0117405f26c696b99d6cc3a942f1c3f8e923b761f15"
+      "treatment": "candidate-authored admission contract; actual tenant API with synthetic status evidence, real source adoption unqualified",
+      "destination_sha256": "5fcf9fd2e96734ff37ae9ff75d67564037a4aa05471f14bbc6241f77c68d3538"
+    },
+    {
+      "destination": "docs/ideeo/contracts/CONVERSATION_STORAGE.md",
+      "treatment": "candidate-authored development storage contract; synthetic integration only",
+      "destination_sha256": "a884a447fb858d7e8f99d00b6baa39019541e641528ae4eb82852033649698b7"
     }
   ],
   "tenant_session_inspection": {
@@ -1258,6 +1263,209 @@
       "user_authorized": "commit to dev",
       "api_commit": "4efeaf56d3e7f47248d76938f979b0d5a7d7b6cf",
       "pushed": false,
+      "deployed": false
+    }
+  },
+  "conversation_storage_integration": {
+    "date": "2026-11-19",
+    "classification": "actual product/API code with disposable PostgreSQL/PGlite and synthetic identities/source; developer verification only",
+    "protocol": "ideeo-conversation-storage-1",
+    "tenant_protocol": "ideeo-admission-1; unchanged",
+    "product": {
+      "branch": "dev",
+      "base": "a0d3273dc60c31e83db4af9417824de8de7357b2",
+      "state": "uncommitted storage implementation",
+      "files": [
+        {
+          "source": "migrations/ideeo/001_conversations.sql",
+          "working_sha256": "6b7b675b13718b941baf878e5032f02489399d764c5cb5f2d7ccc5e8c2f9ff19"
+        },
+        {
+          "source": "package.json",
+          "working_sha256": "c0ba065d067fd18f9135c96b28acc2b9e8a6fc4cc2d501813c38c9d000efe916"
+        },
+        {
+          "source": "pnpm-lock.yaml",
+          "working_sha256": "f57c9be5f9bc877bdd5c472d4d23ee563680817180718d050499c20f09f59678"
+        },
+        {
+          "source": "scripts/ideeo-migrate.ts",
+          "working_sha256": "4935f6d7f1cd7ab0247e36b7cac749c6b212f485f4abaff7830948d33129cba9"
+        },
+        {
+          "source": "scripts/ideeo-purge.ts",
+          "working_sha256": "f7028d61af081f18c940a96577b52e1961060e1561bdc38097cd69e975fc174b"
+        },
+        {
+          "source": "scripts/testing/ideeo-fixture.ts",
+          "working_sha256": "1a3ec0daef7a56d85ddd3b3e1ff5eac88ae1262a732668c517cfc85f89b9999d"
+        },
+        {
+          "source": "scripts/testing/payme-storage-worker.ts",
+          "working_sha256": "da8017f2a8daab271acd3b28a92192294af904a9f2f5740cc8b6427386a0acaf"
+        },
+        {
+          "source": "scripts/testing/payme-storage.ts",
+          "working_sha256": "f2afae53f6115066f39cffdfe1df6d335e46a6d7f4c4fa81d1a6cc92ad52c2aa"
+        },
+        {
+          "source": "scripts/testing/postgres-fixture.ts",
+          "working_sha256": "48b76df4b0dc2c0678f087fcb3f700dfce900add424913e4594883b432cf197e"
+        },
+        {
+          "source": "scripts/testing/storage-mutation.mjs",
+          "working_sha256": "92ddea54f6693c1a85e9080ae22519b62bbd23485a257c245b4bd1dc0cfcc40e"
+        },
+        {
+          "source": "server/host/ideeo.ts",
+          "working_sha256": "d4002164378b6a5b4ff18914f060c9463be46eeafb7929bf9f2c75ef1978201e"
+        },
+        {
+          "source": "server/ideeo/config.ts",
+          "working_sha256": "1fa74573102d58ff297407bc8d838180b86d7543791675ce63d9900195232aa8"
+        },
+        {
+          "source": "server/ideeo/conversations.ts",
+          "working_sha256": "eb71a0ac3178741a18b925c85993a81e01db7ea5b0164657a369ea35d12af876"
+        },
+        {
+          "source": "server/ideeo/storage/config.ts",
+          "working_sha256": "171694b6cc4bff074f7c67961c8cfc7ce97c27a21b0eada8b3f4e5e9919028fa"
+        },
+        {
+          "source": "server/ideeo/storage/conversations.node-test.ts",
+          "working_sha256": "7ac729781fe5d6d7c061e1883ecd3717a73462dd18875b6d4c46dab84a91428c"
+        },
+        {
+          "source": "server/ideeo/storage/conversations.ts",
+          "working_sha256": "feb5ca024195bdd4d0d3262dede85c6ec6c5da5c12eacc75e6bb1b4b19a74213"
+        },
+        {
+          "source": "server/ideeo/storage/crypto.ts",
+          "working_sha256": "abd54db670f92a85392069021f9d5c88cf549de64f5dc28307a9004f61beb644"
+        },
+        {
+          "source": "server/ideeo/storage/database.ts",
+          "working_sha256": "e5df64b83a1c70842898683b61e867ff6b48ad1f448c4eec1604b64682adb4da"
+        },
+        {
+          "source": "server/ideeo/storage/migrate.ts",
+          "working_sha256": "c4daf5d0296cbf22d09149bc71985b62d81f09419228845d74fd137291f90bf6"
+        },
+        {
+          "source": "server/routes/ideeo-conversations.ts",
+          "working_sha256": "3700a67e87a5eea821748c2e31131e9d9bccfdfae736086e0f2f9139a7b05d01"
+        },
+        {
+          "source": "shared/ideeo/conversations.ts",
+          "working_sha256": "ca3ebf94be17f7bdc657c632adc1e24e88677c73fe57750905eeb659c059bcba"
+        }
+      ]
+    },
+    "api": {
+      "repository": "payme-api",
+      "commit": "4efeaf56d3e7f47248d76938f979b0d5a7d7b6cf",
+      "worktree": ".worktrees/payme-api-admission",
+      "branch": "ideeo-admission-integration",
+      "state": "application and fixture source unchanged; integration document updated only in worktree; original dev clean",
+      "files": [
+        {
+          "source": "docs/integrations/ideeo-admission.md",
+          "working_sha256": "b4599660125d8d74fe971b33a3d5ce7353be592de53611198f81643556136b86"
+        },
+        {
+          "source": "src/testing/admission.ts",
+          "working_sha256": "19b5aa2897eabd98d28614600aa70457c4adca8ab5a83cefdfa091fdc54f31a3"
+        },
+        {
+          "source": "src/core/nico-jwt.ts",
+          "working_sha256": "2c345a6f3125335bfc64a18196beae17424e889f6e7aab5a4304d4f52bfc061b"
+        },
+        {
+          "source": "src/modules/broker/admission.ts",
+          "working_sha256": "6b7a8b1c2b4cca0fc82fe9264aa9d5b81be1a0378ce31da2d3d8b5e47a72f104"
+        }
+      ]
+    },
+    "results": {
+      "storage_node_results": 23,
+      "repeated_storage_node_results": 23,
+      "api_storage_checks": 27,
+      "independent_tenant_regression_results": 53,
+      "api_admission_regression_checks": 30,
+      "deliberate_mutations_detected": 2,
+      "focused_typecheck": "passed",
+      "targeted_lint": "passed",
+      "clean_locked_install": false,
+      "full_product_build": false,
+      "api_full_suite_rerun": false
+    },
+    "versions": {
+      "node": "24.15.0",
+      "postgresql": "18.0 Windows",
+      "postgres_driver": "3.4.9",
+      "product_jose": "6.2.10",
+      "api_jose": "6.2.15",
+      "typescript": "5.9.3",
+      "oxlint": "1.80.0",
+      "pglite": "0.5.14",
+      "tsx": "4.23.15",
+      "lockfile_yaml_parser": "2.9.0"
+    },
+    "documents": [
+      {
+        "source": "docs/ideeo/README.md",
+        "working_sha256": "c4e917fec472fdf584c9306a720b6195f389819e03644512ab1dc4a4da96b20d"
+      },
+      {
+        "source": "docs/ideeo/IMPLEMENTATION_STATUS.md",
+        "working_sha256": "f33dd03a3c3c2d701fbe90b71f5f9f90381f2be529d2f19bf8d7b87a44682a53"
+      },
+      {
+        "source": "docs/ideeo/contracts/ADMISSION.md",
+        "working_sha256": "5fcf9fd2e96734ff37ae9ff75d67564037a4aa05471f14bbc6241f77c68d3538"
+      },
+      {
+        "source": "docs/ideeo/contracts/TENANT_SESSION_INTEGRATION.md",
+        "working_sha256": "9c70f18085bda623c8b2ade556cf1e7b3be94e0f325ea9c2bdc6888c20255459"
+      },
+      {
+        "source": "docs/ideeo/contracts/CONVERSATION_STORAGE.md",
+        "working_sha256": "a884a447fb858d7e8f99d00b6baa39019541e641528ae4eb82852033649698b7"
+      },
+      {
+        "source": "docs/ideeo/development/VERIFICATION.md",
+        "working_sha256": "27bcf37450beb3125a30ee7cfa817b45da389230ca69c3e2dbb2cf6c2eee5ef8"
+      },
+      {
+        "source": "docs/verification/README.md",
+        "working_sha256": "0b822821da9a0c68e70a64ee2704c9d0a168cb23c418eb29ac451db745e77506"
+      },
+      {
+        "source": "docs/verification/ideeo.md",
+        "working_sha256": "aff15888f5d3e2c7576612112d4c820a0629eee41bc125fd3ce5d96a17bb5950"
+      },
+      {
+        "source": "output/ideeo-openmaus-product-adaptation-plan-2026-11-18.md",
+        "working_sha256": "842ec80731421fe2151d2abb8bcf65353cada2f5ac8aff9d01cc78abde690c19"
+      }
+    ],
+    "checked_local_links": 269,
+    "refreshed_destination_hashes": 112,
+    "real_destinations_enabled": false,
+    "openai_calls": 0,
+    "independent_acceptance": false,
+    "production_ready": false,
+    "committed": false,
+    "pushed": false,
+    "deployed": false,
+    "evidence": "docs/ideeo/development/VERIFICATION.md",
+    "delivery": {
+      "date": "2026-11-19",
+      "authorization": "commit and push to dev, then integrate conversation loop",
+      "api_commit": "f00f4823c6f642d5edd542995c6520c3a5eb0521",
+      "api_remote_verified": true,
+      "product": "commit containing this record; verify remote after push",
       "deployed": false
     }
   }

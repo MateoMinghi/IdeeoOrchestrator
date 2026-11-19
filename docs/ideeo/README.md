@@ -9,10 +9,11 @@ This repository is the OpenMaus-based candidate for Ideeo's shared multi-tenant 
 3. [Candidate implementation status](IMPLEMENTATION_STATUS.md): what exists here versus what still requires implementation and qualification.
    Read the [tenant session integration](contracts/TENANT_SESSION_INTEGRATION.md) for the inspected PayMe cookie-to-token flow and SDK/WhatsApp client mapping.
    The [admission contract](contracts/ADMISSION.md) describes the isolated entry, actual PayMe tenant endpoint and synthetic integration, including unsupported backend evidence and remaining qualification.
+   The [conversation storage contract](contracts/CONVERSATION_STORAGE.md) defines encrypted records, explicit conversation permissions, transaction/replay behavior and development-only limits.
 4. Applicable [contracts](contracts/SHARED_INTERFACE.md), [decision applicability](decisions/APPLICABILITY.md), [compliance policy](policies/COMPLIANCE.md) and [readiness policy](policies/PRODUCTION_READINESS.md).
 5. [Adaptation plan](../../output/ideeo-openmaus-product-adaptation-plan-2026-11-18.md) and the repository's [isolated verification guide](../verification/README.md).
 
-For implementation pickup, start with [the tenant API integration status](IMPLEMENTATION_STATUS.md#tenant-api-admission-local-integration-implemented). The original synthetic admission implementation is published on `dev` at `27865fc`; the subsequent PayMe integration is delivered to local `dev` (API `4efeaf5`) after isolated-worktree verification. The full conversation/UI/persistence journey remains incomplete.
+For implementation pickup, start with [the storage integration status](IMPLEMENTATION_STATUS.md#conversation-storage-implemented-with-synthetic-integration). Product local `dev` commit `a0d3273` contains the PayMe admission integration (API `4efeaf5`); the subsequent storage commit adds encrypted storage verified against disposable real PostgreSQL and the actual API with synthetic source evidence. Next is controlled adaptation of the existing OpenMaus loop, then UI/reload. The full customer conversation journey remains incomplete.
 
 ## How to interpret the imported documents
 
@@ -36,7 +37,7 @@ The architecture preserves the substantive product model and replaces the other 
 | Directory | Contents |
 | --- | --- |
 | `product/` | Scope, experience, privacy, integration context, skill research and architecture |
-| `contracts/` | Sixteen behavior/API documents; sixteen JSON schemas, OpenAPI and a synthetic conformance example |
+| `contracts/` | Candidate session, admission and storage contracts; sixteen imported behavior/API documents, sixteen JSON schemas, OpenAPI and a synthetic conformance example |
 | `decisions/` | Original decisions with [candidate applicability](decisions/APPLICABILITY.md) |
 | `compliance/` | Fifteen connected legal, security, AI, privacy, risk, supplier and continuity records; draft statuses retained |
 | `policies/`, `workflows/` | Delivery and review rules, with source-specific operating details qualified for this checkout |
