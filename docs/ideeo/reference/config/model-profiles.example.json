@@ -1,0 +1,19 @@
+{
+  "api_version": "1",
+  "profiles": [
+    {
+      "id": "openai-luna",
+      "label": "OpenAI Luna — requires qualification",
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "tenants": [],
+      "purposes": ["conversation", "configuration", "knowledge"],
+      "enabled": false,
+      "qualification_reference": "",
+      "synthetic_tenants": [],
+      "processing_approvals": {},
+      "max_output_tokens": 1024,
+      "timeout_seconds": 25
+    }
+  ]
+}

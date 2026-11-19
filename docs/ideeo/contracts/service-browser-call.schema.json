@@ -1,0 +1,219 @@
+{
+  "$defs": {
+    "ProtectedBrowserAction": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "enum": [
+            "fill",
+            "click"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "expected_revision": {
+          "minimum": 1,
+          "title": "Expected Revision",
+          "type": "integer"
+        },
+        "target": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Target",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "format": "password",
+              "type": "string",
+              "writeOnly": true
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "required": [
+        "expected_revision",
+        "action",
+        "target"
+      ],
+      "title": "ProtectedBrowserAction",
+      "type": "object"
+    },
+    "ServiceAction": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "enum": [
+            "fill",
+            "click",
+            "observe",
+            "ask",
+            "handoff",
+            "browser_use"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "question": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Question"
+        },
+        "target": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "maxLength": 16384,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "required": [
+        "action"
+      ],
+      "title": "ServiceAction",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "action": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ServiceAction"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "browser_generation": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Browser Generation"
+    },
+    "browser_revision": {
+      "anyOf": [
+        {
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Browser Revision"
+    },
+    "command": {
+      "enum": [
+        "observe",
+        "agent_request",
+        "reset_agent",
+        "act",
+        "commit",
+        "reconcile",
+        "protected_action",
+        "screenshot",
+        "api_read"
+      ],
+      "title": "Command",
+      "type": "string"
+    },
+    "expected_task_revision": {
+      "minimum": 1,
+      "title": "Expected Task Revision",
+      "type": "integer"
+    },
+    "operation_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Operation Id"
+    },
+    "protected_action": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ProtectedBrowserAction"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "quote_digest": {
+      "anyOf": [
+        {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Quote Digest"
+    },
+    "route_digest": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Route Digest",
+      "type": "string"
+    }
+  },
+  "required": [
+    "command",
+    "expected_task_revision",
+    "route_digest"
+  ],
+  "title": "BrowserCall",
+  "type": "object"
+}

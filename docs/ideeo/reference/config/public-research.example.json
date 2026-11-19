@@ -1,0 +1,47 @@
+{
+  "api_version": "1",
+  "profiles": [
+    {
+      "tenant_id": "synthetic-browser-tenant",
+      "provider": "public_web",
+      "origin": "https://www.google.com",
+      "client_ids": ["app"],
+      "development_only": true,
+      "network_mode": "public_internet",
+      "completion_policy": "useful_research",
+      "max_steps": 48,
+      "max_actions": 120,
+      "max_actions_per_step": 5,
+      "max_assessment_calls": 12,
+      "allow_vision": false,
+      "enable_planning": true,
+      "use_thinking": true,
+      "page_search": true,
+      "directly_open_url": true
+    },
+    {
+      "tenant_id": "synthetic-browser-tenant",
+      "provider": "doctoralia",
+      "origin": "https://www.doctoralia.com.mx",
+      "entry_path": "/medico-general/ciudad-de-mexico",
+      "client_ids": ["app"],
+      "development_only": true,
+      "network_mode": "public_internet",
+      "completion_policy": "useful_research",
+      "max_steps": 48,
+      "max_actions": 120,
+      "max_actions_per_step": 5,
+      "max_assessment_calls": 12,
+      "allow_vision": false,
+      "adaptive_vision": false,
+      "enable_planning": true,
+      "use_thinking": true,
+      "page_search": true,
+      "directly_open_url": true,
+      "qualified_asset_origins": [],
+      "qualified_public_operations": [],
+      "qualified_search_origins": [],
+      "required_resource_origins": []
+    }
+  ]
+}

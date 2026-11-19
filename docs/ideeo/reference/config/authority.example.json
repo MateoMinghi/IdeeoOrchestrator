@@ -1,0 +1,24 @@
+{
+  "api_version": "2",
+  "environment": "development",
+  "listen": "127.0.0.1:8193",
+  "database_env": "AUTHORITY_DATABASE_URL",
+  "active_key_id": "current",
+  "key_environment_variables": {"current": "AUTHORITY_DATA_KEY_BASE64"},
+  "trust": [{"issuer": "https://issuer.demo-bank.invalid", "tenant_id": "demo-bank", "audience": "ai-authority", "keys": {"tenant-key": "REPLACE_WITH_TENANT_PUBLIC_P256_PEM"}, "development": true}],
+  "callback_trust": [{"issuer": "https://events.demo-bank.invalid", "tenant_id": "demo-bank", "audience": "ai-authority-bank-events", "keys": {"bank-key": "REPLACE_WITH_SEPARATE_BANK_EVENT_PUBLIC_P256_PEM"}, "development": true}],
+  "workloads": [
+    {"tenant_id": "demo-bank", "role": "engine", "credential_env": "DEMO_BANK_ENGINE_CREDENTIAL", "clients": ["demo-app"]},
+    {"tenant_id": "demo-bank", "role": "owner", "credential_env": "DEMO_BANK_OWNER_CREDENTIAL", "clients": ["demo-app"]},
+    {"tenant_id": "demo-bank", "role": "core", "credential_env": "DEMO_BANK_CORE_CREDENTIAL", "clients": ["demo-app"]}
+  ],
+  "tenants": [{
+    "tenant_id": "demo-bank",
+    "core": {"origin": "https://adapter.demo-bank.invalid", "credential_env": "DEMO_BANK_ADAPTER_CREDENTIAL", "audience": "bank-core", "provenance": "bank", "allow_local_http": false, "timeout_seconds": 5, "facts_seconds": 30, "read_clock_skew_ms": 0},
+    "enabled": ["bank.balance", "bank.account_info", "bank.history", "bank.catalog", "bank.transfer", "bank.bill", "bank.topup", "commerce.purchase"],
+    "approval_origins": ["https://approve.demo-bank.invalid"],
+    "effects_enabled": false
+  }],
+  "approval_ttl_seconds": 600,
+  "cleanup_interval_seconds": 60
+}

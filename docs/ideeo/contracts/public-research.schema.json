@@ -1,0 +1,320 @@
+{
+  "$defs": {
+    "PublicReadOperation": {
+      "additionalProperties": false,
+      "properties": {
+        "body_values": {
+          "additionalProperties": {
+            "items": {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            "maxItems": 100,
+            "minItems": 1,
+            "type": "array"
+          },
+          "maxProperties": 20,
+          "title": "Body Values",
+          "type": "object"
+        },
+        "content_type": {
+          "default": "application/json",
+          "enum": [
+            "application/json",
+            "application/x-www-form-urlencoded"
+          ],
+          "title": "Content Type",
+          "type": "string"
+        },
+        "method": {
+          "default": "GET",
+          "enum": [
+            "GET",
+            "HEAD",
+            "POST"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "purpose": {
+          "enum": [
+            "search",
+            "availability",
+            "public_data"
+          ],
+          "title": "Purpose",
+          "type": "string"
+        },
+        "query_values": {
+          "additionalProperties": {
+            "items": {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            "maxItems": 100,
+            "minItems": 1,
+            "type": "array"
+          },
+          "maxProperties": 20,
+          "title": "Query Values",
+          "type": "object"
+        },
+        "url": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url",
+        "purpose"
+      ],
+      "title": "PublicReadOperation",
+      "type": "object"
+    },
+    "PublicResearchProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "adaptive_vision": {
+          "default": false,
+          "title": "Adaptive Vision",
+          "type": "boolean"
+        },
+        "additional_protected_selectors": {
+          "items": {
+            "maxLength": 300,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 30,
+          "title": "Additional Protected Selectors",
+          "type": "array"
+        },
+        "allow_vision": {
+          "default": false,
+          "title": "Allow Vision",
+          "type": "boolean"
+        },
+        "browser_backend": {
+          "default": "browser_use",
+          "enum": [
+            "browser_use",
+            "openmaus"
+          ],
+          "title": "Browser Backend",
+          "type": "string"
+        },
+        "client_ids": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "title": "Client Ids",
+          "type": "array"
+        },
+        "completion_policy": {
+          "default": "verified_goal",
+          "enum": [
+            "verified_goal",
+            "useful_research"
+          ],
+          "title": "Completion Policy",
+          "type": "string"
+        },
+        "development_only": {
+          "const": true,
+          "title": "Development Only",
+          "type": "boolean"
+        },
+        "directly_open_url": {
+          "default": false,
+          "title": "Directly Open Url",
+          "type": "boolean"
+        },
+        "enable_planning": {
+          "default": true,
+          "title": "Enable Planning",
+          "type": "boolean"
+        },
+        "entry_path": {
+          "default": "/",
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Entry Path",
+          "type": "string"
+        },
+        "max_actions": {
+          "default": 24,
+          "maximum": 512,
+          "minimum": 1,
+          "title": "Max Actions",
+          "type": "integer"
+        },
+        "max_actions_per_step": {
+          "default": 5,
+          "maximum": 5,
+          "minimum": 1,
+          "title": "Max Actions Per Step",
+          "type": "integer"
+        },
+        "max_assessment_calls": {
+          "default": 12,
+          "maximum": 12,
+          "minimum": 1,
+          "title": "Max Assessment Calls",
+          "type": "integer"
+        },
+        "max_steps": {
+          "default": 12,
+          "maximum": 128,
+          "minimum": 1,
+          "title": "Max Steps",
+          "type": "integer"
+        },
+        "network_mode": {
+          "default": "qualified",
+          "enum": [
+            "qualified",
+            "public_internet"
+          ],
+          "title": "Network Mode",
+          "type": "string"
+        },
+        "origin": {
+          "title": "Origin",
+          "type": "string"
+        },
+        "page_search": {
+          "default": false,
+          "title": "Page Search",
+          "type": "boolean"
+        },
+        "provider": {
+          "anyOf": [
+            {
+              "enum": [
+                "uber",
+                "uber_eats",
+                "rappi",
+                "opentable",
+                "google_businesses",
+                "doctoralia",
+                "didi_food",
+                "didi_rides"
+              ],
+              "type": "string"
+            },
+            {
+              "const": "public_web",
+              "type": "string"
+            }
+          ],
+          "title": "Provider"
+        },
+        "qualified_asset_origins": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Qualified Asset Origins",
+          "type": "array"
+        },
+        "qualified_public_operations": {
+          "items": {
+            "$ref": "#/$defs/PublicReadOperation"
+          },
+          "maxItems": 40,
+          "title": "Qualified Public Operations",
+          "type": "array"
+        },
+        "qualified_public_read_urls": {
+          "items": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 40,
+          "title": "Qualified Public Read Urls",
+          "type": "array"
+        },
+        "qualified_search_origins": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 5,
+          "title": "Qualified Search Origins",
+          "type": "array"
+        },
+        "reference_timezone": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reference Timezone"
+        },
+        "required_resource_origins": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Required Resource Origins",
+          "type": "array"
+        },
+        "tenant_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "use_thinking": {
+          "default": false,
+          "title": "Use Thinking",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "provider",
+        "origin",
+        "client_ids",
+        "development_only"
+      ],
+      "title": "PublicResearchProfile",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "api_version": {
+      "const": "1",
+      "title": "Api Version",
+      "type": "string"
+    },
+    "profiles": {
+      "items": {
+        "$ref": "#/$defs/PublicResearchProfile"
+      },
+      "maxItems": 1000,
+      "minItems": 1,
+      "title": "Profiles",
+      "type": "array"
+    }
+  },
+  "required": [
+    "api_version",
+    "profiles"
+  ],
+  "title": "PublicResearchConfiguration",
+  "type": "object"
+}

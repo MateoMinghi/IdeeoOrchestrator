@@ -1,0 +1,25 @@
+{
+  "api_version": "1",
+  "tenants": [
+    {
+      "tenant_id": "bank-a",
+      "adapter": "http-v1",
+      "base_url": "https://engine-connector.bank-a.invalid",
+      "credential_env": "BANK_A_CONNECTOR_TOKEN",
+      "provenance": "bank",
+      "capabilities": ["bank.balance"],
+      "timeout_seconds": 5,
+      "data_policy": {"model_routes": [], "allow_user_text": false, "allow_account_labels": false, "task_retention_hours": 24, "preference_retention_days": 90}
+    },
+    {
+      "tenant_id": "bank-b",
+      "adapter": "http-v1",
+      "base_url": "https://engine-connector.bank-b.invalid",
+      "credential_env": "BANK_B_CONNECTOR_TOKEN",
+      "provenance": "bank",
+      "capabilities": ["bank.balance"],
+      "timeout_seconds": 5,
+      "data_policy": {"model_routes": [], "allow_user_text": false, "allow_account_labels": false, "task_retention_hours": 24, "preference_retention_days": 90}
+    }
+  ]
+}

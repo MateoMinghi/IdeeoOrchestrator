@@ -1,0 +1,1226 @@
+{
+  "$defs": {
+    "AccountCurrencyMap": {
+      "additionalProperties": {
+        "pattern": "^[A-Z]{3}$",
+        "type": "string"
+      },
+      "maxProperties": 64,
+      "propertyNames": {
+        "enum": [
+          "assistant.knowledge",
+          "assistant.conversation",
+          "assistant.activity",
+          "bank.balance",
+          "bank.account_info",
+          "bank.history",
+          "bank.catalog",
+          "bank.transfer",
+          "bank.transfer_phone",
+          "bank.bill",
+          "bank.topup",
+          "bank.contacts",
+          "bank.cash_in",
+          "bank.cash_out",
+          "bank.card",
+          "bank.rewards",
+          "bank.challenges",
+          "bank.process",
+          "commerce.purchase",
+          "account.onboard",
+          "presentation.artifact",
+          "tasks.list",
+          "tasks.cancel",
+          "tasks.watch",
+          "browser.shopping",
+          "phone.reservation",
+          "service.uber",
+          "service.uber_eats",
+          "service.rappi",
+          "service.opentable",
+          "service.google_businesses",
+          "service.doctoralia",
+          "service.didi_food",
+          "service.didi_rides",
+          "unsupported"
+        ]
+      },
+      "type": "object"
+    },
+    "ApprovedArtifact": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "description": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "media_type": {
+          "default": "text",
+          "enum": [
+            "text",
+            "document",
+            "image",
+            "video"
+          ],
+          "title": "Media Type",
+          "type": "string"
+        },
+        "provenance": {
+          "default": "tenant",
+          "enum": [
+            "tenant",
+            "synthetic"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "maxLength": 6000,
+          "title": "Text",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "maxLength": 2000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "title",
+        "description"
+      ],
+      "title": "ApprovedArtifact",
+      "type": "object"
+    },
+    "BarcodeRule": {
+      "additionalProperties": false,
+      "description": "Trusted catalogue mapping. Numeric slices are exact; no model chooses the mapping.",
+      "properties": {
+        "currency": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Z]{3}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Currency"
+        },
+        "decoder": {
+          "default": "reference_slice",
+          "enum": [
+            "reference_slice",
+            "cfe_v1"
+          ],
+          "title": "Decoder",
+          "type": "string"
+        },
+        "due_timezone": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Due Timezone"
+        },
+        "prefix": {
+          "maxLength": 20,
+          "minLength": 1,
+          "pattern": "^[0-9]+$",
+          "title": "Prefix",
+          "type": "string"
+        },
+        "qualification_reference": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Qualification Reference"
+        },
+        "qualification_scope": {
+          "const": "synthetic",
+          "default": "synthetic",
+          "title": "Qualification Scope",
+          "type": "string"
+        },
+        "reference_length": {
+          "maximum": 128,
+          "minimum": 1,
+          "title": "Reference Length",
+          "type": "integer"
+        },
+        "reference_start": {
+          "maximum": 127,
+          "minimum": 0,
+          "title": "Reference Start",
+          "type": "integer"
+        },
+        "service_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Service Id",
+          "type": "string"
+        },
+        "service_labels": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Service Labels",
+          "type": "array"
+        },
+        "total_length": {
+          "maximum": 128,
+          "minimum": 5,
+          "title": "Total Length",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "prefix",
+        "total_length",
+        "reference_start",
+        "reference_length",
+        "service_id"
+      ],
+      "title": "BarcodeRule",
+      "type": "object"
+    },
+    "CapabilityProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "account_currency_by_capability": {
+          "$ref": "#/$defs/AccountCurrencyMap"
+        },
+        "allow_local_http": {
+          "default": false,
+          "title": "Allow Local Http",
+          "type": "boolean"
+        },
+        "approval_origins": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Approval Origins",
+          "type": "array"
+        },
+        "artifacts": {
+          "items": {
+            "$ref": "#/$defs/ApprovedArtifact"
+          },
+          "maxItems": 100,
+          "title": "Artifacts",
+          "type": "array"
+        },
+        "core_handoffs": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CoreHandoffProfile"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "credential_env": {
+          "pattern": "^[A-Z][A-Z0-9_]{0,99}$",
+          "title": "Credential Env",
+          "type": "string"
+        },
+        "delegation_audience": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Delegation Audience"
+        },
+        "enabled": {
+          "items": {
+            "enum": [
+              "assistant.knowledge",
+              "assistant.conversation",
+              "assistant.activity",
+              "bank.balance",
+              "bank.account_info",
+              "bank.history",
+              "bank.catalog",
+              "bank.transfer",
+              "bank.transfer_phone",
+              "bank.bill",
+              "bank.topup",
+              "bank.contacts",
+              "bank.cash_in",
+              "bank.cash_out",
+              "bank.card",
+              "bank.rewards",
+              "bank.challenges",
+              "bank.process",
+              "commerce.purchase",
+              "account.onboard",
+              "presentation.artifact",
+              "tasks.list",
+              "tasks.cancel",
+              "tasks.watch",
+              "browser.shopping",
+              "phone.reservation",
+              "service.uber",
+              "service.uber_eats",
+              "service.rappi",
+              "service.opentable",
+              "service.google_businesses",
+              "service.doctoralia",
+              "service.didi_food",
+              "service.didi_rides",
+              "unsupported"
+            ],
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Enabled",
+          "type": "array"
+        },
+        "host_banking": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HostBankingProfile"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "media": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MediaPolicy"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "notifications_enabled": {
+          "default": false,
+          "title": "Notifications Enabled",
+          "type": "boolean"
+        },
+        "onboarding": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TenantOnboardingProfile"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "origin": {
+          "title": "Origin",
+          "type": "string"
+        },
+        "policy": {
+          "$ref": "#/$defs/DataPolicy"
+        },
+        "provenance": {
+          "enum": [
+            "synthetic",
+            "bank"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        },
+        "routes": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TenantRoutes"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "structured_process_search_required": {
+          "items": {
+            "const": "travel",
+            "type": "string"
+          },
+          "maxItems": 1,
+          "title": "Structured Process Search Required",
+          "type": "array"
+        },
+        "structured_process_search_timezone": {
+          "default": "UTC",
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Structured Process Search Timezone",
+          "type": "string"
+        },
+        "tenant_handoffs": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TenantHandoffProfile"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "tenant_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "timeout_seconds": {
+          "default": 5,
+          "maximum": 30,
+          "minimum": 1,
+          "title": "Timeout Seconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "origin",
+        "credential_env",
+        "provenance"
+      ],
+      "title": "CapabilityProfile",
+      "type": "object"
+    },
+    "CapabilityRoute": {
+      "additionalProperties": false,
+      "properties": {
+        "capability": {
+          "title": "Capability",
+          "type": "string"
+        },
+        "effect": {
+          "enum": [
+            "read",
+            "prepare",
+            "commit"
+          ],
+          "title": "Effect",
+          "type": "string"
+        },
+        "enabled": {
+          "default": true,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "executor": {
+          "enum": [
+            "integration",
+            "browser",
+            "handoff"
+          ],
+          "title": "Executor",
+          "type": "string"
+        },
+        "implementation": {
+          "pattern": "^[a-z][a-z0-9_.-]{0,99}$",
+          "title": "Implementation",
+          "type": "string"
+        },
+        "priority": {
+          "default": 100,
+          "maximum": 1000,
+          "minimum": 0,
+          "title": "Priority",
+          "type": "integer"
+        },
+        "route_id": {
+          "pattern": "^[a-z][a-z0-9_-]{0,63}$",
+          "title": "Route Id",
+          "type": "string"
+        },
+        "success_evidence": {
+          "maxLength": 300,
+          "minLength": 1,
+          "title": "Success Evidence",
+          "type": "string"
+        }
+      },
+      "required": [
+        "route_id",
+        "capability",
+        "executor",
+        "implementation",
+        "effect",
+        "success_evidence"
+      ],
+      "title": "CapabilityRoute",
+      "type": "object"
+    },
+    "CartDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "$ref": "#/$defs/CartItem"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Items",
+          "type": "array"
+        },
+        "kind": {
+          "const": "cart",
+          "default": "cart",
+          "title": "Kind",
+          "type": "string"
+        },
+        "merchant": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Merchant",
+          "type": "string"
+        }
+      },
+      "required": [
+        "merchant",
+        "items"
+      ],
+      "title": "CartDetail",
+      "type": "object"
+    },
+    "CartItem": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "price": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "gt": 0,
+          "title": "Price"
+        },
+        "qty": {
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Qty",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "name",
+        "qty",
+        "price"
+      ],
+      "title": "CartItem",
+      "type": "object"
+    },
+    "CoreHandoffProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "api_key_env": {
+          "pattern": "^[A-Z][A-Z0-9_]{0,99}$",
+          "title": "Api Key Env",
+          "type": "string"
+        },
+        "customer_agents": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Customer Agents",
+          "type": "array"
+        },
+        "customer_clients": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Customer Clients",
+          "type": "array"
+        },
+        "mappings_file": {
+          "format": "path",
+          "title": "Mappings File",
+          "type": "string"
+        },
+        "protected_reads": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Protected Reads",
+          "type": "array"
+        },
+        "signing_secret_env": {
+          "pattern": "^[A-Z][A-Z0-9_]{0,99}$",
+          "title": "Signing Secret Env",
+          "type": "string"
+        },
+        "synthetic_quotes": {
+          "items": {
+            "$ref": "#/$defs/SyntheticCommerceQuote"
+          },
+          "maxItems": 30,
+          "title": "Synthetic Quotes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "api_key_env",
+        "signing_secret_env",
+        "mappings_file",
+        "customer_clients",
+        "customer_agents"
+      ],
+      "title": "CoreHandoffProfile",
+      "type": "object"
+    },
+    "DataPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "allow_account_labels": {
+          "default": false,
+          "title": "Allow Account Labels",
+          "type": "boolean"
+        },
+        "allow_public_screenshots": {
+          "default": false,
+          "title": "Allow Public Screenshots",
+          "type": "boolean"
+        },
+        "allow_user_text": {
+          "default": false,
+          "title": "Allow User Text",
+          "type": "boolean"
+        },
+        "model_routes": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Model Routes",
+          "type": "array"
+        },
+        "preference_retention_days": {
+          "default": 90,
+          "maximum": 365,
+          "minimum": 1,
+          "title": "Preference Retention Days",
+          "type": "integer"
+        },
+        "task_retention_hours": {
+          "default": 24,
+          "maximum": 168,
+          "minimum": 1,
+          "title": "Task Retention Hours",
+          "type": "integer"
+        }
+      },
+      "title": "DataPolicy",
+      "type": "object"
+    },
+    "FlightDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "airline": {
+          "const": "SYNTHETIC TEST - NO BOOKING",
+          "default": "SYNTHETIC TEST - NO BOOKING",
+          "title": "Airline",
+          "type": "string"
+        },
+        "departureDate": {
+          "format": "date",
+          "title": "Departuredate",
+          "type": "string"
+        },
+        "destination": {
+          "pattern": "^[A-Z]{3}$",
+          "title": "Destination",
+          "type": "string"
+        },
+        "kind": {
+          "const": "flight",
+          "default": "flight",
+          "title": "Kind",
+          "type": "string"
+        },
+        "origin": {
+          "pattern": "^[A-Z]{3}$",
+          "title": "Origin",
+          "type": "string"
+        },
+        "passengers": {
+          "maximum": 9,
+          "minimum": 1,
+          "title": "Passengers",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "origin",
+        "destination",
+        "departureDate",
+        "passengers"
+      ],
+      "title": "FlightDetail",
+      "type": "object"
+    },
+    "HostBankingProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "capabilities": {
+          "items": {
+            "enum": [
+              "bank.balance",
+              "bank.account_info",
+              "bank.history",
+              "bank.transfer",
+              "bank.transfer_phone",
+              "bank.bill",
+              "bank.topup"
+            ],
+            "type": "string"
+          },
+          "maxItems": 7,
+          "minItems": 1,
+          "title": "Capabilities",
+          "type": "array"
+        },
+        "client_ids": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "title": "Client Ids",
+          "type": "array"
+        },
+        "contacts_enabled": {
+          "default": false,
+          "title": "Contacts Enabled",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "client_ids",
+        "capabilities"
+      ],
+      "title": "HostBankingProfile",
+      "type": "object"
+    },
+    "MediaPolicy": {
+      "additionalProperties": false,
+      "description": "Additional explicit media disclosure permission; ordinary text permission is insufficient.",
+      "properties": {
+        "barcode_rules": {
+          "items": {
+            "$ref": "#/$defs/BarcodeRule"
+          },
+          "maxItems": 20,
+          "title": "Barcode Rules",
+          "type": "array"
+        },
+        "credential_env": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Z][A-Z0-9_]{0,99}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Credential Env"
+        },
+        "enabled": {
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "extraction_model": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9_.:-]{1,100}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Extraction Model"
+        },
+        "max_audio_seconds": {
+          "default": 120,
+          "maximum": 300,
+          "minimum": 1,
+          "title": "Max Audio Seconds",
+          "type": "integer"
+        },
+        "max_bytes": {
+          "default": 8388608,
+          "maximum": 16777216,
+          "minimum": 1024,
+          "title": "Max Bytes",
+          "type": "integer"
+        },
+        "max_output_tokens": {
+          "default": 2048,
+          "maximum": 4096,
+          "minimum": 128,
+          "title": "Max Output Tokens",
+          "type": "integer"
+        },
+        "max_pdf_pages": {
+          "default": 5,
+          "maximum": 10,
+          "minimum": 1,
+          "title": "Max Pdf Pages",
+          "type": "integer"
+        },
+        "max_pixels": {
+          "default": 8000000,
+          "maximum": 20000000,
+          "minimum": 1024,
+          "title": "Max Pixels",
+          "type": "integer"
+        },
+        "mime_types": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 10,
+          "title": "Mime Types",
+          "type": "array"
+        },
+        "minimum_confidence": {
+          "default": 0.8,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Minimum Confidence",
+          "type": "number"
+        },
+        "model_routes": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Model Routes",
+          "type": "array"
+        },
+        "processing_reference": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Processing Reference"
+        },
+        "processing_seconds": {
+          "default": 45,
+          "maximum": 120,
+          "minimum": 1,
+          "title": "Processing Seconds",
+          "type": "integer"
+        },
+        "transcription_model": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9_.:-]{1,100}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Transcription Model"
+        }
+      },
+      "title": "MediaPolicy",
+      "type": "object"
+    },
+    "PurchaseDraft": {
+      "additionalProperties": false,
+      "properties": {
+        "account_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Account Id",
+          "type": "string"
+        },
+        "amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "gt": 0,
+          "title": "Amount"
+        },
+        "category": {
+          "enum": [
+            "flight",
+            "stay",
+            "cart"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "currency": {
+          "pattern": "^[A-Z]{3}$",
+          "title": "Currency",
+          "type": "string"
+        },
+        "description": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "evidence_ref": {
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Evidence Ref",
+          "type": "string"
+        },
+        "expires_at": {
+          "format": "date-time",
+          "title": "Expires At",
+          "type": "string"
+        },
+        "provider_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Provider Id",
+          "type": "string"
+        },
+        "quote_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Quote Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "account_id",
+        "quote_id",
+        "category",
+        "provider_id",
+        "amount",
+        "currency",
+        "expires_at",
+        "description",
+        "evidence_ref"
+      ],
+      "title": "PurchaseDraft",
+      "type": "object"
+    },
+    "StayDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "checkIn": {
+          "format": "date",
+          "title": "Checkin",
+          "type": "string"
+        },
+        "checkOut": {
+          "format": "date",
+          "title": "Checkout",
+          "type": "string"
+        },
+        "city": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "City",
+          "type": "string"
+        },
+        "guests": {
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Guests",
+          "type": "integer"
+        },
+        "kind": {
+          "const": "stay",
+          "default": "stay",
+          "title": "Kind",
+          "type": "string"
+        },
+        "propertyName": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Propertyname",
+          "type": "string"
+        },
+        "rooms": {
+          "maximum": 10,
+          "minimum": 1,
+          "title": "Rooms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "propertyName",
+        "city",
+        "checkIn",
+        "checkOut",
+        "guests",
+        "rooms"
+      ],
+      "title": "StayDetail",
+      "type": "object"
+    },
+    "SyntheticCommerceQuote": {
+      "additionalProperties": false,
+      "properties": {
+        "detail": {
+          "discriminator": {
+            "mapping": {
+              "cart": "#/$defs/CartDetail",
+              "flight": "#/$defs/FlightDetail",
+              "stay": "#/$defs/StayDetail"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/FlightDetail"
+            },
+            {
+              "$ref": "#/$defs/StayDetail"
+            },
+            {
+              "$ref": "#/$defs/CartDetail"
+            }
+          ],
+          "title": "Detail"
+        },
+        "draft": {
+          "$ref": "#/$defs/PurchaseDraft"
+        },
+        "provenance": {
+          "const": "synthetic",
+          "default": "synthetic",
+          "title": "Provenance",
+          "type": "string"
+        }
+      },
+      "required": [
+        "draft",
+        "detail"
+      ],
+      "title": "SyntheticCommerceQuote",
+      "type": "object"
+    },
+    "TenantHandoffProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "capabilities": {
+          "items": {
+            "anyOf": [
+              {
+                "enum": [
+                  "bank.balance",
+                  "bank.account_info",
+                  "bank.history",
+                  "bank.transfer",
+                  "bank.transfer_phone",
+                  "bank.bill",
+                  "bank.topup"
+                ],
+                "type": "string"
+              },
+              {
+                "enum": [
+                  "bank.contacts",
+                  "bank.cash_in",
+                  "bank.cash_out",
+                  "bank.card",
+                  "bank.rewards",
+                  "bank.challenges",
+                  "bank.process"
+                ],
+                "type": "string"
+              }
+            ]
+          },
+          "maxItems": 14,
+          "minItems": 1,
+          "title": "Capabilities",
+          "type": "array"
+        },
+        "client_ids": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "title": "Client Ids",
+          "type": "array"
+        },
+        "contacts_enabled": {
+          "default": false,
+          "title": "Contacts Enabled",
+          "type": "boolean"
+        },
+        "lifecycle_enabled": {
+          "default": false,
+          "title": "Lifecycle Enabled",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "client_ids",
+        "capabilities"
+      ],
+      "title": "TenantHandoffProfile",
+      "type": "object"
+    },
+    "TenantOnboardingProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "clients": {
+          "additionalProperties": {
+            "enum": [
+              "web",
+              "sdk",
+              "whatsapp"
+            ],
+            "type": "string"
+          },
+          "maxProperties": 100,
+          "minProperties": 1,
+          "title": "Clients",
+          "type": "object"
+        },
+        "profile_version": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Profile Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "profile_version",
+        "clients"
+      ],
+      "title": "TenantOnboardingProfile",
+      "type": "object"
+    },
+    "TenantRoutes": {
+      "additionalProperties": false,
+      "properties": {
+        "routes": {
+          "items": {
+            "$ref": "#/$defs/CapabilityRoute"
+          },
+          "maxItems": 100,
+          "title": "Routes",
+          "type": "array"
+        }
+      },
+      "title": "TenantRoutes",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "api_version": {
+      "const": "2",
+      "title": "Api Version",
+      "type": "string"
+    },
+    "tenants": {
+      "items": {
+        "$ref": "#/$defs/CapabilityProfile"
+      },
+      "maxItems": 1000,
+      "title": "Tenants",
+      "type": "array"
+    }
+  },
+  "required": [
+    "api_version",
+    "tenants"
+  ],
+  "title": "CapabilityConfiguration",
+  "type": "object"
+}

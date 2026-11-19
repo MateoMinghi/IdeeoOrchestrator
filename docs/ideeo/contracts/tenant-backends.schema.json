@@ -1,0 +1,202 @@
+{
+  "$defs": {
+    "DataPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "allow_account_labels": {
+          "default": false,
+          "title": "Allow Account Labels",
+          "type": "boolean"
+        },
+        "allow_public_screenshots": {
+          "default": false,
+          "title": "Allow Public Screenshots",
+          "type": "boolean"
+        },
+        "allow_user_text": {
+          "default": false,
+          "title": "Allow User Text",
+          "type": "boolean"
+        },
+        "model_routes": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Model Routes",
+          "type": "array"
+        },
+        "preference_retention_days": {
+          "default": 90,
+          "maximum": 365,
+          "minimum": 1,
+          "title": "Preference Retention Days",
+          "type": "integer"
+        },
+        "task_retention_hours": {
+          "default": 24,
+          "maximum": 168,
+          "minimum": 1,
+          "title": "Task Retention Hours",
+          "type": "integer"
+        }
+      },
+      "title": "DataPolicy",
+      "type": "object"
+    },
+    "TenantBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "adapter": {
+          "enum": [
+            "synthetic",
+            "http-v1",
+            "whatsbank-preproduction"
+          ],
+          "title": "Adapter",
+          "type": "string"
+        },
+        "allow_local_http": {
+          "default": false,
+          "title": "Allow Local Http",
+          "type": "boolean"
+        },
+        "base_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Base Url"
+        },
+        "capabilities": {
+          "default": [
+            "bank.balance"
+          ],
+          "items": {
+            "const": "bank.balance",
+            "type": "string"
+          },
+          "title": "Capabilities",
+          "type": "array"
+        },
+        "credential_env": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Z][A-Z0-9_]{0,99}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Credential Env"
+        },
+        "data_policy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DataPolicy"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "provenance": {
+          "default": "synthetic",
+          "enum": [
+            "synthetic",
+            "bank"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        },
+        "tenant_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "timeout_seconds": {
+          "default": 5,
+          "maximum": 15,
+          "minimum": 1,
+          "title": "Timeout Seconds",
+          "type": "integer"
+        },
+        "whatsbank": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WhatsBankProfile"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "tenant_id",
+        "adapter"
+      ],
+      "title": "TenantBinding",
+      "type": "object"
+    },
+    "WhatsBankProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "api_key_env": {
+          "pattern": "^[A-Z][A-Z0-9_]{0,99}$",
+          "title": "Api Key Env",
+          "type": "string"
+        },
+        "mappings_file": {
+          "format": "path",
+          "title": "Mappings File",
+          "type": "string"
+        },
+        "signing_secret_env": {
+          "pattern": "^[A-Z][A-Z0-9_]{0,99}$",
+          "title": "Signing Secret Env",
+          "type": "string"
+        }
+      },
+      "required": [
+        "api_key_env",
+        "signing_secret_env",
+        "mappings_file"
+      ],
+      "title": "WhatsBankProfile",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "api_version": {
+      "const": "1",
+      "title": "Api Version",
+      "type": "string"
+    },
+    "tenants": {
+      "items": {
+        "$ref": "#/$defs/TenantBinding"
+      },
+      "maxItems": 1000,
+      "title": "Tenants",
+      "type": "array"
+    }
+  },
+  "required": [
+    "api_version",
+    "tenants"
+  ],
+  "title": "TenantConfiguration",
+  "type": "object"
+}

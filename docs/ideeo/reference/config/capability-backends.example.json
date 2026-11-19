@@ -1,0 +1,24 @@
+{
+  "api_version": "2",
+  "tenants": [
+    {
+      "tenant_id": "demo-bank",
+      "origin": "https://authority.demo-bank.invalid",
+      "credential_env": "DEMO_BANK_AUTHORITY_CREDENTIAL",
+      "delegation_audience": "ai-authority",
+      "provenance": "bank",
+      "enabled": ["bank.balance", "bank.account_info", "bank.history", "bank.catalog", "bank.transfer", "bank.bill", "bank.topup", "commerce.purchase"],
+      "approval_origins": ["https://approve.demo-bank.invalid"],
+      "policy": {"model_routes": [], "allow_user_text": false, "allow_account_labels": false}
+    },
+    {
+      "tenant_id": "other-bank",
+      "origin": "https://authority.other-bank.invalid",
+      "credential_env": "OTHER_BANK_AUTHORITY_CREDENTIAL",
+      "delegation_audience": "ai-authority",
+      "provenance": "bank",
+      "enabled": ["bank.balance"],
+      "policy": {"model_routes": [], "allow_user_text": false, "allow_account_labels": false}
+    }
+  ]
+}

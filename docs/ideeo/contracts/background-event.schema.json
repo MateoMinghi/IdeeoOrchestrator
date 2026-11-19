@@ -1,0 +1,44 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "event_id": {
+      "minimum": 1,
+      "title": "Event Id",
+      "type": "integer"
+    },
+    "observed_at": {
+      "format": "date-time",
+      "title": "Observed At",
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "queued",
+        "running",
+        "waiting_input",
+        "waiting_authorization",
+        "waiting_timer",
+        "cancel_requested",
+        "completed",
+        "cancelled",
+        "expired",
+        "failed"
+      ],
+      "title": "State",
+      "type": "string"
+    },
+    "task_id": {
+      "format": "uuid",
+      "title": "Task Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "task_id",
+    "event_id",
+    "state",
+    "observed_at"
+  ],
+  "title": "BackgroundEvent",
+  "type": "object"
+}

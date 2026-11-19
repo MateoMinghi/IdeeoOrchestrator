@@ -1,0 +1,18 @@
+{
+  "api_version": "1",
+  "tenants": [
+    {
+      "tenant_id": "payme-preproduction",
+      "adapter": "whatsbank-preproduction",
+      "base_url": "https://tenant-authority.invalid",
+      "credential_env": "PAYME_AUTHORITY_CREDENTIAL",
+      "provenance": "bank",
+      "capabilities": ["bank.balance"],
+      "whatsbank": {
+        "api_key_env": "WHATSBANK_PREPRODUCTION_API_KEY",
+        "signing_secret_env": "WHATSBANK_PREPRODUCTION_SECRET",
+        "mappings_file": "whatsbank-mappings.example.json"
+      }
+    }
+  ]
+}

@@ -1,0 +1,830 @@
+{
+  "$defs": {
+    "ApiProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "base_path": {
+          "default": "",
+          "maxLength": 200,
+          "pattern": "^(?:/[A-Za-z0-9_-]+)*$",
+          "title": "Base Path",
+          "type": "string"
+        },
+        "content_policy_reference": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Policy Reference"
+        },
+        "credential_env": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Z][A-Z0-9_]{0,99}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Credential Env"
+        },
+        "language_code": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z]{2}(?:[-_][A-Z]{2})?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Language Code"
+        },
+        "live_enabled": {
+          "default": false,
+          "title": "Live Enabled",
+          "type": "boolean"
+        },
+        "product": {
+          "enum": [
+            "maps_mcp",
+            "google_places",
+            "uber_estimates",
+            "opentable_availability",
+            "uber_rider"
+          ],
+          "title": "Product",
+          "type": "string"
+        },
+        "region_code": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Z]{2}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region Code"
+        },
+        "restaurant_timezones": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 100,
+          "title": "Restaurant Timezones",
+          "type": "object"
+        }
+      },
+      "required": [
+        "product"
+      ],
+      "title": "ApiProfile",
+      "type": "object"
+    },
+    "ServiceRoute": {
+      "additionalProperties": false,
+      "properties": {
+        "allow_commit": {
+          "default": false,
+          "title": "Allow Commit",
+          "type": "boolean"
+        },
+        "api_profile": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ApiProfile"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "approval_origins": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 10,
+          "title": "Approval Origins",
+          "type": "array"
+        },
+        "authority_audience": {
+          "default": "service-authority",
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Authority Audience",
+          "type": "string"
+        },
+        "authority_key_env": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Z][A-Z0-9_]{0,99}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Authority Key Env"
+        },
+        "authority_origin": {
+          "anyOf": [
+            {
+              "maxLength": 300,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Authority Origin"
+        },
+        "buttons": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 20,
+          "title": "Buttons",
+          "type": "object"
+        },
+        "cancellation_path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cancellation Path"
+        },
+        "commit_path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Commit Path"
+        },
+        "connection_selector": {
+          "default": "[data-service-connection]",
+          "title": "Connection Selector",
+          "type": "string"
+        },
+        "entry_path": {
+          "default": "/",
+          "maxLength": 500,
+          "title": "Entry Path",
+          "type": "string"
+        },
+        "fields": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 20,
+          "title": "Fields",
+          "type": "object"
+        },
+        "legal_reference": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Legal Reference"
+        },
+        "maps_api_key_env": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Z][A-Z0-9_]{0,99}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maps Api Key Env"
+        },
+        "maps_language_code": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z]{2}(?:_[A-Z]{2})?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maps Language Code"
+        },
+        "maps_region_code": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Z]{2}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maps Region Code"
+        },
+        "max_actions": {
+          "default": 24,
+          "maximum": 48,
+          "minimum": 1,
+          "title": "Max Actions",
+          "type": "integer"
+        },
+        "max_inference_calls": {
+          "default": 12,
+          "maximum": 24,
+          "minimum": 1,
+          "title": "Max Inference Calls",
+          "type": "integer"
+        },
+        "mode": {
+          "default": "disabled",
+          "enum": [
+            "disabled",
+            "synthetic",
+            "browser",
+            "handoff",
+            "api"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "origin": {
+          "maxLength": 300,
+          "title": "Origin",
+          "type": "string"
+        },
+        "preparation_driver": {
+          "default": "configured",
+          "enum": [
+            "configured",
+            "browser_use"
+          ],
+          "title": "Preparation Driver",
+          "type": "string"
+        },
+        "preparation_paths": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Preparation Paths",
+          "type": "array"
+        },
+        "preparation_scope": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Preparation Scope"
+        },
+        "provider": {
+          "enum": [
+            "uber",
+            "uber_eats",
+            "rappi",
+            "opentable",
+            "google_businesses",
+            "doctoralia",
+            "didi_food",
+            "didi_rides"
+          ],
+          "title": "Provider",
+          "type": "string"
+        },
+        "qualification_reference": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Qualification Reference"
+        },
+        "quote_selector": {
+          "default": "#service-quote",
+          "title": "Quote Selector",
+          "type": "string"
+        },
+        "quote_validation_path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Quote Validation Path"
+        },
+        "result_selector": {
+          "default": "#service-result",
+          "title": "Result Selector",
+          "type": "string"
+        },
+        "site_profile": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SiteBrowserProfile"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "status_path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Status Path"
+        },
+        "tenant_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "tracking_interval_seconds": {
+          "anyOf": [
+            {
+              "maximum": 3600,
+              "minimum": 15,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tracking Interval Seconds"
+        },
+        "uber_client_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9_-]{1,200}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uber Client Id"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "provider",
+        "origin"
+      ],
+      "title": "ServiceRoute",
+      "type": "object"
+    },
+    "SiteBrowserProfile": {
+      "additionalProperties": false,
+      "description": "Selectors and network permissions supplied by trusted site qualification.\n\nNo selectors or network destinations are accepted from model/client output.\nA saved browser account does not qualify this document automatically.",
+      "properties": {
+        "account_origins": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 10,
+          "title": "Account Origins",
+          "type": "array"
+        },
+        "amount_selector": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Amount Selector"
+        },
+        "browser_artifact_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Browser Artifact Sha256"
+        },
+        "checkout": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SiteCheckoutProfile"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "connection_selectors": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 10,
+          "title": "Connection Selectors",
+          "type": "array"
+        },
+        "currency_labels": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 10,
+          "title": "Currency Labels",
+          "type": "object"
+        },
+        "currency_selector": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Currency Selector"
+        },
+        "discovery_card_selector": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Discovery Card Selector"
+        },
+        "discovery_link_selector": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Discovery Link Selector"
+        },
+        "discovery_title_selector": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Discovery Title Selector"
+        },
+        "live_enabled": {
+          "default": false,
+          "title": "Live Enabled",
+          "type": "boolean"
+        },
+        "price_optional": {
+          "default": false,
+          "title": "Price Optional",
+          "type": "boolean"
+        },
+        "quote_max_age_seconds": {
+          "default": 60,
+          "maximum": 300,
+          "minimum": 10,
+          "title": "Quote Max Age Seconds",
+          "type": "integer"
+        },
+        "request_rules": {
+          "items": {
+            "$ref": "#/$defs/SiteRequestRule"
+          },
+          "maxItems": 80,
+          "title": "Request Rules",
+          "type": "array"
+        },
+        "summary_selectors": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 30,
+          "title": "Summary Selectors",
+          "type": "object"
+        },
+        "version": {
+          "pattern": "^[A-Za-z0-9._-]{1,100}$",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "version"
+      ],
+      "title": "SiteBrowserProfile",
+      "type": "object"
+    },
+    "SiteCheckoutProfile": {
+      "additionalProperties": false,
+      "description": "Operator-reviewed source contract; it does not establish vendor support.\n\nThe provider must enforce quote_lock atomically over all approved terms and\nreject changed/expired terms without charging. Qualification proves that\nsource property; a cart ID or DOM fingerprint alone cannot supply it.",
+      "properties": {
+        "amount_selector": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Amount Selector",
+          "type": "string"
+        },
+        "body": {
+          "additionalProperties": true,
+          "maxProperties": 40,
+          "minProperties": 1,
+          "title": "Body",
+          "type": "object"
+        },
+        "currency_selector": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Currency Selector",
+          "type": "string"
+        },
+        "operation_name": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,99}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Operation Name"
+        },
+        "precondition_reference": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Precondition Reference",
+          "type": "string"
+        },
+        "reference_selector": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Reference Selector",
+          "type": "string"
+        },
+        "request_path": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Request Path",
+          "type": "string"
+        },
+        "response_reference": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 6,
+          "minItems": 1,
+          "title": "Response Reference",
+          "type": "array"
+        },
+        "state_labels": {
+          "additionalProperties": {
+            "enum": [
+              "submitted",
+              "confirmed",
+              "in_progress",
+              "completed",
+              "cancelled",
+              "failed"
+            ],
+            "type": "string"
+          },
+          "maxProperties": 30,
+          "minProperties": 1,
+          "title": "State Labels",
+          "type": "object"
+        },
+        "state_selector": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "State Selector",
+          "type": "string"
+        },
+        "status_path": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Status Path",
+          "type": "string"
+        },
+        "submit_selector": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Submit Selector",
+          "type": "string"
+        },
+        "values": {
+          "additionalProperties": {
+            "$ref": "#/$defs/SiteCheckoutValue"
+          },
+          "maxProperties": 30,
+          "minProperties": 2,
+          "title": "Values",
+          "type": "object"
+        }
+      },
+      "required": [
+        "precondition_reference",
+        "submit_selector",
+        "request_path",
+        "body",
+        "values",
+        "reference_selector",
+        "state_selector",
+        "amount_selector",
+        "currency_selector",
+        "state_labels",
+        "status_path"
+      ],
+      "title": "SiteCheckoutProfile",
+      "type": "object"
+    },
+    "SiteCheckoutValue": {
+      "additionalProperties": false,
+      "properties": {
+        "attribute": {
+          "default": "text",
+          "pattern": "^(text|value|data-[a-z][a-z0-9-]{0,79})$",
+          "title": "Attribute",
+          "type": "string"
+        },
+        "kind": {
+          "default": "string",
+          "enum": [
+            "string",
+            "integer",
+            "decimal"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "role": {
+          "default": "other",
+          "enum": [
+            "quote_lock",
+            "payment",
+            "other"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "selector": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Selector",
+          "type": "string"
+        }
+      },
+      "required": [
+        "selector"
+      ],
+      "title": "SiteCheckoutValue",
+      "type": "object"
+    },
+    "SiteRequestRule": {
+      "additionalProperties": false,
+      "properties": {
+        "method": {
+          "default": "GET",
+          "enum": [
+            "GET",
+            "HEAD",
+            "POST"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "operation_hashes": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 30,
+          "title": "Operation Hashes",
+          "type": "object"
+        },
+        "operations": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 30,
+          "title": "Operations",
+          "type": "array"
+        },
+        "origin": {
+          "title": "Origin",
+          "type": "string"
+        },
+        "path": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "prefix": {
+          "default": false,
+          "title": "Prefix",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "origin",
+        "path"
+      ],
+      "title": "SiteRequestRule",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "routes": {
+      "items": {
+        "$ref": "#/$defs/ServiceRoute"
+      },
+      "maxItems": 1000,
+      "title": "Routes",
+      "type": "array"
+    }
+  },
+  "title": "ServiceConfiguration",
+  "type": "object"
+}

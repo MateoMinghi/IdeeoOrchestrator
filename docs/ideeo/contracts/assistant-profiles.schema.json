@@ -1,0 +1,365 @@
+{
+  "$defs": {
+    "AssistantProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "boundaries": {
+          "items": {
+            "$ref": "#/$defs/LocalizedText"
+          },
+          "maxItems": 12,
+          "title": "Boundaries",
+          "type": "array"
+        },
+        "client_capabilities": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "maxProperties": 100,
+          "title": "Client Capabilities",
+          "type": "object"
+        },
+        "default_language": {
+          "default": "es",
+          "enum": [
+            "es",
+            "en"
+          ],
+          "title": "Default Language",
+          "type": "string"
+        },
+        "guidance_rules": {
+          "items": {
+            "$ref": "#/$defs/GuidanceRule"
+          },
+          "maxItems": 12,
+          "title": "Guidance Rules",
+          "type": "array"
+        },
+        "inference_profiles": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 3,
+          "propertyNames": {
+            "enum": [
+              "conversation",
+              "configuration",
+              "knowledge"
+            ]
+          },
+          "title": "Inference Profiles",
+          "type": "object"
+        },
+        "languages": {
+          "items": {
+            "enum": [
+              "es",
+              "en"
+            ],
+            "type": "string"
+          },
+          "maxItems": 2,
+          "minItems": 1,
+          "title": "Languages",
+          "type": "array"
+        },
+        "name": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "organization": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Organization",
+          "type": "string"
+        },
+        "public_links": {
+          "items": {
+            "$ref": "#/$defs/TenantLink"
+          },
+          "maxItems": 32,
+          "title": "Public Links",
+          "type": "array"
+        },
+        "purpose": {
+          "$ref": "#/$defs/LocalizedText"
+        },
+        "revision": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Revision",
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/$defs/LocalizedText"
+        },
+        "route_preferences": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "maxProperties": 64,
+          "title": "Route Preferences",
+          "type": "object"
+        },
+        "style": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AssistantStyle"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "support": {
+          "$ref": "#/$defs/LocalizedText"
+        },
+        "temporarily_unavailable": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Temporarily Unavailable",
+          "type": "array"
+        },
+        "tenant_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "tenant_label": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Tenant Label",
+          "type": "string"
+        },
+        "tone": {
+          "default": "concise",
+          "enum": [
+            "concise",
+            "warm",
+            "formal"
+          ],
+          "title": "Tone",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "revision",
+        "name",
+        "organization",
+        "tenant_label",
+        "role",
+        "purpose",
+        "support"
+      ],
+      "title": "AssistantProfile",
+      "type": "object"
+    },
+    "AssistantStyle": {
+      "additionalProperties": false,
+      "properties": {
+        "avoid_corporate": {
+          "default": false,
+          "title": "Avoid Corporate",
+          "type": "boolean"
+        },
+        "brevity": {
+          "default": "default",
+          "enum": [
+            "default",
+            "brief",
+            "detailed"
+          ],
+          "title": "Brevity",
+          "type": "string"
+        },
+        "emojis": {
+          "default": "default",
+          "enum": [
+            "default",
+            "none",
+            "one"
+          ],
+          "title": "Emojis",
+          "type": "string"
+        },
+        "formality": {
+          "default": "default",
+          "enum": [
+            "default",
+            "formal",
+            "casual"
+          ],
+          "title": "Formality",
+          "type": "string"
+        },
+        "instructions": {
+          "default": "",
+          "maxLength": 500,
+          "title": "Instructions",
+          "type": "string"
+        },
+        "mirror_language": {
+          "default": false,
+          "title": "Mirror Language",
+          "type": "boolean"
+        },
+        "vary_responses": {
+          "default": false,
+          "title": "Vary Responses",
+          "type": "boolean"
+        },
+        "warmth": {
+          "default": "default",
+          "enum": [
+            "default",
+            "direct",
+            "warm"
+          ],
+          "title": "Warmth",
+          "type": "string"
+        }
+      },
+      "title": "AssistantStyle",
+      "type": "object"
+    },
+    "GuidanceRule": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": true,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "id": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[a-z0-9][a-z0-9_-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 600,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "text"
+      ],
+      "title": "GuidanceRule",
+      "type": "object"
+    },
+    "LocalizedText": {
+      "additionalProperties": false,
+      "properties": {
+        "en": {
+          "maxLength": 1200,
+          "minLength": 1,
+          "title": "En",
+          "type": "string"
+        },
+        "es": {
+          "maxLength": 1200,
+          "minLength": 1,
+          "title": "Es",
+          "type": "string"
+        }
+      },
+      "required": [
+        "es",
+        "en"
+      ],
+      "title": "LocalizedText",
+      "type": "object"
+    },
+    "TenantLink": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": true,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "id": {
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,79}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "purpose": {
+          "default": "support",
+          "enum": [
+            "support",
+            "product",
+            "handoff"
+          ],
+          "title": "Purpose",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "url": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "url"
+      ],
+      "title": "TenantLink",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "api_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Api Version",
+      "type": "string"
+    },
+    "tenants": {
+      "items": {
+        "$ref": "#/$defs/AssistantProfile"
+      },
+      "maxItems": 1000,
+      "title": "Tenants",
+      "type": "array"
+    }
+  },
+  "required": [
+    "tenants"
+  ],
+  "title": "AssistantProfilesConfiguration",
+  "type": "object"
+}

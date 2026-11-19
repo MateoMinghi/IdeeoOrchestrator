@@ -1,0 +1,966 @@
+{
+  "source_repository": "Ideeo-IA-general",
+  "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+  "import_date": "2026-11-18",
+  "candidate_baseline": "c444029f3dc97a65caab20b4c9a9f398f435c2f2",
+  "files": [
+    {
+      "source": "config/authority.example.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "f2d543352bf036c104f08b029e126b82423416511f8f9f97329b89332a874497",
+      "destination": "docs/ideeo/reference/config/authority.example.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "f2d543352bf036c104f08b029e126b82423416511f8f9f97329b89332a874497"
+    },
+    {
+      "source": "config/browser-policies.example.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "54c718ee2bb1a35b631bc204a3ff843b5944074e44f7fc21e6ffeba74cda06d3",
+      "destination": "docs/ideeo/reference/config/browser-policies.example.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "54c718ee2bb1a35b631bc204a3ff843b5944074e44f7fc21e6ffeba74cda06d3"
+    },
+    {
+      "source": "config/capability-backends.example.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "437d2009ebbf2dd1d761e9438bd7f8464f9991ada41dfc13a9f85c4ec953bddf",
+      "destination": "docs/ideeo/reference/config/capability-backends.example.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "437d2009ebbf2dd1d761e9438bd7f8464f9991ada41dfc13a9f85c4ec953bddf"
+    },
+    {
+      "source": "config/model-profiles.example.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "76995d47a68e8f8aba8b90fe2cf1681e47097b84fb372d411d6685b2929f03a3",
+      "destination": "docs/ideeo/reference/config/model-profiles.example.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "76995d47a68e8f8aba8b90fe2cf1681e47097b84fb372d411d6685b2929f03a3"
+    },
+    {
+      "source": "config/payme-assistant.example.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "8ea34bb71e067e419e8416cf02f334b59bc024f57881811c7318d0a2eae1b3ab",
+      "destination": "docs/ideeo/reference/config/payme-assistant.example.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "8ea34bb71e067e419e8416cf02f334b59bc024f57881811c7318d0a2eae1b3ab"
+    },
+    {
+      "source": "config/public-research.example.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "c358bbcdfb4ec665d7b1ea95c1c7a392d0bc2a3e22da01057968b9ca43730e1a",
+      "destination": "docs/ideeo/reference/config/public-research.example.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "c358bbcdfb4ec665d7b1ea95c1c7a392d0bc2a3e22da01057968b9ca43730e1a"
+    },
+    {
+      "source": "config/tenant-backends.example.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "17e87a765f1ec4981ebcac75ca967d57d6b9c21f9cf9727cbff6a2e09ec83cfa",
+      "destination": "docs/ideeo/reference/config/tenant-backends.example.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "17e87a765f1ec4981ebcac75ca967d57d6b9c21f9cf9727cbff6a2e09ec83cfa"
+    },
+    {
+      "source": "config/whatsbank-mappings.example.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "c0e8356c920164aa06ec03a3be2bce71b93ba7aaeb1101ba1f294445fabf28a8",
+      "destination": "docs/ideeo/reference/config/whatsbank-mappings.example.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "c0e8356c920164aa06ec03a3be2bce71b93ba7aaeb1101ba1f294445fabf28a8"
+    },
+    {
+      "source": "config/whatsbank-preproduction.example.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "73d33c97e02d300c41f0307cded3b98b431e7b910919ecc1df88628740b0664d",
+      "destination": "docs/ideeo/reference/config/whatsbank-preproduction.example.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "73d33c97e02d300c41f0307cded3b98b431e7b910919ecc1df88628740b0664d"
+    },
+    {
+      "source": "docs/compliance/AI_IMPACT_ASSESSMENT.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "7154fa049fcb0fb3ad68628cfae2cbef8ab47c34bcf408fc4689546b5853103f",
+      "destination": "docs/ideeo/compliance/AI_IMPACT_ASSESSMENT.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "483d395137b7bad2899e34a7f2976e3ff1ecbd0517832b67c8006672f884a9a7"
+    },
+    {
+      "source": "docs/compliance/AI_POLICY.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "2cf057d84243d2b381aea179a57ea1770b8eb6030ae72caab9e604ea4730ac5d",
+      "destination": "docs/ideeo/compliance/AI_POLICY.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "184cd011304226ee133b914d52a9dae347b96177c673bbf28487aa04e2894912"
+    },
+    {
+      "source": "docs/compliance/AI_STATEMENT_OF_APPLICABILITY.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "4a68bcc004ea6cfeb8bc99e4ae2dcce73da65f93c2145064884064be20b90099",
+      "destination": "docs/ideeo/compliance/AI_STATEMENT_OF_APPLICABILITY.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "8fb8b32fa82a063a076539e69ace0dcfa651c92798f4af554bce55ff4c781383"
+    },
+    {
+      "source": "docs/compliance/INCIDENT_AND_CONTINUITY.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "c649f6e229bb58b2e1e63c78b74186b87845c101ac2e22c13c91c3a1c15f449d",
+      "destination": "docs/ideeo/compliance/INCIDENT_AND_CONTINUITY.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "32c4038c9906582c59307dbb77303f58a2fb672c9c25829eefcf154782bf1d51"
+    },
+    {
+      "source": "docs/compliance/LEGAL_REGISTER.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "586c763a2ff3cc67b711a6adc5c351939fcdb051873d1991dae2c196f25cebaa",
+      "destination": "docs/ideeo/compliance/LEGAL_REGISTER.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "0c6d5aadc236257588f051699ddc8986b14035265e0323de2a9597688247d62c"
+    },
+    {
+      "source": "docs/compliance/MANAGEMENT_SYSTEM_POLICY.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "cf033874b404b9ba6565442196696f80d5acfff5ddb743e75769ce8bf5cbf2da",
+      "destination": "docs/ideeo/compliance/MANAGEMENT_SYSTEM_POLICY.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "b4ddccb74c6997bc6c59d91abc9c6cd2aee982e27a94637fe0d1b47f45ce240d"
+    },
+    {
+      "source": "docs/compliance/MANAGEMENT_SYSTEM_PROCEDURES.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "4a1448604ab9257d1ceb4e10bed9c1de622541263e11a9e311d7618ff92aa68c",
+      "destination": "docs/ideeo/compliance/MANAGEMENT_SYSTEM_PROCEDURES.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "c244917e18078fee687b7ca83167dc98ac5bb9203bc18cbac179532af6c39533"
+    },
+    {
+      "source": "docs/compliance/PRIVACY_PROGRAM.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "b61f4c98ecb33e05e3c383e00a36b622da1e27b8c6e3d4493da4451c4647d92e",
+      "destination": "docs/ideeo/compliance/PRIVACY_PROGRAM.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "7a7c1b674f91005a6f3b160ae6349732ae57735c754e77c6a63fc22d20df5516"
+    },
+    {
+      "source": "docs/compliance/README.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "63603e7210cd7ea71d49c18224a05fba52e429def64f30b7a1b5545ca39aaf2b",
+      "destination": "docs/ideeo/compliance/README.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "a0bba7fb088c138c6e4cc6bdff9641988d09c3182037ca1a63fe3fb298ae576d"
+    },
+    {
+      "source": "docs/compliance/RISK_METHODOLOGY.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "83505ec4dd0cb2a5a9facc5a4d0ca2e11b47babed3c6be0c1edfb112b2f08040",
+      "destination": "docs/ideeo/compliance/RISK_METHODOLOGY.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "1bff1155154ec3976592e512af9c7773ad7363180cd6a8494c827d97e3744904"
+    },
+    {
+      "source": "docs/compliance/RISK_REGISTER.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "0c81f77316b9442b5958dfd7389c0565f5491259d6ac5c1ac28c3c1651cb9a02",
+      "destination": "docs/ideeo/compliance/RISK_REGISTER.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "6c365f64242e0eff86d0f27806106d98768d31a35ed6d2adb602960131ba62b0"
+    },
+    {
+      "source": "docs/compliance/SCOPE_AND_CONTEXT.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "dbd421a0d369eeeeaf3c2f082b0e5fc6d3cf8ee6ca4988abc2d854fcd3514cde",
+      "destination": "docs/ideeo/compliance/SCOPE_AND_CONTEXT.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "1f2ea5044e38e831c0444d2f936c244954d9bdac749c5e1e7de7659e07278fc5"
+    },
+    {
+      "source": "docs/compliance/SECURITY_POLICIES.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "f2feb0d2b774c41fb247628476072105b73b9d9583633f933f6174d9a6b74a6e",
+      "destination": "docs/ideeo/compliance/SECURITY_POLICIES.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "d91483d8c02bf25b828c4edd1db56a76c9df6caeceed8b4f4ffd19fc8a767db9"
+    },
+    {
+      "source": "docs/compliance/STATEMENT_OF_APPLICABILITY.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "206c5de07d4fe595c81705a568f9b121f492625044c761882386d9b96d9f8f85",
+      "destination": "docs/ideeo/compliance/STATEMENT_OF_APPLICABILITY.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "fd6319a53281e0b29bfc3ad95d9f00734027ff5006ec7d3fa14ea24243c1581a"
+    },
+    {
+      "source": "docs/compliance/SUPPLIERS.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "19b6785d8d463ba106b722a2d0b0632ee27ae641b2130411210eaeaf12b1660c",
+      "destination": "docs/ideeo/compliance/SUPPLIERS.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "1f510fd915d588281b7385a4c6900ce43c3b8482d22ecd385d267aeae2142507"
+    },
+    {
+      "source": "docs/contracts/ADMINISTRATION.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "bd6c9064232f7a51fcc68f51afa4a698e03112805db377d370d823f44e112b0a",
+      "destination": "docs/ideeo/contracts/ADMINISTRATION.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "2f19d98bb47924b5a98cf9671562b907c29cd53b11df9a96413362c0157ed45f"
+    },
+    {
+      "source": "docs/contracts/AGENT_COORDINATION.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "40b06863325f46206f41e0538d0820e956c83540f4817c92fb2c0f989ba3b9ed",
+      "destination": "docs/ideeo/contracts/AGENT_COORDINATION.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "6e135406595d0af5f5d46b79b926349b2b89d988681860ae48894f368cdb6e28"
+    },
+    {
+      "source": "docs/contracts/ASSISTANT_PROFILES.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "96abefc23e66ee89e5054e2dd490d6ce71770f80ede8a2a6d56b940c7747e6a1",
+      "destination": "docs/ideeo/contracts/ASSISTANT_PROFILES.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "a548065670c11fda9c96cd438d2c001caf7fc357613b1ef97d88e51fa67e1998"
+    },
+    {
+      "source": "docs/contracts/AUTHORITY.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "9285fab8e98bedd5d740427cdf5efdfa04f37fcea85dbecc035a424923a6d6c9",
+      "destination": "docs/ideeo/contracts/AUTHORITY.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "af7859ef8ff7238b9d213eb57ce9204b31afea73dc80ae64edc1ddc8863236a7"
+    },
+    {
+      "source": "docs/contracts/AUTH_PROFILE.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "ddab18b04d73fa68d8e7d0f66c010f9587858a0564f7e82f50640d8ccfd8f554",
+      "destination": "docs/ideeo/contracts/AUTH_PROFILE.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "847b8b71e2dd3f5ae48fd478e3e0f7230cd25d457d6a78f42c157521f683b802"
+    },
+    {
+      "source": "docs/contracts/BACKGROUND_TASKS.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "8b37db9b838d3db63946ff9eabcd3b6076e1641c8790163bf53779505a904cb3",
+      "destination": "docs/ideeo/contracts/BACKGROUND_TASKS.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "7e6fc1ef778f457679f839149d9006aed2e7bba15950dda8313fd3e83b1302dd"
+    },
+    {
+      "source": "docs/contracts/BANK_ADAPTER.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "5d20d055121cfddccce65f4573f90a819fde52b7cc735535ede4147b9b31a7c8",
+      "destination": "docs/ideeo/contracts/BANK_ADAPTER.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "a4b4cf799f17865f7f123023cf8ce7a98206e702424cdb4305240c6d94b6fb45"
+    },
+    {
+      "source": "docs/contracts/CAPABILITIES.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "6b6cb8985f43284128a03cf04de534523d989805c5adffe612a9d8f5ca86cad2",
+      "destination": "docs/ideeo/contracts/CAPABILITIES.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "fb0c0492ccc247eaac524681368f22ae17aaaec4065fca267c2ac36f168c46f1"
+    },
+    {
+      "source": "docs/contracts/HOST_BANKING.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "805b9ed1bb2bd95ee080d38e72e430149d22dbe5281e85493fb69f60618bd8bf",
+      "destination": "docs/ideeo/contracts/HOST_BANKING.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "772e827febe88b1637f875f3b53c98c97badf6201197361cd9c4417f1cb51226"
+    },
+    {
+      "source": "docs/contracts/ONBOARDING.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "18ee4f8cb337b9a0e81c91560a797ed7c738f8ff27059c69e123d46521eaa71d",
+      "destination": "docs/ideeo/contracts/ONBOARDING.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "59b81cdc5a5cb5b6c13e8ae97d382d2ac110a4003f64e2eb65b328dfc3d3f218"
+    },
+    {
+      "source": "docs/contracts/PROVIDER_PROFILE.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "143fdfd6b2126bd0ad6362b9595043aa0b9e7776648eddfaf00ba3816446cad1",
+      "destination": "docs/ideeo/contracts/PROVIDER_PROFILE.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "548b0a0e127105ef2c5188ee52d3f431d388af8406474d01aeaa93dd431e33b6"
+    },
+    {
+      "source": "docs/contracts/SERVICE_INTEGRATIONS.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "d06a20dc7ca2c95925db5c0dc549a47a7bf7f8151c6369df12eb94e109868b87",
+      "destination": "docs/ideeo/contracts/SERVICE_INTEGRATIONS.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "ec043ebbab5312e251b11d75aa592d94eab96000cd98e88ba19810c4d9a937fb"
+    },
+    {
+      "source": "docs/contracts/SERVICE_SDK.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "771ce8e8a0cab26079c7175bc8821cef32bcf4f98616c9fb15469fbd10dfff53",
+      "destination": "docs/ideeo/contracts/SERVICE_SDK.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "36309c9cc7e23a3d0290b5b137607faa92d460fe409c994965781f9e6ac514ae"
+    },
+    {
+      "source": "docs/contracts/SHARED_INTERFACE.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "893313b930af5079f06c7b339ad8111130a9449699cd7e6de1b74ae755e5f6e2",
+      "destination": "docs/ideeo/contracts/SHARED_INTERFACE.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "9c64b8db020aa022a5c5d6b431f6cf7f9975859518a53313c0082b1551c15775"
+    },
+    {
+      "source": "docs/contracts/TENANT_BACKENDS.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "235c722a60387a5aaefbcf47474969c42267cb50613fec51a4a8551e88b49cbb",
+      "destination": "docs/ideeo/contracts/TENANT_BACKENDS.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "a7f57a187bd79e21ad1643ab6befdc434b4a8c5bbadb6804e0b0470331b49889"
+    },
+    {
+      "source": "docs/contracts/TENANT_DATA_ACCESS.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "b57d16eb0b02b907c285e14c70cf8d9a2a30e650578c4562f16c68d8990b4083",
+      "destination": "docs/ideeo/contracts/TENANT_DATA_ACCESS.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "add8437f87badb98d870b4a5093b519252a37c62394a49554324038491399bc3"
+    },
+    {
+      "source": "docs/contracts/assistant-event.schema.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "f0e5982efbc8004f4961274e62a3c1089e2b5c8e0e01bb0cc007713b1860f7df",
+      "destination": "docs/ideeo/contracts/assistant-event.schema.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "f0e5982efbc8004f4961274e62a3c1089e2b5c8e0e01bb0cc007713b1860f7df"
+    },
+    {
+      "source": "docs/contracts/assistant-profiles.schema.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "9b044ad52009ffd71aee5e2dd38576a8081230cbca3d81798bf77c9b66f87cd1",
+      "destination": "docs/ideeo/contracts/assistant-profiles.schema.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "9b044ad52009ffd71aee5e2dd38576a8081230cbca3d81798bf77c9b66f87cd1"
+    },
+    {
+      "source": "docs/contracts/background-event.schema.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "af11e90221721d675b0f6a27140170996acbd88094488300adcb020474f10ef6",
+      "destination": "docs/ideeo/contracts/background-event.schema.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "af11e90221721d675b0f6a27140170996acbd88094488300adcb020474f10ef6"
+    },
+    {
+      "source": "docs/contracts/capability-backends.schema.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "7319726cf75829320e7b505a948a7500eb774dbee83e01c7ef78eb65d5b369d0",
+      "destination": "docs/ideeo/contracts/capability-backends.schema.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "7319726cf75829320e7b505a948a7500eb774dbee83e01c7ef78eb65d5b369d0"
+    },
+    {
+      "source": "docs/contracts/capability-connector.schema.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "c837bc89ae7bff4f4b88a937338f4c680b3f385b320852648f979b6383ba5a15",
+      "destination": "docs/ideeo/contracts/capability-connector.schema.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "c837bc89ae7bff4f4b88a937338f4c680b3f385b320852648f979b6383ba5a15"
+    },
+    {
+      "source": "docs/contracts/conformance-fixture.example.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "5d0e02b7c449d53a31b6583e0806adbab0a0f73bfd46d88c42aea47e89df88f4",
+      "destination": "docs/ideeo/contracts/conformance-fixture.example.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "5d0e02b7c449d53a31b6583e0806adbab0a0f73bfd46d88c42aea47e89df88f4"
+    },
+    {
+      "source": "docs/contracts/interpretation-reuse.schema.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "cdd996d2c732a7c4d19bb7541f76891a0898536d8833d58ac6cfcd1d64c9438e",
+      "destination": "docs/ideeo/contracts/interpretation-reuse.schema.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "cdd996d2c732a7c4d19bb7541f76891a0898536d8833d58ac6cfcd1d64c9438e"
+    },
+    {
+      "source": "docs/contracts/model-profiles.schema.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "4828d1b6abf196fc5f0f2dc1b59082165ec3cd20bbacadaace178bc8c5518338",
+      "destination": "docs/ideeo/contracts/model-profiles.schema.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "4828d1b6abf196fc5f0f2dc1b59082165ec3cd20bbacadaace178bc8c5518338"
+    },
+    {
+      "source": "docs/contracts/openapi.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "7fd22a19f253b73356d678cf71127ae606b9ff017ebec7e5f086e14c31c8baa2",
+      "destination": "docs/ideeo/contracts/openapi.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "7fd22a19f253b73356d678cf71127ae606b9ff017ebec7e5f086e14c31c8baa2"
+    },
+    {
+      "source": "docs/contracts/public-research.schema.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "600723c26793dd0c24f6e20effcac6f2c514ba56539b755c22cd5a582d722bfd",
+      "destination": "docs/ideeo/contracts/public-research.schema.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "600723c26793dd0c24f6e20effcac6f2c514ba56539b755c22cd5a582d722bfd"
+    },
+    {
+      "source": "docs/contracts/service-api-accounts.schema.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "97f0cd50d7b36bb257e92b468f394dac179da690d006a2ec0534bae0164f3eb0",
+      "destination": "docs/ideeo/contracts/service-api-accounts.schema.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "97f0cd50d7b36bb257e92b468f394dac179da690d006a2ec0534bae0164f3eb0"
+    },
+    {
+      "source": "docs/contracts/service-browser-accounts.schema.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "c876cac066160aa4c5906128774616d812c70995c8baa08b449455fc4de0b876",
+      "destination": "docs/ideeo/contracts/service-browser-accounts.schema.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "c876cac066160aa4c5906128774616d812c70995c8baa08b449455fc4de0b876"
+    },
+    {
+      "source": "docs/contracts/service-browser-call.schema.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "3602f58d7e04ae7a89e988560ba07426e8a0957049bfdc7c8c207a0399d78ed4",
+      "destination": "docs/ideeo/contracts/service-browser-call.schema.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "3602f58d7e04ae7a89e988560ba07426e8a0957049bfdc7c8c207a0399d78ed4"
+    },
+    {
+      "source": "docs/contracts/service-routes.schema.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "dbce485aa9798f6dea2c5cdfe23e3d203ed0895ea30b46aba69045b995801b7c",
+      "destination": "docs/ideeo/contracts/service-routes.schema.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "dbce485aa9798f6dea2c5cdfe23e3d203ed0895ea30b46aba69045b995801b7c"
+    },
+    {
+      "source": "docs/contracts/service-skills.schema.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "d441f2f34c7499290619cb45f97f6638c1ee25556346d7b7a98cc5749d8f2aa1",
+      "destination": "docs/ideeo/contracts/service-skills.schema.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "d441f2f34c7499290619cb45f97f6638c1ee25556346d7b7a98cc5749d8f2aa1"
+    },
+    {
+      "source": "docs/contracts/task-event.schema.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "94fa4893a9c201156518ab1806bb7271134d44da335b0c2144c592d92e10cc57",
+      "destination": "docs/ideeo/contracts/task-event.schema.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "94fa4893a9c201156518ab1806bb7271134d44da335b0c2144c592d92e10cc57"
+    },
+    {
+      "source": "docs/contracts/tenant-backends.schema.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "c704c8f9e37ab5ea0503aff30ad7c077d6863b134fdc3b33a0072831ce86c5da",
+      "destination": "docs/ideeo/contracts/tenant-backends.schema.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "c704c8f9e37ab5ea0503aff30ad7c077d6863b134fdc3b33a0072831ce86c5da"
+    },
+    {
+      "source": "docs/contracts/tenant-connector.schema.json",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "d2e706da83f1e688c7d1ba3cac0c40d5ac1e717dc5f7c1da723e47cf1f661b25",
+      "destination": "docs/ideeo/contracts/tenant-connector.schema.json",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "d2e706da83f1e688c7d1ba3cac0c40d5ac1e717dc5f7c1da723e47cf1f661b25"
+    },
+    {
+      "source": "docs/decisions/001-tenant-authentication-and-delegation.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "da28b00a47281121d06ad79f77532cb749ee3ca65d2429e8c9c98f76f5828af2",
+      "destination": "docs/ideeo/decisions/001-tenant-authentication-and-delegation.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "48771f0ff67ce1b7b9132b5679c06f984a43b280a4c41ba1ce976bde8c419802"
+    },
+    {
+      "source": "docs/decisions/002-ai-provider-adapters-and-routing.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "258e28269462854c7170cb48a3d23c0aec754bc454e0447a917b93651047ec76",
+      "destination": "docs/ideeo/decisions/002-ai-provider-adapters-and-routing.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "83fb579cae73d6a4b1f708f9b4699a624ace794a257127659b0bbc1d52aa879a"
+    },
+    {
+      "source": "docs/decisions/003-engine-implementation-stack.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "5a8a8ce1f5ef60ed548a7d90e524f14e4cb5dc394e191bbb43c9f6b8f4285b51",
+      "destination": "docs/ideeo/decisions/003-engine-implementation-stack.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "2134db13a5748eefba57f0e18dce06130a2b607302c89ac9cbbd44ebf35ce16c"
+    },
+    {
+      "source": "docs/decisions/004-voice-channel-and-speech-providers.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "5643cf38c70a2fb698817108cb7f11da7ff95472c9cf259cd9f95ed13123714d",
+      "destination": "docs/ideeo/decisions/004-voice-channel-and-speech-providers.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "f8586f0b3d53762080ca6b8030f9a70aff3055ae01f797dd8ee4de1ce83cf51b"
+    },
+    {
+      "source": "docs/decisions/005-data-ownership-and-lifecycle.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "646738fc1f3407d3b3794b9e6ab60e1db193c35e10f2eed7b330d9ceec435be9",
+      "destination": "docs/ideeo/decisions/005-data-ownership-and-lifecycle.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "8965173ba48303404c1363e0d14663701ff74cd53c09393206ee93a0560e63f9"
+    },
+    {
+      "source": "docs/decisions/006-tenant-assistant-self-knowledge.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "5531e6896cb02a3704bb9a9df901f4ffca2a1a3de903e908f7cbeaf3437de308",
+      "destination": "docs/ideeo/decisions/006-tenant-assistant-self-knowledge.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "f6009f1b2d1be2cfc131d6258af55cd7c37da252a1001b57ad2dbeb61898b039"
+    },
+    {
+      "source": "docs/decisions/007-inference-reuse-and-cache-boundaries.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "e1a1a22ff769bef8e06334a40b08aa529980449b3dbc94b1cdb686889291fd5c",
+      "destination": "docs/ideeo/decisions/007-inference-reuse-and-cache-boundaries.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "e87db73d9d3ede70348aebb0369295ab136cfca5d367962530952a4e979ad798"
+    },
+    {
+      "source": "docs/decisions/008-partition-consistency-and-availability.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "7f1750464795a227d754f354877f33f8bf9a12e1467e1b00ae0f0eb247c1731c",
+      "destination": "docs/ideeo/decisions/008-partition-consistency-and-availability.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "9de6a26dd7dd63ffdcf596fcb9fd5217b5b5dc2695c45e0f96744f27b3b2f74a"
+    },
+    {
+      "source": "docs/decisions/009-tenant-administration-console.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "51da042618f6b12fc678b25e8381db186d9476fc15cd4bc1a73e852456295722",
+      "destination": "docs/ideeo/decisions/009-tenant-administration-console.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "562300536cb35f45a9a64968b50896ce4e785807ee0685016eae41a4fa7e4a2a"
+    },
+    {
+      "source": "docs/decisions/010-app-host-banking-and-model-context.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "d63b33f25729ad1b2b9b4c34052cfd736da328205447b0265f7a8bd05a4edc36",
+      "destination": "docs/ideeo/decisions/010-app-host-banking-and-model-context.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "7256cadc3bf4b0fa003a3fe1b37908cf8a48d1394c2c0a89f7a05e4c26481379"
+    },
+    {
+      "source": "docs/decisions/011-tenant-api-and-channel-ownership.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "8fec4120474228c0ef800be345660f3d213cb173a4c16fb5d7224f6bd99e5697",
+      "destination": "docs/ideeo/decisions/011-tenant-api-and-channel-ownership.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "3393bd61dda619e306d4b7b1bcd4ae117a1d99b2d3677f3b639a8196133643d5"
+    },
+    {
+      "source": "docs/decisions/012-browser-execution-lifecycle.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "704357dbcbac9c423d069977583f7ca3787bce83fe439e7c0596dd5bc894fe36",
+      "destination": "docs/ideeo/decisions/012-browser-execution-lifecycle.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "9b031283a472120c0ccdb0ca8dff65dde92b7d350f7cb82582c7fdf7df51de99"
+    },
+    {
+      "source": "docs/decisions/013-browser-use-preparation.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "3f821be6027069b338e47aab48997b3c23d2e098aa32f8041938452ea440af3a",
+      "destination": "docs/ideeo/decisions/013-browser-use-preparation.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "00e3e47c717917e915546db532589e7da0c807cae139aff66e16e99c3c867aa8"
+    },
+    {
+      "source": "docs/decisions/014-persistent-assistant-context.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "7556801e076a95b2fb4bd71c3eb8904f6eea2ee90fd68296e6421a913f5eecb7",
+      "destination": "docs/ideeo/decisions/014-persistent-assistant-context.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "18b702ece98632769f839743190f88122ad3d899ac3e03d4300bef8bf1011221"
+    },
+    {
+      "source": "docs/decisions/015-openmaus-browser-trial.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "51e4302bf6df332e2744405e8c7ec66febec9ffc96841dd1c537eba06bb0f764",
+      "destination": "docs/ideeo/decisions/015-openmaus-browser-trial.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "f9b8030992e6469ec9270e4bebee6261b8989ba4e463f3847c0e9cf6f4396c78"
+    },
+    {
+      "source": "docs/decisions/017-native-conversation-runtime.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "07c36455127cdd36d0609fa4fc032d9e7f8065009625dc3f5469d1f1c6f82f63",
+      "destination": "docs/ideeo/decisions/017-native-conversation-runtime.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "fd69d3f8e9fb445e0dd50c954f14d05229d3fc4c0aca55c25d4b3de639f9d115"
+    },
+    {
+      "source": "docs/decisions/README.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "0b80616a593bbdfd30717b93509dd3334c86388f3615ccf9b3f03258da35d307",
+      "destination": "docs/ideeo/decisions/README.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "ff56956d8401b3928cd48e357d15ef6922182d15a0afce478ff5129fda5d91fd"
+    },
+    {
+      "source": "docs/development/CONFORMANCE.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "bb92e64a1337b72679c9bec6c76d2ffd3a321afde1d1089e2fb23f8a4464f073",
+      "destination": "docs/ideeo/development/CONFORMANCE.md",
+      "treatment": "rewritten for candidate public-interface acceptance; source retained separately",
+      "destination_sha256": "b075f971c812092b5cf306cc685eec8f3d7538d0ea747dd04085e4614c00927d",
+      "historical_copy": "docs/ideeo/reference/development/CONFORMANCE.source.md"
+    },
+    {
+      "source": "docs/development/INTEGRATION_GUIDE.html",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "9f52e2bfc31c0786e16ad9dcfbea475f4b86f9d67f0d75849c2a34893579abf6",
+      "destination": "docs/ideeo/reference/development/INTEGRATION_GUIDE.html",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "e34389a077f9abe4849f20baac03fecd75942715f70580ab7ac8ff73befd3e48"
+    },
+    {
+      "source": "docs/development/VERIFICATION.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "beacce4c9e88956bbdf252d8ccad5faf7ef8237de7ece6f603dc3cf74133f180",
+      "destination": "docs/ideeo/reference/development/VERIFICATION.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "185eb33579499ba21865cb7ed4f594204532eda6d70ce1ae7650e26ff8af94f6"
+    },
+    {
+      "source": "docs/development/WHATSBANK_MIGRATION_STATUS.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "e68589f3031277d4c201afd201db3c1bd710f481ca2fce7e875720d0647910b2",
+      "destination": "docs/ideeo/reference/development/WHATSBANK_MIGRATION_STATUS.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "3ab8b77a066e1a13e1adb580ed42b846defad0dda1ed5ae4f4ec9614cffb02bf"
+    },
+    {
+      "source": "docs/policies/AI_DEVELOPMENT.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "73aaf61208dce5a316e917d0a70a767487d5792c3796bfecb8c086826db6fef6",
+      "destination": "docs/ideeo/policies/AI_DEVELOPMENT.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "22331ca6a84120037881e707c58c490b3cf434f9f20074e0fec01672b34972c3"
+    },
+    {
+      "source": "docs/policies/COMPLIANCE.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "93162542a9bc17928d0826cafb737b884238fb8fa464f9603f0457cd8fd2dda8",
+      "destination": "docs/ideeo/policies/COMPLIANCE.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "7f8fc065b79a20c83f78eb3bdb1a4430f46428f580b2773be2ef713a85c4ef20"
+    },
+    {
+      "source": "docs/policies/LINEAR_WORKFLOW.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "f65d4fb24b6cd09933b13da034c610635ad6b479710d73101b47302a10e4f503",
+      "destination": "docs/ideeo/policies/LINEAR_WORKFLOW.md",
+      "treatment": "reference with applicability notice and local links; candidate applicability notice added",
+      "destination_sha256": "9974e20f704bb0e49ead25d9861bb891937d7a02336ceedbea3f39f4ee278de0"
+    },
+    {
+      "source": "docs/policies/METHODOLOGY.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "2a561619be2a43f954eaf12cb83dc03b81fe305c10e543568dda64384ca5ade3",
+      "destination": "docs/ideeo/policies/METHODOLOGY.md",
+      "treatment": "reference with applicability notice and local links; candidate applicability notice added",
+      "destination_sha256": "9becb39c120cda77bcf9e56423f47ccb732e3e58fb59321c4a95e8ef08f7c845"
+    },
+    {
+      "source": "docs/policies/PRODUCTION_READINESS.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "df6e62b57b07e3c43f09c51e0373ab90414b17e777b468c179c7d5d7536409bc",
+      "destination": "docs/ideeo/policies/PRODUCTION_READINESS.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "7b1fe18b55432dbffb02a7726dab26299ecf4b4f95ce8a89947509144cf6e456"
+    },
+    {
+      "source": "docs/policies/SCRUM.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "e11c119e6b8dbc664d4d94370440b9ad6543a2807d6ca4fb542edbe4ae2596ce",
+      "destination": "docs/ideeo/policies/SCRUM.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "a57c6924ef1110aecf0b58602a0e7dbc6330e3da529eb76ed5fd376fc5386c43"
+    },
+    {
+      "source": "docs/policies/TESTING_OWNERSHIP.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "89771659abe418f4fc14cf9f551975f895349d65e00fd056d23dd6124b2f7500",
+      "destination": "docs/ideeo/policies/TESTING_OWNERSHIP.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "797c80ed57508a3607536676649ad02b4047adce9d6c5cc7b88257c854cd9e93"
+    },
+    {
+      "source": "docs/product/DATA_OWNERSHIP_AND_LIFECYCLE.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "6c3d40b87a243dc87b255e2944a96b93070ce50ad91fed89c6642713db17b9da",
+      "destination": "docs/ideeo/product/DATA_OWNERSHIP_AND_LIFECYCLE.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "afc8313294949001249a4c1fe0d87728c01e38a4903899339eca7d7d501e6763"
+    },
+    {
+      "source": "docs/product/INTEGRATION_CONTEXT.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "62f49c90ae6ee149e0ea97442da9b83d282b0388eb9497627709f61af99c8530",
+      "destination": "docs/ideeo/product/INTEGRATION_CONTEXT.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "c41db1e2e8873f3d18c629beeaf36b6e70d7c48f406814096fcc2d2b170037ed"
+    },
+    {
+      "source": "docs/product/PROJECT_CONTEXT.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "a145a6f316bd650c0ce8319d4375f8af6c7259c3109e4e5c5cb42cd7f8dd1599",
+      "destination": "docs/ideeo/product/PROJECT_CONTEXT.md",
+      "treatment": "reference with applicability notice and local links; candidate applicability notice added",
+      "destination_sha256": "3943db690d4082e93ed71db4998b407a6018acadcb713e994804da733c09e3f2"
+    },
+    {
+      "source": "docs/product/RSI_RESEARCH.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "6ab57ad5786ee9aabd56474937ce9343df6fc6a02b5ce06123f634898b89efc1",
+      "destination": "docs/ideeo/product/RSI_RESEARCH.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "13a850dedcf2486e9b9a1c7dad5d3c8bb0bd5f21f7eff6597a8c7344c54b4509"
+    },
+    {
+      "source": "docs/product/UX.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "8a204ffbc3d9e21ef5b5520e33a7908d076001a4f4b63ba5ce5587741edc2070",
+      "destination": "docs/ideeo/product/UX.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "a6110fc539f4b198212837f71a8e392d6dc70c530180a75e4a302c96f9473b74"
+    },
+    {
+      "source": "docs/product/architecture/arquitectura-motor-agentes-rev4.html",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "961ae120819cfd7ad3572cf0366c90e60eec022a64104943af527193207ff4b1",
+      "destination": "docs/ideeo/product/architecture/arquitectura-motor-agentes-rev4.html",
+      "treatment": "rewritten for the OpenMaus-based candidate; source retained separately",
+      "destination_sha256": "90fe295d91027506c06c894bce0b3c10c13608e6604378241a21f8d5ce3791cf",
+      "historical_copy": "docs/ideeo/reference/architecture/ideeo-ia-general-rev4.html"
+    },
+    {
+      "source": "docs/product/architecture/payme-tenant-integration-example.jpeg",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "784558fcb6bff6b5026faa25e55de486892eb932fefb4ceaafd6a9edd858b3c9",
+      "destination": "docs/ideeo/product/architecture/payme-tenant-integration-example.jpeg",
+      "treatment": "unchanged reference artifact",
+      "destination_sha256": "784558fcb6bff6b5026faa25e55de486892eb932fefb4ceaafd6a9edd858b3c9"
+    },
+    {
+      "source": "docs/product/architecture/presentacion-arquitectura-agentes.html",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "6dac86ea696bdd7b1201ac83ff89f3d48795b37159233a4173782b862ead8241",
+      "destination": "docs/ideeo/product/architecture/presentacion-arquitectura-agentes.html",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "4f857ae07842de01f4bef9cec32220fbbc26f11be264f65904426afd9b5467b3"
+    },
+    {
+      "source": "docs/workflows/SKILL_CREATE_PR.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "8b33d5a907d79c9b1c5e5b8dbb7297cb443b918737db905c5f5431a9499c4494",
+      "destination": "docs/ideeo/workflows/SKILL_CREATE_PR.md",
+      "treatment": "reference with applicability notice and local links; candidate applicability notice added",
+      "destination_sha256": "9d86b257a6adcf2326b8ce2a586033c906b9cd5adced5a37bf9e796c6cc12c87"
+    },
+    {
+      "source": "docs/workflows/SKILL_CREATE_TICKETS.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "aee721fbdc346e9750ab9dafa0ffa29e66ba714f78f679306bb3b6bd4f8b50da",
+      "destination": "docs/ideeo/workflows/SKILL_CREATE_TICKETS.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "faf9b36e8ca33d44850ef888dc5d699724c4f5ea5894f1983865963c82d681c6"
+    },
+    {
+      "source": "docs/workflows/SKILL_TEST_SOFTWARE.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "65a3dd111cb89f17ec051fce4fb935a2ce54885941549694039754aeca058419",
+      "destination": "docs/ideeo/workflows/SKILL_TEST_SOFTWARE.md",
+      "treatment": "reference with applicability notice and local links; candidate applicability notice added",
+      "destination_sha256": "1e10acac3984dbde413bfb9c100786071227174bdd265a290b0eb90f64437257"
+    },
+    {
+      "source": "docs/workflows/SPECS_TO_BACKLOG.md",
+      "source_revision": "644f0a1b7a44901dbaaaa18b376dac0180219860",
+      "source_kind": "committed",
+      "source_sha256": "0d193532b5f0d7462b226014f1f19a8d2c187682d00ce1a4003bd6d09835415e",
+      "destination": "docs/ideeo/workflows/SPECS_TO_BACKLOG.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "9c283b0432a572ea47b002aac8190557c84ca06c3a181ada2af4a566307b9401"
+    },
+    {
+      "source": "docs/decisions/016-engine-owned-openmaus-browser-runtime.md",
+      "source_revision": null,
+      "source_kind": "working_tree",
+      "source_sha256": "0667b1ac0762ac352e178938e67a1275b6b2ce4954fca5b5246ae40e9dbeeaf0",
+      "destination": "docs/ideeo/decisions/016-engine-owned-openmaus-browser-runtime.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "88bee3e958c04dcf23792688427db09cca6e90c9eb36bb6a6bbd96f653c85e8c"
+    },
+    {
+      "source": "output/ideeo-agent-architecture-repository-comparison-2026-11-17.md",
+      "source_revision": null,
+      "source_kind": "working_tree",
+      "source_sha256": "59d3059412fcaea0cf631fbd80e1ae5c6320a4b22fb4f9bf79e8383f1b434cc6",
+      "destination": "docs/ideeo/reference/research/ideeo-agent-architecture-repository-comparison-2026-11-17.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "f6a45d39dec29598769448389622ed6c8feacfbefce0e7b15dd30fc4900fa3c4"
+    },
+    {
+      "source": "output/ideeo-native-runtime-recommendation-2026-11-18.md",
+      "source_revision": null,
+      "source_kind": "working_tree",
+      "source_sha256": "7eaebf43f392242b2a8f417cb760ab2239af51d5aa8e079f284826fd3357dd85",
+      "destination": "docs/ideeo/reference/research/ideeo-native-runtime-recommendation-2026-11-18.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "e7f9cce797954894ce75b2bc588d1589ec70e1ae73f3302a74e3ea516cb64a1b"
+    },
+    {
+      "source": "output/ideeo-openmaus-runtime-comparison-implementation.md",
+      "source_revision": null,
+      "source_kind": "working_tree",
+      "source_sha256": "0ce304fdb66aad6486b90ba0ec2d0189ea41df55eb362e84ceb758220b092f2a",
+      "destination": "docs/ideeo/reference/research/ideeo-openmaus-runtime-comparison-implementation.md",
+      "treatment": "reference with applicability notice and local links",
+      "destination_sha256": "cb310ee1f68d20c77fd90d9626015c517feafd6776eaefe808537e62c3536592"
+    }
+  ],
+  "hash_semantics": "source_sha256 identifies original bytes; destination_sha256 identifies the imported or adapted file at this documentation revision. Historical copies retain source content with import notices and localized links.",
+  "additional_files": [
+    {
+      "destination": "docs/ideeo/decisions/APPLICABILITY.md",
+      "treatment": "candidate-authored documentation or source-reference index",
+      "destination_sha256": "a5c4173a8ccf70254db499c82a74e9767544a6d49a10ba58a41d2ee523a5948b"
+    },
+    {
+      "destination": "docs/ideeo/development/VERIFICATION.md",
+      "treatment": "candidate-authored documentation or source-reference index",
+      "destination_sha256": "c9912adcca0801f753604796128ac168d475de27610d8f805fc3fc09cda22e1d"
+    },
+    {
+      "destination": "docs/ideeo/IMPLEMENTATION_STATUS.md",
+      "treatment": "candidate-authored documentation or source-reference index",
+      "destination_sha256": "76e75b5aefaac576d68acefc68379cbb1361b29eb3af5bd24916df7b3a018345"
+    },
+    {
+      "destination": "docs/ideeo/README.md",
+      "treatment": "candidate-authored documentation or source-reference index",
+      "destination_sha256": "b7902944066ede6a219873c78a4bc5909923d5f28386a0ae138dc833e1364b65"
+    },
+    {
+      "destination": "docs/ideeo/reference/architecture/ideeo-ia-general-rev4.html",
+      "treatment": "historical source copy with provenance notice and localized links",
+      "destination_sha256": "bf47fd6e750a93f8160b7d80ea7a54b0c85d566adc99f9262fb6c22e35432c32"
+    },
+    {
+      "destination": "docs/ideeo/reference/development/CONFORMANCE.source.md",
+      "treatment": "historical source copy with provenance notice and localized links",
+      "destination_sha256": "52d0ef4841f95d1b8c118e278acd0b00167a4b02593c730906f97c2f4ef0e730"
+    },
+    {
+      "destination": "docs/ideeo/reference/SOURCE_REFERENCES.md",
+      "treatment": "candidate-authored documentation or source-reference index",
+      "destination_sha256": "070e1a53357d5a58603bb10c4f8ec0f95351a2e181a6c9795dafbbb85df11e1b"
+    }
+  ]
+}

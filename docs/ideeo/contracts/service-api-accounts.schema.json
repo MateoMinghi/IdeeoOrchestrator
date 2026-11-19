@@ -1,0 +1,141 @@
+{
+  "$defs": {
+    "ApiAccount": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_account_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Agent Account Id",
+          "type": "string"
+        },
+        "client_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Client Id",
+          "type": "string"
+        },
+        "connection_id": {
+          "pattern": "^[A-Za-z0-9_-]{1,100}$",
+          "title": "Connection Id",
+          "type": "string"
+        },
+        "credential_env": {
+          "pattern": "^[A-Z][A-Z0-9_]{0,99}$",
+          "title": "Credential Env",
+          "type": "string"
+        },
+        "enabled": {
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "expires_at": {
+          "format": "date-time",
+          "title": "Expires At",
+          "type": "string"
+        },
+        "grant_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Grant Id",
+          "type": "string"
+        },
+        "membership_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Membership Id",
+          "type": "string"
+        },
+        "payment_options": {
+          "items": {
+            "$ref": "#/$defs/ProviderPayment"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Payment Options",
+          "type": "array"
+        },
+        "provider": {
+          "const": "uber",
+          "default": "uber",
+          "title": "Provider",
+          "type": "string"
+        },
+        "provider_account_id": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Provider Account Id",
+          "type": "string"
+        },
+        "tenant_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^[A-Za-z0-9_-]{1,100}$",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "membership_id",
+        "client_id",
+        "agent_account_id",
+        "grant_id",
+        "connection_id",
+        "version",
+        "provider_account_id",
+        "credential_env",
+        "expires_at",
+        "payment_options"
+      ],
+      "title": "ApiAccount",
+      "type": "object"
+    },
+    "ProviderPayment": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "option_id": {
+          "pattern": "^[A-Za-z0-9_-]{1,100}$",
+          "title": "Option Id",
+          "type": "string"
+        },
+        "provider_reference": {
+          "pattern": "^[A-Za-z0-9_-]{1,256}$",
+          "title": "Provider Reference",
+          "type": "string"
+        }
+      },
+      "required": [
+        "option_id",
+        "label",
+        "provider_reference"
+      ],
+      "title": "ProviderPayment",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "accounts": {
+      "items": {
+        "$ref": "#/$defs/ApiAccount"
+      },
+      "maxItems": 10000,
+      "title": "Accounts",
+      "type": "array"
+    }
+  },
+  "title": "ApiAccounts",
+  "type": "object"
+}

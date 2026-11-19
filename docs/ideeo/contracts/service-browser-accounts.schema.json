@@ -1,0 +1,100 @@
+{
+  "$defs": {
+    "BrowserAccount": {
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "properties": {
+            "connection_id": {
+              "type": "null"
+            },
+            "state_file_env": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "state_file_env"
+          ]
+        },
+        {
+          "properties": {
+            "connection_id": {
+              "type": "string"
+            },
+            "state_file_env": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "connection_id"
+          ]
+        }
+      ],
+      "properties": {
+        "connection_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Connection Id"
+        },
+        "membership_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Membership Id",
+          "type": "string"
+        },
+        "provider": {
+          "pattern": "^(uber|uber_eats|rappi|opentable|doctoralia|google_businesses|didi_food|didi_rides)$",
+          "title": "Provider",
+          "type": "string"
+        },
+        "state_file_env": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Z][A-Z0-9_]{0,99}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "State File Env"
+        },
+        "tenant_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Tenant Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "membership_id",
+        "provider"
+      ],
+      "title": "BrowserAccount",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "accounts": {
+      "items": {
+        "$ref": "#/$defs/BrowserAccount"
+      },
+      "maxItems": 1000,
+      "title": "Accounts",
+      "type": "array"
+    }
+  },
+  "title": "BrowserAccounts",
+  "type": "object"
+}

@@ -1,0 +1,167 @@
+{
+  "$defs": {
+    "ReuseApproval": {
+      "additionalProperties": false,
+      "properties": {
+        "accepted_by": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Accepted By",
+          "type": "string"
+        },
+        "expires_at": {
+          "format": "date-time",
+          "title": "Expires At",
+          "type": "string"
+        },
+        "fingerprint": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Fingerprint",
+          "type": "string"
+        },
+        "independent_review_reference": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Independent Review Reference",
+          "type": "string"
+        },
+        "plan_digest": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Plan Digest",
+          "type": "string"
+        },
+        "revoked": {
+          "default": false,
+          "title": "Revoked",
+          "type": "boolean"
+        },
+        "self_contained": {
+          "const": true,
+          "title": "Self Contained",
+          "type": "boolean"
+        },
+        "source_evidence_references": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Source Evidence References",
+          "type": "array"
+        }
+      },
+      "required": [
+        "fingerprint",
+        "plan_digest",
+        "self_contained",
+        "independent_review_reference",
+        "accepted_by",
+        "source_evidence_references",
+        "expires_at"
+      ],
+      "title": "ReuseApproval",
+      "type": "object"
+    },
+    "ReuseRule": {
+      "additionalProperties": false,
+      "properties": {
+        "capabilities": {
+          "items": {
+            "enum": [
+              "bank.balance",
+              "bank.account_info",
+              "bank.history",
+              "bank.catalog",
+              "service.google_businesses"
+            ],
+            "type": "string"
+          },
+          "maxItems": 5,
+          "minItems": 1,
+          "title": "Capabilities",
+          "type": "array"
+        },
+        "data_policy_reference": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Data Policy Reference",
+          "type": "string"
+        },
+        "enabled": {
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "minimum_observations": {
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Minimum Observations",
+          "type": "integer"
+        },
+        "model_route": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Model Route",
+          "type": "string"
+        },
+        "retention_hours": {
+          "maximum": 720,
+          "minimum": 1,
+          "title": "Retention Hours",
+          "type": "integer"
+        },
+        "tenant_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^[A-Za-z0-9._-]{1,100}$",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "version",
+        "model_route",
+        "capabilities",
+        "minimum_observations",
+        "retention_hours",
+        "data_policy_reference"
+      ],
+      "title": "ReuseRule",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "approvals": {
+      "items": {
+        "$ref": "#/$defs/ReuseApproval"
+      },
+      "maxItems": 1000,
+      "title": "Approvals",
+      "type": "array"
+    },
+    "rules": {
+      "items": {
+        "$ref": "#/$defs/ReuseRule"
+      },
+      "maxItems": 1000,
+      "title": "Rules",
+      "type": "array"
+    },
+    "version": {
+      "pattern": "^[A-Za-z0-9._-]{1,100}$",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "version"
+  ],
+  "title": "ReuseConfiguration",
+  "type": "object"
+}

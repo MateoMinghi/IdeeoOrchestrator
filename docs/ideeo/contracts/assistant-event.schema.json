@@ -1,0 +1,4401 @@
+{
+  "$defs": {
+    "AccountChoice": {
+      "additionalProperties": false,
+      "properties": {
+        "account_id": {
+          "title": "Account Id",
+          "type": "string"
+        },
+        "currency": {
+          "title": "Currency",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        }
+      },
+      "required": [
+        "account_id",
+        "label",
+        "currency"
+      ],
+      "title": "AccountChoice",
+      "type": "object"
+    },
+    "AccountInformation": {
+      "additionalProperties": false,
+      "properties": {
+        "account": {
+          "$ref": "#/$defs/AccountChoice"
+        },
+        "clabe": {
+          "title": "Clabe",
+          "type": "string"
+        },
+        "kind": {
+          "const": "account_info",
+          "default": "account_info",
+          "title": "Kind",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "provenance": {
+          "enum": [
+            "synthetic",
+            "bank"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        }
+      },
+      "required": [
+        "account",
+        "clabe",
+        "observed_at",
+        "provenance"
+      ],
+      "title": "AccountInformation",
+      "type": "object"
+    },
+    "AirtimeProposal": {
+      "additionalProperties": false,
+      "properties": {
+        "draft": {
+          "$ref": "#/$defs/PaymentDraft"
+        },
+        "kind": {
+          "const": "topup",
+          "default": "topup",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "draft"
+      ],
+      "title": "AirtimeProposal",
+      "type": "object"
+    },
+    "ApprovalPresentation": {
+      "additionalProperties": false,
+      "properties": {
+        "approval_ref": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Approval Ref",
+          "type": "string"
+        },
+        "expires_at": {
+          "format": "date-time",
+          "title": "Expires At",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "secure_link",
+            "host_intent"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "payload": {
+          "maxLength": 8192,
+          "minLength": 1,
+          "title": "Payload",
+          "type": "string"
+        }
+      },
+      "required": [
+        "approval_ref",
+        "kind",
+        "payload",
+        "expires_at"
+      ],
+      "title": "ApprovalPresentation",
+      "type": "object"
+    },
+    "ApprovedArtifact": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "description": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "media_type": {
+          "default": "text",
+          "enum": [
+            "text",
+            "document",
+            "image",
+            "video"
+          ],
+          "title": "Media Type",
+          "type": "string"
+        },
+        "provenance": {
+          "default": "tenant",
+          "enum": [
+            "tenant",
+            "synthetic"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "maxLength": 6000,
+          "title": "Text",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "maxLength": 2000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "title",
+        "description"
+      ],
+      "title": "ApprovedArtifact",
+      "type": "object"
+    },
+    "ArtifactResult": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/ApprovedArtifact"
+        },
+        "kind": {
+          "const": "artifact",
+          "default": "artifact",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact"
+      ],
+      "title": "ArtifactResult",
+      "type": "object"
+    },
+    "AssistantActivityEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "gt": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Amount"
+        },
+        "bank_status": {
+          "default": "not_verified",
+          "enum": [
+            "not_verified",
+            "verified"
+          ],
+          "title": "Bank Status",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "currency": {
+          "pattern": "^[A-Z]{3}$",
+          "title": "Currency",
+          "type": "string"
+        },
+        "handoff_id": {
+          "format": "uuid",
+          "title": "Handoff Id",
+          "type": "string"
+        },
+        "purpose": {
+          "enum": [
+            "balance",
+            "account_info",
+            "history",
+            "transfer",
+            "transfer_phone",
+            "bill",
+            "topup",
+            "purchase",
+            "contacts",
+            "cash_in",
+            "cash_out",
+            "card",
+            "rewards",
+            "challenges",
+            "process"
+          ],
+          "title": "Purpose",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "awaiting_bank_authorization",
+            "instructions_ready",
+            "awaiting_customer_selection",
+            "code_ready",
+            "processing",
+            "completed",
+            "rejected",
+            "expired",
+            "cancelled",
+            "uncertain",
+            "reversed"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "handoff_id",
+        "purpose",
+        "status",
+        "amount",
+        "currency",
+        "created_at"
+      ],
+      "title": "AssistantActivityEntry",
+      "type": "object"
+    },
+    "AssistantActivityResult": {
+      "additionalProperties": false,
+      "properties": {
+        "entries": {
+          "items": {
+            "$ref": "#/$defs/AssistantActivityEntry"
+          },
+          "maxItems": 5,
+          "title": "Entries",
+          "type": "array"
+        },
+        "kind": {
+          "const": "assistant_activity",
+          "default": "assistant_activity",
+          "title": "Kind",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entries",
+        "observed_at"
+      ],
+      "title": "AssistantActivityResult",
+      "type": "object"
+    },
+    "AssistantAwareness": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_role": {
+          "const": "concierge",
+          "default": "concierge",
+          "title": "Agent Role",
+          "type": "string"
+        },
+        "boundaries": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Boundaries",
+          "type": "array"
+        },
+        "context_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Context Digest",
+          "type": "string"
+        },
+        "language": {
+          "enum": [
+            "es",
+            "en"
+          ],
+          "title": "Language",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "organization": {
+          "title": "Organization",
+          "type": "string"
+        },
+        "provenance": {
+          "default": "unknown",
+          "enum": [
+            "synthetic",
+            "bank",
+            "unknown"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        },
+        "public_links": {
+          "items": {
+            "$ref": "#/$defs/TenantLink"
+          },
+          "maxItems": 20,
+          "title": "Public Links",
+          "type": "array"
+        },
+        "purpose": {
+          "title": "Purpose",
+          "type": "string"
+        },
+        "role": {
+          "title": "Role",
+          "type": "string"
+        },
+        "style": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConversationStyle"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "support": {
+          "title": "Support",
+          "type": "string"
+        },
+        "tenant_label": {
+          "title": "Tenant Label",
+          "type": "string"
+        },
+        "tone": {
+          "enum": [
+            "concise",
+            "warm",
+            "formal"
+          ],
+          "title": "Tone",
+          "type": "string"
+        },
+        "tools": {
+          "items": {
+            "$ref": "#/$defs/CapabilityAwareness"
+          },
+          "title": "Tools",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "organization",
+        "tenant_label",
+        "role",
+        "purpose",
+        "support",
+        "boundaries",
+        "language",
+        "tone",
+        "tools",
+        "context_digest"
+      ],
+      "title": "AssistantAwareness",
+      "type": "object"
+    },
+    "AssistantOutcome": {
+      "additionalProperties": false,
+      "properties": {
+        "account_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Account Id"
+        },
+        "capability": {
+          "enum": [
+            "assistant.knowledge",
+            "assistant.conversation",
+            "assistant.activity",
+            "bank.balance",
+            "bank.account_info",
+            "bank.history",
+            "bank.catalog",
+            "bank.transfer",
+            "bank.transfer_phone",
+            "bank.bill",
+            "bank.topup",
+            "bank.contacts",
+            "bank.cash_in",
+            "bank.cash_out",
+            "bank.card",
+            "bank.rewards",
+            "bank.challenges",
+            "bank.process",
+            "commerce.purchase",
+            "account.onboard",
+            "presentation.artifact",
+            "tasks.list",
+            "tasks.cancel",
+            "tasks.watch",
+            "browser.shopping",
+            "phone.reservation",
+            "service.uber",
+            "service.uber_eats",
+            "service.rappi",
+            "service.opentable",
+            "service.google_businesses",
+            "service.doctoralia",
+            "service.didi_food",
+            "service.didi_rides",
+            "unsupported"
+          ],
+          "title": "Capability",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "result": {
+          "discriminator": {
+            "mapping": {
+              "account_info": "#/$defs/AccountInformation",
+              "artifact": "#/$defs/ArtifactResult",
+              "assistant_activity": "#/$defs/AssistantActivityResult",
+              "balance": "#/$defs/BalanceResult",
+              "bank_handoff": "#/$defs/HandoffResult",
+              "bank_handoff_presentation": "#/$defs/BankHandoffPresentation",
+              "catalog": "#/$defs/ServiceCatalog",
+              "comparison": "#/$defs/ComparisonResult",
+              "conversation": "#/$defs/ConversationResult",
+              "dialogue": "#/$defs/DialogueResult",
+              "history": "#/$defs/OperationHistory",
+              "host_banking": "#/$defs/HostBankingResult",
+              "knowledge": "#/$defs/KnowledgeResult",
+              "media_reference": "#/$defs/MediaTurnResult",
+              "onboarding_required": "#/$defs/EnrollmentRequired",
+              "operation": "#/$defs/OperationResult",
+              "pending_cleared": "#/$defs/PendingCleared",
+              "public_browser": "#/$defs/PublicBrowserResult",
+              "question": "#/$defs/Question",
+              "task_control": "#/$defs/TaskControlResult",
+              "unsupported": "#/$defs/UnsupportedGoal"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/BalanceResult"
+            },
+            {
+              "$ref": "#/$defs/AccountInformation"
+            },
+            {
+              "$ref": "#/$defs/OperationHistory"
+            },
+            {
+              "$ref": "#/$defs/ServiceCatalog"
+            },
+            {
+              "$ref": "#/$defs/Question"
+            },
+            {
+              "$ref": "#/$defs/OperationResult"
+            },
+            {
+              "$ref": "#/$defs/HandoffResult"
+            },
+            {
+              "$ref": "#/$defs/BankHandoffPresentation"
+            },
+            {
+              "$ref": "#/$defs/HostBankingResult"
+            },
+            {
+              "$ref": "#/$defs/ArtifactResult"
+            },
+            {
+              "$ref": "#/$defs/EnrollmentRequired"
+            },
+            {
+              "$ref": "#/$defs/AssistantActivityResult"
+            },
+            {
+              "$ref": "#/$defs/UnsupportedGoal"
+            },
+            {
+              "$ref": "#/$defs/PendingCleared"
+            },
+            {
+              "$ref": "#/$defs/MediaTurnResult"
+            },
+            {
+              "$ref": "#/$defs/ComparisonResult"
+            },
+            {
+              "$ref": "#/$defs/PublicBrowserResult"
+            },
+            {
+              "$ref": "#/$defs/TaskControlResult"
+            },
+            {
+              "$ref": "#/$defs/ConversationResult"
+            },
+            {
+              "$ref": "#/$defs/DialogueResult"
+            },
+            {
+              "$ref": "#/$defs/KnowledgeResult"
+            }
+          ],
+          "title": "Result"
+        }
+      },
+      "required": [
+        "capability",
+        "account_id",
+        "result",
+        "message"
+      ],
+      "title": "AssistantOutcome",
+      "type": "object"
+    },
+    "AssistantView": {
+      "additionalProperties": false,
+      "properties": {
+        "api_version": {
+          "const": "2",
+          "default": "2",
+          "title": "Api Version",
+          "type": "string"
+        },
+        "background_task_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "maxItems": 4,
+          "title": "Background Task Ids",
+          "type": "array"
+        },
+        "conversation_id": {
+          "format": "uuid",
+          "title": "Conversation Id",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PublicError"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "outcomes": {
+          "items": {
+            "$ref": "#/$defs/AssistantOutcome"
+          },
+          "maxItems": 4,
+          "title": "Outcomes",
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "processing",
+            "completed",
+            "failed",
+            "interrupted"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "task_id": {
+          "format": "uuid",
+          "title": "Task Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "task_id",
+        "conversation_id",
+        "status",
+        "created_at",
+        "observed_at"
+      ],
+      "title": "AssistantView",
+      "type": "object"
+    },
+    "BalanceResult": {
+      "additionalProperties": false,
+      "properties": {
+        "account": {
+          "$ref": "#/$defs/AccountChoice"
+        },
+        "available_to_spend": {
+          "$ref": "#/$defs/Money"
+        },
+        "kind": {
+          "const": "balance",
+          "default": "balance",
+          "title": "Kind",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "provenance": {
+          "default": "synthetic",
+          "enum": [
+            "synthetic",
+            "bank"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        }
+      },
+      "required": [
+        "account",
+        "available_to_spend",
+        "observed_at"
+      ],
+      "title": "BalanceResult",
+      "type": "object"
+    },
+    "BankHandoff": {
+      "additionalProperties": false,
+      "properties": {
+        "charges": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HandoffCharges"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "expires_at": {
+          "format": "date-time",
+          "title": "Expires At",
+          "type": "string"
+        },
+        "source_reference": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Source Reference",
+          "type": "string"
+        },
+        "status": {
+          "default": "awaiting_bank_authorization",
+          "enum": [
+            "awaiting_bank_authorization",
+            "instructions_ready",
+            "awaiting_customer_selection",
+            "code_ready"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "url": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_reference",
+        "url",
+        "expires_at"
+      ],
+      "title": "BankHandoff",
+      "type": "object"
+    },
+    "BankHandoffPresentation": {
+      "additionalProperties": false,
+      "properties": {
+        "execution_mode": {
+          "const": "bank_owned",
+          "default": "bank_owned",
+          "title": "Execution Mode",
+          "type": "string"
+        },
+        "handoff_id": {
+          "format": "uuid",
+          "title": "Handoff Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "bank_handoff_presentation",
+          "default": "bank_handoff_presentation",
+          "title": "Kind",
+          "type": "string"
+        },
+        "presentation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BankHandoff"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "provenance": {
+          "enum": [
+            "bank",
+            "synthetic"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        },
+        "revision": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "source_reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Reference"
+        },
+        "status": {
+          "enum": [
+            "awaiting_bank_authorization",
+            "instructions_ready",
+            "awaiting_customer_selection",
+            "code_ready",
+            "processing",
+            "completed",
+            "rejected",
+            "expired",
+            "cancelled",
+            "uncertain",
+            "reversed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "summary": {
+          "$ref": "#/$defs/HandoffSummary"
+        }
+      },
+      "required": [
+        "handoff_id",
+        "status",
+        "summary",
+        "provenance"
+      ],
+      "title": "BankHandoffPresentation",
+      "type": "object"
+    },
+    "BillProposal": {
+      "additionalProperties": false,
+      "properties": {
+        "draft": {
+          "$ref": "#/$defs/PaymentDraft"
+        },
+        "kind": {
+          "const": "bill",
+          "default": "bill",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "draft"
+      ],
+      "title": "BillProposal",
+      "type": "object"
+    },
+    "CapabilityAwareness": {
+      "additionalProperties": false,
+      "properties": {
+        "capability": {
+          "title": "Capability",
+          "type": "string"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "mode": {
+          "enum": [
+            "read",
+            "prepare",
+            "delegate",
+            "control",
+            "onboard",
+            "present"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "prerequisites": {
+          "title": "Prerequisites",
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "available",
+            "unavailable",
+            "temporarily_unavailable"
+          ],
+          "title": "State",
+          "type": "string"
+        }
+      },
+      "required": [
+        "capability",
+        "name",
+        "description",
+        "mode",
+        "state",
+        "prerequisites"
+      ],
+      "title": "CapabilityAwareness",
+      "type": "object"
+    },
+    "CartDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "$ref": "#/$defs/CartItem"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Items",
+          "type": "array"
+        },
+        "kind": {
+          "const": "cart",
+          "default": "cart",
+          "title": "Kind",
+          "type": "string"
+        },
+        "merchant": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Merchant",
+          "type": "string"
+        }
+      },
+      "required": [
+        "merchant",
+        "items"
+      ],
+      "title": "CartDetail",
+      "type": "object"
+    },
+    "CartItem": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "price": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "gt": 0,
+          "title": "Price"
+        },
+        "qty": {
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Qty",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "name",
+        "qty",
+        "price"
+      ],
+      "title": "CartItem",
+      "type": "object"
+    },
+    "CatalogEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "carrier": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Carrier"
+        },
+        "currency": {
+          "pattern": "^[A-Z]{3}$",
+          "title": "Currency",
+          "type": "string"
+        },
+        "entry_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Entry Id",
+          "type": "string"
+        },
+        "fixed_amount": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "gt": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fixed Amount"
+        },
+        "kind": {
+          "enum": [
+            "bill",
+            "topup"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "maximum": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "gt": 0,
+          "title": "Maximum"
+        },
+        "minimum": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "gt": 0,
+          "title": "Minimum"
+        },
+        "name": {
+          "maxLength": 150,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "numeric_reference": {
+          "title": "Numeric Reference",
+          "type": "boolean"
+        },
+        "reference_max": {
+          "maximum": 128,
+          "minimum": 1,
+          "title": "Reference Max",
+          "type": "integer"
+        },
+        "reference_min": {
+          "maximum": 128,
+          "minimum": 1,
+          "title": "Reference Min",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "entry_id",
+        "name",
+        "kind",
+        "currency",
+        "reference_min",
+        "reference_max",
+        "numeric_reference",
+        "minimum",
+        "maximum"
+      ],
+      "title": "CatalogEntry",
+      "type": "object"
+    },
+    "ComparisonResult": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "comparison",
+          "default": "comparison",
+          "title": "Kind",
+          "type": "string"
+        },
+        "limitations": {
+          "items": {
+            "enum": [
+              "availability_unknown",
+              "product_unavailable",
+              "source_unavailable",
+              "insufficient_evidence",
+              "budget_exhausted",
+              "no_progress"
+            ],
+            "type": "string"
+          },
+          "maxItems": 4,
+          "title": "Limitations",
+          "type": "array"
+        },
+        "products": {
+          "items": {
+            "$ref": "#/$defs/ProductEvidence"
+          },
+          "maxItems": 10,
+          "title": "Products",
+          "type": "array"
+        },
+        "state": {
+          "enum": [
+            "verified",
+            "partial",
+            "unavailable"
+          ],
+          "title": "State",
+          "type": "string"
+        }
+      },
+      "required": [
+        "state",
+        "products",
+        "limitations"
+      ],
+      "title": "ComparisonResult",
+      "type": "object"
+    },
+    "ContactChoice": {
+      "additionalProperties": false,
+      "properties": {
+        "bank_label": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Bank Label"
+        },
+        "contact_id": {
+          "title": "Contact Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "masked_destination": {
+          "anyOf": [
+            {
+              "maxLength": 40,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Masked Destination"
+        }
+      },
+      "required": [
+        "contact_id",
+        "label"
+      ],
+      "title": "ContactChoice",
+      "type": "object"
+    },
+    "ConversationResult": {
+      "additionalProperties": false,
+      "properties": {
+        "awareness": {
+          "$ref": "#/$defs/AssistantAwareness"
+        },
+        "kind": {
+          "const": "conversation",
+          "default": "conversation",
+          "title": "Kind",
+          "type": "string"
+        },
+        "requested_tools": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Requested Tools",
+          "type": "array"
+        },
+        "topics": {
+          "items": {
+            "enum": [
+              "identity",
+              "tenant",
+              "role",
+              "capabilities",
+              "limitations",
+              "support",
+              "greeting",
+              "environment",
+              "resources"
+            ],
+            "type": "string"
+          },
+          "title": "Topics",
+          "type": "array"
+        }
+      },
+      "required": [
+        "topics",
+        "requested_tools",
+        "awareness"
+      ],
+      "title": "ConversationResult",
+      "type": "object"
+    },
+    "ConversationStyle": {
+      "additionalProperties": false,
+      "description": "Only finite rendering controls may enter a public self-knowledge snapshot.",
+      "properties": {
+        "avoid_corporate": {
+          "default": false,
+          "title": "Avoid Corporate",
+          "type": "boolean"
+        },
+        "brevity": {
+          "default": "default",
+          "enum": [
+            "default",
+            "brief",
+            "detailed"
+          ],
+          "title": "Brevity",
+          "type": "string"
+        },
+        "emojis": {
+          "default": "default",
+          "enum": [
+            "default",
+            "none",
+            "one"
+          ],
+          "title": "Emojis",
+          "type": "string"
+        },
+        "formality": {
+          "default": "default",
+          "enum": [
+            "default",
+            "formal",
+            "casual"
+          ],
+          "title": "Formality",
+          "type": "string"
+        },
+        "turn_variant": {
+          "anyOf": [
+            {
+              "maximum": 2,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Turn Variant"
+        },
+        "vary_responses": {
+          "default": false,
+          "title": "Vary Responses",
+          "type": "boolean"
+        },
+        "warmth": {
+          "default": "default",
+          "enum": [
+            "default",
+            "direct",
+            "warm"
+          ],
+          "title": "Warmth",
+          "type": "string"
+        }
+      },
+      "title": "ConversationStyle",
+      "type": "object"
+    },
+    "DialogueDecision": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "enum": [
+            "answer",
+            "clarify",
+            "progress",
+            "cancel"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "source_task_ids": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 12,
+          "title": "Source Task Ids",
+          "type": "array"
+        },
+        "source_turn_ids": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 12,
+          "title": "Source Turn Ids",
+          "type": "array"
+        },
+        "text": {
+          "description": "A complete natural reply. Match the requested depth; the limit is a ceiling, not a target. Finish every sentence and example.",
+          "maxLength": 6000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action",
+        "text"
+      ],
+      "title": "DialogueDecision",
+      "type": "object"
+    },
+    "DialogueResult": {
+      "additionalProperties": false,
+      "properties": {
+        "awareness": {
+          "$ref": "#/$defs/AssistantAwareness"
+        },
+        "decision": {
+          "$ref": "#/$defs/DialogueDecision"
+        },
+        "kind": {
+          "const": "dialogue",
+          "default": "dialogue",
+          "title": "Kind",
+          "type": "string"
+        },
+        "source_task_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "maxItems": 12,
+          "title": "Source Task Ids",
+          "type": "array"
+        },
+        "source_turn_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "maxItems": 12,
+          "title": "Source Turn Ids",
+          "type": "array"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/PublicBrowserLink"
+          },
+          "maxItems": 3,
+          "title": "Sources",
+          "type": "array"
+        }
+      },
+      "required": [
+        "decision",
+        "awareness"
+      ],
+      "title": "DialogueResult",
+      "type": "object"
+    },
+    "EnrollmentRequired": {
+      "additionalProperties": false,
+      "properties": {
+        "channel": {
+          "enum": [
+            "web",
+            "sdk",
+            "whatsapp"
+          ],
+          "title": "Channel",
+          "type": "string"
+        },
+        "kind": {
+          "const": "onboarding_required",
+          "default": "onboarding_required",
+          "title": "Kind",
+          "type": "string"
+        },
+        "owner": {
+          "const": "tenant",
+          "default": "tenant",
+          "title": "Owner",
+          "type": "string"
+        },
+        "profile_version": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Profile Version",
+          "type": "string"
+        },
+        "protected_input_required": {
+          "const": true,
+          "default": true,
+          "title": "Protected Input Required",
+          "type": "boolean"
+        },
+        "tenant_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "tenant_proof_required": {
+          "const": true,
+          "default": true,
+          "title": "Tenant Proof Required",
+          "type": "boolean"
+        },
+        "version": {
+          "const": "1",
+          "default": "1",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "profile_version",
+        "channel"
+      ],
+      "title": "EnrollmentRequired",
+      "type": "object"
+    },
+    "FlightDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "airline": {
+          "const": "SYNTHETIC TEST - NO BOOKING",
+          "default": "SYNTHETIC TEST - NO BOOKING",
+          "title": "Airline",
+          "type": "string"
+        },
+        "departureDate": {
+          "format": "date",
+          "title": "Departuredate",
+          "type": "string"
+        },
+        "destination": {
+          "pattern": "^[A-Z]{3}$",
+          "title": "Destination",
+          "type": "string"
+        },
+        "kind": {
+          "const": "flight",
+          "default": "flight",
+          "title": "Kind",
+          "type": "string"
+        },
+        "origin": {
+          "pattern": "^[A-Z]{3}$",
+          "title": "Origin",
+          "type": "string"
+        },
+        "passengers": {
+          "maximum": 9,
+          "minimum": 1,
+          "title": "Passengers",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "origin",
+        "destination",
+        "departureDate",
+        "passengers"
+      ],
+      "title": "FlightDetail",
+      "type": "object"
+    },
+    "HandoffCharges": {
+      "additionalProperties": false,
+      "properties": {
+        "base_amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "gt": 0,
+          "title": "Base Amount"
+        },
+        "currency": {
+          "pattern": "^[A-Z]{3}$",
+          "title": "Currency",
+          "type": "string"
+        },
+        "fee": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "ge": 0,
+          "title": "Fee"
+        },
+        "total": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "gt": 0,
+          "title": "Total"
+        }
+      },
+      "required": [
+        "base_amount",
+        "fee",
+        "total",
+        "currency"
+      ],
+      "title": "HandoffCharges",
+      "type": "object"
+    },
+    "HandoffResult": {
+      "additionalProperties": false,
+      "properties": {
+        "execution_mode": {
+          "const": "bank_owned",
+          "default": "bank_owned",
+          "title": "Execution Mode",
+          "type": "string"
+        },
+        "handoff_id": {
+          "format": "uuid",
+          "title": "Handoff Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "bank_handoff",
+          "default": "bank_handoff",
+          "title": "Kind",
+          "type": "string"
+        },
+        "observed_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Observed At"
+        },
+        "presentation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BankHandoff"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "provenance": {
+          "enum": [
+            "bank",
+            "synthetic"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        },
+        "revision": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "source_reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Reference"
+        },
+        "status": {
+          "enum": [
+            "awaiting_bank_authorization",
+            "instructions_ready",
+            "awaiting_customer_selection",
+            "code_ready",
+            "processing",
+            "completed",
+            "rejected",
+            "expired",
+            "cancelled",
+            "uncertain",
+            "reversed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "terms": {
+          "$ref": "#/$defs/HandoffTerms"
+        },
+        "terms_digest": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Terms Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "handoff_id",
+        "status",
+        "terms",
+        "terms_digest",
+        "provenance"
+      ],
+      "title": "HandoffResult",
+      "type": "object"
+    },
+    "HandoffSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "gt": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Amount"
+        },
+        "bank_label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Bank Label"
+        },
+        "currency": {
+          "title": "Currency",
+          "type": "string"
+        },
+        "masked_destination": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Masked Destination"
+        },
+        "purpose": {
+          "title": "Purpose",
+          "type": "string"
+        },
+        "recipient_label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recipient Label"
+        }
+      },
+      "required": [
+        "purpose",
+        "currency"
+      ],
+      "title": "HandoffSummary",
+      "type": "object"
+    },
+    "HandoffTerms": {
+      "additionalProperties": false,
+      "properties": {
+        "account_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Account Id",
+          "type": "string"
+        },
+        "amount": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "gt": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Amount"
+        },
+        "bank_label": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Bank Label"
+        },
+        "clabe": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Clabe"
+        },
+        "contact_id": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contact Id"
+        },
+        "currency": {
+          "default": "MXN",
+          "pattern": "^[A-Z]{3}$",
+          "title": "Currency",
+          "type": "string"
+        },
+        "entry_id": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Entry Id"
+        },
+        "masked_destination": {
+          "anyOf": [
+            {
+              "maxLength": 40,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Masked Destination"
+        },
+        "phone": {
+          "anyOf": [
+            {
+              "pattern": "^[1-9][0-9]{7,14}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Phone"
+        },
+        "process_kind": {
+          "anyOf": [
+            {
+              "enum": [
+                "travel",
+                "lodging",
+                "event"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Process Kind"
+        },
+        "purchase_quote": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SyntheticCommerceQuote"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "purpose": {
+          "enum": [
+            "balance",
+            "account_info",
+            "history",
+            "transfer",
+            "transfer_phone",
+            "bill",
+            "topup",
+            "purchase",
+            "contacts",
+            "cash_in",
+            "cash_out",
+            "card",
+            "rewards",
+            "challenges",
+            "process"
+          ],
+          "title": "Purpose",
+          "type": "string"
+        },
+        "quote_id": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Quote Id"
+        },
+        "recipient_label": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recipient Label"
+        },
+        "reference": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reference"
+        },
+        "search": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProcessSearch"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "purpose",
+        "account_id"
+      ],
+      "title": "HandoffTerms",
+      "type": "object"
+    },
+    "HistoryEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "evidence_ref": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Evidence Ref"
+        },
+        "money": {
+          "$ref": "#/$defs/Money"
+        },
+        "occurred_at": {
+          "format": "date-time",
+          "title": "Occurred At",
+          "type": "string"
+        },
+        "reference": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Reference",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "completed",
+            "failed",
+            "reversed"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "reference",
+        "status",
+        "money",
+        "description",
+        "occurred_at"
+      ],
+      "title": "HistoryEntry",
+      "type": "object"
+    },
+    "HostBankingResult": {
+      "additionalProperties": false,
+      "properties": {
+        "display": {
+          "const": "single_use",
+          "default": "single_use",
+          "title": "Display",
+          "type": "string"
+        },
+        "expires_at": {
+          "format": "date-time",
+          "title": "Expires At",
+          "type": "string"
+        },
+        "intent": {
+          "enum": [
+            "bank.balance",
+            "bank.account_info",
+            "bank.history",
+            "bank.transfer",
+            "bank.transfer_phone",
+            "bank.bill",
+            "bank.topup"
+          ],
+          "title": "Intent",
+          "type": "string"
+        },
+        "kind": {
+          "const": "host_banking",
+          "default": "host_banking",
+          "title": "Kind",
+          "type": "string"
+        },
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "status": {
+          "const": "host_required",
+          "default": "host_required",
+          "title": "Status",
+          "type": "string"
+        },
+        "version": {
+          "const": "1",
+          "default": "1",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "intent",
+        "expires_at"
+      ],
+      "title": "HostBankingResult",
+      "type": "object"
+    },
+    "KnowledgeCitation": {
+      "additionalProperties": false,
+      "properties": {
+        "document_id": {
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,79}$",
+          "title": "Document Id",
+          "type": "string"
+        },
+        "quote": {
+          "maxLength": 1000,
+          "minLength": 8,
+          "title": "Quote",
+          "type": "string"
+        },
+        "source_revision": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Source Revision",
+          "type": "string"
+        }
+      },
+      "required": [
+        "document_id",
+        "source_revision",
+        "quote"
+      ],
+      "title": "KnowledgeCitation",
+      "type": "object"
+    },
+    "KnowledgeResult": {
+      "additionalProperties": false,
+      "properties": {
+        "answer": {
+          "maxLength": 3000,
+          "minLength": 1,
+          "title": "Answer",
+          "type": "string"
+        },
+        "citations": {
+          "items": {
+            "$ref": "#/$defs/KnowledgeCitation"
+          },
+          "maxItems": 8,
+          "title": "Citations",
+          "type": "array"
+        },
+        "found": {
+          "title": "Found",
+          "type": "boolean"
+        },
+        "kind": {
+          "const": "knowledge",
+          "default": "knowledge",
+          "title": "Kind",
+          "type": "string"
+        },
+        "language": {
+          "anyOf": [
+            {
+              "enum": [
+                "es",
+                "en"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Language"
+        },
+        "source_revision": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Source Revision",
+          "type": "string"
+        },
+        "validation_revision": {
+          "anyOf": [
+            {
+              "const": "subject-v2",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Validation Revision"
+        }
+      },
+      "required": [
+        "answer",
+        "found",
+        "source_revision"
+      ],
+      "title": "KnowledgeResult",
+      "type": "object"
+    },
+    "MediaTurnResult": {
+      "additionalProperties": false,
+      "properties": {
+        "attachment_id": {
+          "format": "uuid",
+          "title": "Attachment Id",
+          "type": "string"
+        },
+        "due_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Due Date"
+        },
+        "instruction": {
+          "enum": [
+            "clarify",
+            "informational"
+          ],
+          "title": "Instruction",
+          "type": "string"
+        },
+        "kind": {
+          "const": "media_reference",
+          "default": "media_reference",
+          "title": "Kind",
+          "type": "string"
+        },
+        "media_kind": {
+          "enum": [
+            "audio",
+            "account_details",
+            "bill",
+            "transfer_receipt",
+            "other"
+          ],
+          "title": "Media Kind",
+          "type": "string"
+        },
+        "observation_id": {
+          "format": "uuid",
+          "title": "Observation Id",
+          "type": "string"
+        },
+        "warnings": {
+          "items": {
+            "enum": [
+              "invoice_overdue",
+              "amount_mismatch",
+              "caption_amount_mismatch",
+              "currency_mismatch",
+              "service_mismatch",
+              "multiple_invoices"
+            ],
+            "type": "string"
+          },
+          "maxItems": 10,
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "observation_id",
+        "attachment_id",
+        "media_kind",
+        "instruction"
+      ],
+      "title": "MediaTurnResult",
+      "type": "object"
+    },
+    "Money": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Amount"
+        },
+        "currency": {
+          "pattern": "^[A-Z]{3}$",
+          "title": "Currency",
+          "type": "string"
+        }
+      },
+      "required": [
+        "amount",
+        "currency"
+      ],
+      "title": "Money",
+      "type": "object"
+    },
+    "OperationHistory": {
+      "additionalProperties": false,
+      "properties": {
+        "account": {
+          "$ref": "#/$defs/AccountChoice"
+        },
+        "entries": {
+          "items": {
+            "$ref": "#/$defs/HistoryEntry"
+          },
+          "maxItems": 100,
+          "title": "Entries",
+          "type": "array"
+        },
+        "kind": {
+          "const": "history",
+          "default": "history",
+          "title": "Kind",
+          "type": "string"
+        },
+        "next_cursor": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Next Cursor"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "provenance": {
+          "enum": [
+            "synthetic",
+            "bank"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        },
+        "source": {
+          "enum": [
+            "bank_statement",
+            "engine_activity"
+          ],
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "account",
+        "entries",
+        "source",
+        "observed_at",
+        "provenance"
+      ],
+      "title": "OperationHistory",
+      "type": "object"
+    },
+    "OperationResult": {
+      "additionalProperties": false,
+      "properties": {
+        "approval": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ApprovalPresentation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "kind": {
+          "const": "operation",
+          "default": "operation",
+          "title": "Kind",
+          "type": "string"
+        },
+        "operation": {
+          "$ref": "#/$defs/OperationView"
+        }
+      },
+      "required": [
+        "operation",
+        "approval"
+      ],
+      "title": "OperationResult",
+      "type": "object"
+    },
+    "OperationView": {
+      "additionalProperties": false,
+      "properties": {
+        "api_version": {
+          "const": "2",
+          "default": "2",
+          "title": "Api Version",
+          "type": "string"
+        },
+        "approval_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Ref"
+        },
+        "bank_reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Bank Reference"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "error_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Error Code"
+        },
+        "evidence_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Evidence Ref"
+        },
+        "expires_at": {
+          "format": "date-time",
+          "title": "Expires At",
+          "type": "string"
+        },
+        "operation_id": {
+          "format": "uuid",
+          "title": "Operation Id",
+          "type": "string"
+        },
+        "proposal": {
+          "discriminator": {
+            "mapping": {
+              "bill": "#/$defs/BillProposal",
+              "purchase": "#/$defs/PurchaseProposal",
+              "topup": "#/$defs/AirtimeProposal",
+              "transfer": "#/$defs/TransferProposal"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/TransferProposal"
+            },
+            {
+              "$ref": "#/$defs/BillProposal"
+            },
+            {
+              "$ref": "#/$defs/AirtimeProposal"
+            },
+            {
+              "$ref": "#/$defs/PurchaseProposal"
+            }
+          ],
+          "title": "Proposal"
+        },
+        "provenance": {
+          "default": "synthetic",
+          "enum": [
+            "synthetic",
+            "bank"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        },
+        "revision": {
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "status": {
+          "enum": [
+            "proposed",
+            "approval_required",
+            "authorized",
+            "executing",
+            "pending",
+            "uncertain",
+            "completed",
+            "failed",
+            "reversed",
+            "cancelled",
+            "expired"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "operation_id",
+        "proposal",
+        "status",
+        "revision",
+        "created_at",
+        "expires_at"
+      ],
+      "title": "OperationView",
+      "type": "object"
+    },
+    "PaymentDraft": {
+      "additionalProperties": false,
+      "properties": {
+        "account_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Account Id",
+          "type": "string"
+        },
+        "amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "gt": 0,
+          "title": "Amount"
+        },
+        "currency": {
+          "default": "MXN",
+          "pattern": "^[A-Z]{3}$",
+          "title": "Currency",
+          "type": "string"
+        },
+        "entry_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Entry Id",
+          "type": "string"
+        },
+        "reference": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Reference",
+          "type": "string"
+        }
+      },
+      "required": [
+        "account_id",
+        "entry_id",
+        "reference",
+        "amount"
+      ],
+      "title": "PaymentDraft",
+      "type": "object"
+    },
+    "PendingCleared": {
+      "additionalProperties": false,
+      "properties": {
+        "bank_effect": {
+          "const": "not_changed",
+          "default": "not_changed",
+          "title": "Bank Effect",
+          "type": "string"
+        },
+        "kind": {
+          "const": "pending_cleared",
+          "default": "pending_cleared",
+          "title": "Kind",
+          "type": "string"
+        },
+        "scope": {
+          "const": "unsubmitted_capture",
+          "default": "unsubmitted_capture",
+          "title": "Scope",
+          "type": "string"
+        }
+      },
+      "title": "PendingCleared",
+      "type": "object"
+    },
+    "ProcessSearch": {
+      "additionalProperties": false,
+      "properties": {
+        "depart_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Depart Date"
+        },
+        "destination": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Z]{3}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Destination"
+        },
+        "origin": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Z]{3}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Origin"
+        },
+        "passengers": {
+          "anyOf": [
+            {
+              "maximum": 9,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Passengers"
+        },
+        "query": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Query",
+          "type": "string"
+        },
+        "return_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Return Date"
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "title": "ProcessSearch",
+      "type": "object"
+    },
+    "ProductEvidence": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "pattern": "^[0-9]{1,18}\\.[0-9]{2}$",
+          "title": "Amount",
+          "type": "string"
+        },
+        "availability": {
+          "enum": [
+            "available",
+            "unavailable",
+            "unknown"
+          ],
+          "title": "Availability",
+          "type": "string"
+        },
+        "currency": {
+          "pattern": "^[A-Z]{3}$",
+          "title": "Currency",
+          "type": "string"
+        },
+        "evidence_id": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "provenance": {
+          "default": "web",
+          "enum": [
+            "web",
+            "synthetic"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        },
+        "source_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Source Hash",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 300,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "url": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "title",
+        "url",
+        "amount",
+        "currency",
+        "availability",
+        "observed_at",
+        "source_hash"
+      ],
+      "title": "ProductEvidence",
+      "type": "object"
+    },
+    "PublicBrowserFragment": {
+      "additionalProperties": false,
+      "description": "A separately observed public detail panel, with its original capture time.",
+      "properties": {
+        "entity_title": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Entity Title",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "source_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Source Hash",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "view_key": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "View Key",
+          "type": "string"
+        }
+      },
+      "required": [
+        "view_key",
+        "observed_at",
+        "source_hash",
+        "entity_title",
+        "text"
+      ],
+      "title": "PublicBrowserFragment",
+      "type": "object"
+    },
+    "PublicBrowserLink": {
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "url": {
+          "maxLength": 16384,
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "url"
+      ],
+      "title": "PublicBrowserLink",
+      "type": "object"
+    },
+    "PublicBrowserPage": {
+      "additionalProperties": false,
+      "properties": {
+        "entity_passages": {
+          "items": {
+            "$ref": "#/$defs/PublicEntityPassage"
+          },
+          "maxItems": 12,
+          "title": "Entity Passages",
+          "type": "array"
+        },
+        "entity_scoped": {
+          "default": false,
+          "title": "Entity Scoped",
+          "type": "boolean"
+        },
+        "excerpt": {
+          "maxLength": 2000,
+          "title": "Excerpt",
+          "type": "string"
+        },
+        "fragments": {
+          "items": {
+            "$ref": "#/$defs/PublicBrowserFragment"
+          },
+          "maxItems": 12,
+          "title": "Fragments",
+          "type": "array"
+        },
+        "goal_revision": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Goal Revision",
+          "type": "integer"
+        },
+        "identity_graph_complete_for": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 5,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Identity Graph Complete For"
+        },
+        "links": {
+          "items": {
+            "$ref": "#/$defs/PublicBrowserLink"
+          },
+          "maxItems": 12,
+          "title": "Links",
+          "type": "array"
+        },
+        "links_complete": {
+          "default": false,
+          "title": "Links Complete",
+          "type": "boolean"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "passages": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 12,
+          "title": "Passages",
+          "type": "array"
+        },
+        "search_complete_empty": {
+          "default": false,
+          "title": "Search Complete Empty",
+          "type": "boolean"
+        },
+        "source_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Source Hash",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 300,
+          "title": "Title",
+          "type": "string"
+        },
+        "url": {
+          "maxLength": 16384,
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url",
+        "title",
+        "observed_at",
+        "source_hash",
+        "excerpt"
+      ],
+      "title": "PublicBrowserPage",
+      "type": "object"
+    },
+    "PublicBrowserResult": {
+      "additionalProperties": false,
+      "properties": {
+        "actions": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 512,
+          "title": "Actions",
+          "type": "array"
+        },
+        "actions_used": {
+          "maximum": 512,
+          "minimum": 0,
+          "title": "Actions Used",
+          "type": "integer"
+        },
+        "assessment_goal_revision": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assessment Goal Revision"
+        },
+        "blocked_resources": {
+          "items": {
+            "$ref": "#/$defs/PublicResourceBlock"
+          },
+          "maxItems": 24,
+          "title": "Blocked Resources",
+          "type": "array"
+        },
+        "candidates": {
+          "items": {
+            "$ref": "#/$defs/PublicResearchCandidate"
+          },
+          "maxItems": 5,
+          "title": "Candidates",
+          "type": "array"
+        },
+        "execution_criteria": {
+          "items": {
+            "$ref": "#/$defs/PublicExecutionFinding"
+          },
+          "maxItems": 24,
+          "title": "Execution Criteria",
+          "type": "array"
+        },
+        "execution_observations": {
+          "items": {
+            "$ref": "#/$defs/PublicExecutionObservation"
+          },
+          "maxItems": 128,
+          "title": "Execution Observations",
+          "type": "array"
+        },
+        "execution_requirements": {
+          "items": {
+            "$ref": "#/$defs/PublicExecutionRequirement"
+          },
+          "maxItems": 24,
+          "title": "Execution Requirements",
+          "type": "array"
+        },
+        "exhaustion_evidence": {
+          "items": {
+            "$ref": "#/$defs/PublicEvidenceReference"
+          },
+          "maxItems": 3,
+          "title": "Exhaustion Evidence",
+          "type": "array"
+        },
+        "findings": {
+          "items": {
+            "$ref": "#/$defs/PublicFinding"
+          },
+          "maxItems": 3,
+          "title": "Findings",
+          "type": "array"
+        },
+        "goal_revision": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Goal Revision",
+          "type": "integer"
+        },
+        "goal_verified": {
+          "default": false,
+          "title": "Goal Verified",
+          "type": "boolean"
+        },
+        "identity_graph_truncated": {
+          "default": false,
+          "title": "Identity Graph Truncated",
+          "type": "boolean"
+        },
+        "inference_calls_used": {
+          "maximum": 128,
+          "minimum": 0,
+          "title": "Inference Calls Used",
+          "type": "integer"
+        },
+        "kind": {
+          "const": "public_browser",
+          "default": "public_browser",
+          "title": "Kind",
+          "type": "string"
+        },
+        "minimum_options": {
+          "default": 1,
+          "maximum": 5,
+          "minimum": 1,
+          "title": "Minimum Options",
+          "type": "integer"
+        },
+        "outcome_status": {
+          "default": "not_assessed",
+          "enum": [
+            "not_assessed",
+            "satisfied",
+            "partial",
+            "no_match",
+            "blocked"
+          ],
+          "title": "Outcome Status",
+          "type": "string"
+        },
+        "page_health": {
+          "default": "unknown",
+          "enum": [
+            "ready",
+            "degraded",
+            "blocked",
+            "unknown"
+          ],
+          "title": "Page Health",
+          "type": "string"
+        },
+        "pages": {
+          "items": {
+            "$ref": "#/$defs/PublicBrowserPage"
+          },
+          "maxItems": 24,
+          "title": "Pages",
+          "type": "array"
+        },
+        "presentation_error_code": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Presentation Error Code"
+        },
+        "qualification": {
+          "const": "fictional_patient_development_test",
+          "default": "fictional_patient_development_test",
+          "title": "Qualification",
+          "type": "string"
+        },
+        "question": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Question"
+        },
+        "reason_code": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason Code"
+        },
+        "requirements": {
+          "items": {
+            "$ref": "#/$defs/PublicRequirement"
+          },
+          "maxItems": 24,
+          "title": "Requirements",
+          "type": "array"
+        },
+        "state": {
+          "enum": [
+            "running",
+            "observed",
+            "blocked",
+            "budget_exhausted",
+            "unavailable"
+          ],
+          "title": "State",
+          "type": "string"
+        }
+      },
+      "required": [
+        "state",
+        "actions_used",
+        "inference_calls_used"
+      ],
+      "title": "PublicBrowserResult",
+      "type": "object"
+    },
+    "PublicCriterionFinding": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/PublicEvidenceReference"
+          },
+          "maxItems": 3,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "requirement_id": {
+          "pattern": "^r[0-9]{1,2}$",
+          "title": "Requirement Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "supported",
+            "contradicted",
+            "unknown"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "requirement_id",
+        "status"
+      ],
+      "title": "PublicCriterionFinding",
+      "type": "object"
+    },
+    "PublicEntityPassage": {
+      "additionalProperties": false,
+      "description": "An exact source passage contained within one observed entity record.",
+      "properties": {
+        "entity_title": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Entity Title",
+          "type": "string"
+        },
+        "primary": {
+          "default": false,
+          "title": "Primary",
+          "type": "boolean"
+        },
+        "text": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entity_title",
+        "text"
+      ],
+      "title": "PublicEntityPassage",
+      "type": "object"
+    },
+    "PublicError": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "retryable": {
+          "title": "Retryable",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "code",
+        "retryable"
+      ],
+      "title": "PublicError",
+      "type": "object"
+    },
+    "PublicEvidenceReference": {
+      "additionalProperties": false,
+      "properties": {
+        "display_quote": {
+          "anyOf": [
+            {
+              "maxLength": 240,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Display Quote"
+        },
+        "evidence_id": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "quote": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Quote",
+          "type": "string"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "quote"
+      ],
+      "title": "PublicEvidenceReference",
+      "type": "object"
+    },
+    "PublicExecutionFinding": {
+      "additionalProperties": false,
+      "properties": {
+        "observation_ids": {
+          "items": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "maxItems": 5,
+          "title": "Observation Ids",
+          "type": "array"
+        },
+        "requirement_id": {
+          "pattern": "^e[0-9]{1,2}$",
+          "title": "Requirement Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "supported",
+            "contradicted",
+            "unknown"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "requirement_id",
+        "status"
+      ],
+      "title": "PublicExecutionFinding",
+      "type": "object"
+    },
+    "PublicExecutionObservation": {
+      "additionalProperties": false,
+      "properties": {
+        "actions": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 5,
+          "title": "Actions",
+          "type": "array"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        },
+        "goal_revision": {
+          "minimum": 1,
+          "title": "Goal Revision",
+          "type": "integer"
+        },
+        "observation_id": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Observation Id",
+          "type": "string"
+        },
+        "observation_mode": {
+          "enum": [
+            "dom",
+            "vision"
+          ],
+          "title": "Observation Mode",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "url": {
+          "maxLength": 16384,
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "observation_id",
+        "goal_revision",
+        "observed_at",
+        "url",
+        "observation_mode",
+        "actions",
+        "confirmed"
+      ],
+      "title": "PublicExecutionObservation",
+      "type": "object"
+    },
+    "PublicExecutionRequirement": {
+      "additionalProperties": false,
+      "description": "An explicitly requested method, verified against engine execution records.",
+      "properties": {
+        "description": {
+          "maxLength": 300,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^e[0-9]{1,2}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "visual_observation",
+            "navigation",
+            "interaction",
+            "page_search",
+            "other"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "request_quote": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Request Quote",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "description",
+        "request_quote"
+      ],
+      "title": "PublicExecutionRequirement",
+      "type": "object"
+    },
+    "PublicFinding": {
+      "additionalProperties": false,
+      "properties": {
+        "page_index": {
+          "maximum": 23,
+          "minimum": 0,
+          "title": "Page Index",
+          "type": "integer"
+        },
+        "quote": {
+          "maxLength": 400,
+          "minLength": 1,
+          "title": "Quote",
+          "type": "string"
+        }
+      },
+      "required": [
+        "page_index",
+        "quote"
+      ],
+      "title": "PublicFinding",
+      "type": "object"
+    },
+    "PublicRequirement": {
+      "additionalProperties": false,
+      "properties": {
+        "alternative_group": {
+          "anyOf": [
+            {
+              "enum": [
+                "a1",
+                "a2",
+                "a3",
+                "a4"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Alternative Group"
+        },
+        "description": {
+          "maxLength": 300,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "evaluation_scope": {
+          "default": "per_candidate",
+          "enum": [
+            "per_candidate",
+            "result_set"
+          ],
+          "title": "Evaluation Scope",
+          "type": "string"
+        },
+        "field_key": {
+          "anyOf": [
+            {
+              "enum": [
+                "name",
+                "specialty",
+                "address",
+                "price",
+                "date",
+                "time",
+                "timezone",
+                "source_url"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Field Key"
+        },
+        "field_scope": {
+          "anyOf": [
+            {
+              "enum": [
+                "matching_option",
+                "explicit"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Field Scope"
+        },
+        "id": {
+          "pattern": "^r[0-9]{1,2}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "default": "constraint",
+          "enum": [
+            "constraint",
+            "requested_field"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "priority": {
+          "default": "required",
+          "enum": [
+            "required",
+            "preferred"
+          ],
+          "title": "Priority",
+          "type": "string"
+        },
+        "request_quote": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Request Quote",
+          "type": "string"
+        },
+        "source_description": {
+          "anyOf": [
+            {
+              "maxLength": 300,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Description"
+        }
+      },
+      "required": [
+        "id",
+        "description",
+        "request_quote"
+      ],
+      "title": "PublicRequirement",
+      "type": "object"
+    },
+    "PublicResearchCandidate": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate_id": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Id"
+        },
+        "criteria": {
+          "items": {
+            "$ref": "#/$defs/PublicCriterionFinding"
+          },
+          "maxItems": 24,
+          "title": "Criteria",
+          "type": "array"
+        },
+        "display_requirement_ids": {
+          "items": {
+            "pattern": "^r[0-9]{1,2}$",
+            "type": "string"
+          },
+          "maxItems": 3,
+          "title": "Display Requirement Ids",
+          "type": "array"
+        },
+        "evidence_id": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "evidence_id"
+      ],
+      "title": "PublicResearchCandidate",
+      "type": "object"
+    },
+    "PublicResourceBlock": {
+      "additionalProperties": false,
+      "properties": {
+        "origin": {
+          "maxLength": 200,
+          "title": "Origin",
+          "type": "string"
+        },
+        "path": {
+          "maxLength": 500,
+          "title": "Path",
+          "type": "string"
+        },
+        "reason_code": {
+          "pattern": "^[a-z][a-z0-9_]{0,63}$",
+          "title": "Reason Code",
+          "type": "string"
+        },
+        "resource_type": {
+          "enum": [
+            "document",
+            "script",
+            "stylesheet",
+            "font",
+            "image",
+            "xhr",
+            "fetch",
+            "other"
+          ],
+          "title": "Resource Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "origin",
+        "path",
+        "resource_type",
+        "reason_code"
+      ],
+      "title": "PublicResourceBlock",
+      "type": "object"
+    },
+    "PurchaseDraft": {
+      "additionalProperties": false,
+      "properties": {
+        "account_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Account Id",
+          "type": "string"
+        },
+        "amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "gt": 0,
+          "title": "Amount"
+        },
+        "category": {
+          "enum": [
+            "flight",
+            "stay",
+            "cart"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "currency": {
+          "pattern": "^[A-Z]{3}$",
+          "title": "Currency",
+          "type": "string"
+        },
+        "description": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "evidence_ref": {
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Evidence Ref",
+          "type": "string"
+        },
+        "expires_at": {
+          "format": "date-time",
+          "title": "Expires At",
+          "type": "string"
+        },
+        "provider_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Provider Id",
+          "type": "string"
+        },
+        "quote_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Quote Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "account_id",
+        "quote_id",
+        "category",
+        "provider_id",
+        "amount",
+        "currency",
+        "expires_at",
+        "description",
+        "evidence_ref"
+      ],
+      "title": "PurchaseDraft",
+      "type": "object"
+    },
+    "PurchaseProposal": {
+      "additionalProperties": false,
+      "properties": {
+        "draft": {
+          "$ref": "#/$defs/PurchaseDraft"
+        },
+        "kind": {
+          "const": "purchase",
+          "default": "purchase",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "draft"
+      ],
+      "title": "PurchaseProposal",
+      "type": "object"
+    },
+    "Question": {
+      "additionalProperties": false,
+      "properties": {
+        "accounts": {
+          "items": {
+            "$ref": "#/$defs/AccountChoice"
+          },
+          "title": "Accounts",
+          "type": "array"
+        },
+        "contacts": {
+          "items": {
+            "$ref": "#/$defs/ContactChoice"
+          },
+          "maxItems": 20,
+          "title": "Contacts",
+          "type": "array"
+        },
+        "kind": {
+          "const": "question",
+          "default": "question",
+          "title": "Kind",
+          "type": "string"
+        },
+        "missing": {
+          "items": {
+            "enum": [
+              "account",
+              "recipient",
+              "amount",
+              "currency",
+              "service",
+              "reference",
+              "quote",
+              "goal",
+              "origin",
+              "destination",
+              "depart_date",
+              "return_date",
+              "passengers",
+              "deposit_method",
+              "deposit_destination"
+            ],
+            "type": "string"
+          },
+          "title": "Missing",
+          "type": "array"
+        },
+        "prompt": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prompt"
+        },
+        "reason": {
+          "enum": [
+            "missing_fields",
+            "account_required",
+            "preference_unavailable",
+            "ambiguous_goal",
+            "phone_required"
+          ],
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason"
+      ],
+      "title": "Question",
+      "type": "object"
+    },
+    "ServiceCatalog": {
+      "additionalProperties": false,
+      "properties": {
+        "entries": {
+          "items": {
+            "$ref": "#/$defs/CatalogEntry"
+          },
+          "maxItems": 1000,
+          "title": "Entries",
+          "type": "array"
+        },
+        "kind": {
+          "const": "catalog",
+          "default": "catalog",
+          "title": "Kind",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "provenance": {
+          "enum": [
+            "synthetic",
+            "bank"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        },
+        "route_binding": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Route Binding"
+        },
+        "route_id": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_-]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Route Id"
+        },
+        "state": {
+          "enum": [
+            "ready",
+            "empty",
+            "unavailable"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "state",
+        "version",
+        "entries",
+        "observed_at",
+        "provenance"
+      ],
+      "title": "ServiceCatalog",
+      "type": "object"
+    },
+    "StayDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "checkIn": {
+          "format": "date",
+          "title": "Checkin",
+          "type": "string"
+        },
+        "checkOut": {
+          "format": "date",
+          "title": "Checkout",
+          "type": "string"
+        },
+        "city": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "City",
+          "type": "string"
+        },
+        "guests": {
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Guests",
+          "type": "integer"
+        },
+        "kind": {
+          "const": "stay",
+          "default": "stay",
+          "title": "Kind",
+          "type": "string"
+        },
+        "propertyName": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Propertyname",
+          "type": "string"
+        },
+        "rooms": {
+          "maximum": 10,
+          "minimum": 1,
+          "title": "Rooms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "propertyName",
+        "city",
+        "checkIn",
+        "checkOut",
+        "guests",
+        "rooms"
+      ],
+      "title": "StayDetail",
+      "type": "object"
+    },
+    "SyntheticCommerceQuote": {
+      "additionalProperties": false,
+      "properties": {
+        "detail": {
+          "discriminator": {
+            "mapping": {
+              "cart": "#/$defs/CartDetail",
+              "flight": "#/$defs/FlightDetail",
+              "stay": "#/$defs/StayDetail"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/FlightDetail"
+            },
+            {
+              "$ref": "#/$defs/StayDetail"
+            },
+            {
+              "$ref": "#/$defs/CartDetail"
+            }
+          ],
+          "title": "Detail"
+        },
+        "draft": {
+          "$ref": "#/$defs/PurchaseDraft"
+        },
+        "provenance": {
+          "const": "synthetic",
+          "default": "synthetic",
+          "title": "Provenance",
+          "type": "string"
+        }
+      },
+      "required": [
+        "draft",
+        "detail"
+      ],
+      "title": "SyntheticCommerceQuote",
+      "type": "object"
+    },
+    "TaskControlAnswer": {
+      "additionalProperties": false,
+      "description": "Substantive answer composed after control; task state is rendered separately.",
+      "properties": {
+        "text": {
+          "maxLength": 6000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "title": "TaskControlAnswer",
+      "type": "object"
+    },
+    "TaskControlResult": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "enum": [
+            "list",
+            "progress",
+            "correct",
+            "cancel",
+            "select",
+            "started",
+            "answer",
+            "takeover",
+            "return_control",
+            "resume"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "answer": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TaskControlAnswer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "answer_unavailable": {
+          "default": false,
+          "title": "Answer Unavailable",
+          "type": "boolean"
+        },
+        "control_applied": {
+          "additionalProperties": {
+            "type": "boolean"
+          },
+          "maxProperties": 4,
+          "title": "Control Applied",
+          "type": "object"
+        },
+        "kind": {
+          "const": "task_control",
+          "default": "task_control",
+          "title": "Kind",
+          "type": "string"
+        },
+        "task_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "maxItems": 50,
+          "title": "Task Ids",
+          "type": "array"
+        },
+        "task_labels": {
+          "additionalProperties": {
+            "maxLength": 2000,
+            "type": "string"
+          },
+          "maxProperties": 50,
+          "title": "Task Labels",
+          "type": "object"
+        },
+        "task_messages": {
+          "additionalProperties": {
+            "maxLength": 4000,
+            "type": "string"
+          },
+          "maxProperties": 4,
+          "title": "Task Messages",
+          "type": "object"
+        },
+        "task_revisions": {
+          "additionalProperties": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "maxProperties": 50,
+          "title": "Task Revisions",
+          "type": "object"
+        },
+        "task_states": {
+          "additionalProperties": {
+            "enum": [
+              "queued",
+              "running",
+              "waiting_input",
+              "waiting_authorization",
+              "waiting_timer",
+              "cancel_requested",
+              "completed",
+              "cancelled",
+              "expired",
+              "failed"
+            ],
+            "type": "string"
+          },
+          "maxProperties": 4,
+          "title": "Task States",
+          "type": "object"
+        }
+      },
+      "required": [
+        "action"
+      ],
+      "title": "TaskControlResult",
+      "type": "object"
+    },
+    "TenantLink": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": true,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "id": {
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,79}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "purpose": {
+          "default": "support",
+          "enum": [
+            "support",
+            "product",
+            "handoff"
+          ],
+          "title": "Purpose",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "url": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "url"
+      ],
+      "title": "TenantLink",
+      "type": "object"
+    },
+    "TransferDraft": {
+      "additionalProperties": false,
+      "properties": {
+        "account_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Account Id",
+          "type": "string"
+        },
+        "amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "gt": 0,
+          "title": "Amount"
+        },
+        "clabe": {
+          "title": "Clabe",
+          "type": "string"
+        },
+        "concept": {
+          "default": "Transferencia",
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Concept",
+          "type": "string"
+        },
+        "currency": {
+          "const": "MXN",
+          "default": "MXN",
+          "title": "Currency",
+          "type": "string"
+        }
+      },
+      "required": [
+        "account_id",
+        "clabe",
+        "amount"
+      ],
+      "title": "TransferDraft",
+      "type": "object"
+    },
+    "TransferProposal": {
+      "additionalProperties": false,
+      "properties": {
+        "draft": {
+          "$ref": "#/$defs/TransferDraft"
+        },
+        "kind": {
+          "const": "transfer",
+          "default": "transfer",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "draft"
+      ],
+      "title": "TransferProposal",
+      "type": "object"
+    },
+    "UnsupportedGoal": {
+      "additionalProperties": false,
+      "properties": {
+        "capabilities": {
+          "items": {
+            "enum": [
+              "assistant.knowledge",
+              "assistant.conversation",
+              "assistant.activity",
+              "bank.balance",
+              "bank.account_info",
+              "bank.history",
+              "bank.catalog",
+              "bank.transfer",
+              "bank.transfer_phone",
+              "bank.bill",
+              "bank.topup",
+              "bank.contacts",
+              "bank.cash_in",
+              "bank.cash_out",
+              "bank.card",
+              "bank.rewards",
+              "bank.challenges",
+              "bank.process",
+              "commerce.purchase",
+              "account.onboard",
+              "presentation.artifact",
+              "tasks.list",
+              "tasks.cancel",
+              "tasks.watch",
+              "browser.shopping",
+              "phone.reservation",
+              "service.uber",
+              "service.uber_eats",
+              "service.rappi",
+              "service.opentable",
+              "service.google_businesses",
+              "service.doctoralia",
+              "service.didi_food",
+              "service.didi_rides",
+              "unsupported"
+            ],
+            "type": "string"
+          },
+          "title": "Capabilities",
+          "type": "array"
+        },
+        "kind": {
+          "const": "unsupported",
+          "default": "unsupported",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "capabilities"
+      ],
+      "title": "UnsupportedGoal",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "api_version": {
+      "const": "2",
+      "default": "2",
+      "title": "Api Version",
+      "type": "string"
+    },
+    "event_id": {
+      "minimum": 1,
+      "title": "Event Id",
+      "type": "integer"
+    },
+    "phase": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Phase"
+    },
+    "task": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AssistantView"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "task_id": {
+      "format": "uuid",
+      "title": "Task Id",
+      "type": "string"
+    },
+    "type": {
+      "enum": [
+        "accepted",
+        "progress",
+        "completed",
+        "failed",
+        "interrupted"
+      ],
+      "title": "Type",
+      "type": "string"
+    }
+  },
+  "required": [
+    "event_id",
+    "task_id",
+    "type"
+  ],
+  "title": "AssistantEvent",
+  "type": "object"
+}

@@ -1,0 +1,531 @@
+{
+  "endpoints": {
+    "/v1/engine/accounts": {
+      "request": {
+        "$defs": {
+          "BackendContext": {
+            "additionalProperties": false,
+            "properties": {
+              "agent_account_id": {
+                "title": "Agent Account Id",
+                "type": "string"
+              },
+              "client_id": {
+                "title": "Client Id",
+                "type": "string"
+              },
+              "grant_id": {
+                "title": "Grant Id",
+                "type": "string"
+              },
+              "membership_id": {
+                "title": "Membership Id",
+                "type": "string"
+              },
+              "tenant_id": {
+                "title": "Tenant Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "tenant_id",
+              "membership_id",
+              "client_id",
+              "agent_account_id",
+              "grant_id"
+            ],
+            "title": "BackendContext",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "api_version": {
+            "const": "1",
+            "title": "Api Version",
+            "type": "string"
+          },
+          "context": {
+            "$ref": "#/$defs/BackendContext"
+          }
+        },
+        "required": [
+          "api_version",
+          "context"
+        ],
+        "title": "BackendEnvelope",
+        "type": "object"
+      },
+      "response": {
+        "$defs": {
+          "BackendAccount": {
+            "additionalProperties": false,
+            "properties": {
+              "account_id": {
+                "maxLength": 100,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "title": "Account Id",
+                "type": "string"
+              },
+              "currency": {
+                "pattern": "^[A-Z]{3}$",
+                "title": "Currency",
+                "type": "string"
+              },
+              "label": {
+                "maxLength": 100,
+                "minLength": 1,
+                "title": "Label",
+                "type": "string"
+              }
+            },
+            "required": [
+              "account_id",
+              "label",
+              "currency"
+            ],
+            "title": "BackendAccount",
+            "type": "object"
+          },
+          "BackendContext": {
+            "additionalProperties": false,
+            "properties": {
+              "agent_account_id": {
+                "title": "Agent Account Id",
+                "type": "string"
+              },
+              "client_id": {
+                "title": "Client Id",
+                "type": "string"
+              },
+              "grant_id": {
+                "title": "Grant Id",
+                "type": "string"
+              },
+              "membership_id": {
+                "title": "Membership Id",
+                "type": "string"
+              },
+              "tenant_id": {
+                "title": "Tenant Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "tenant_id",
+              "membership_id",
+              "client_id",
+              "agent_account_id",
+              "grant_id"
+            ],
+            "title": "BackendContext",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "accounts": {
+            "items": {
+              "$ref": "#/$defs/BackendAccount"
+            },
+            "maxItems": 100,
+            "title": "Accounts",
+            "type": "array"
+          },
+          "api_version": {
+            "const": "1",
+            "title": "Api Version",
+            "type": "string"
+          },
+          "context": {
+            "$ref": "#/$defs/BackendContext"
+          }
+        },
+        "required": [
+          "api_version",
+          "context",
+          "accounts"
+        ],
+        "title": "AccountsReply",
+        "type": "object"
+      }
+    },
+    "/v1/engine/authorize": {
+      "request": {
+        "$defs": {
+          "BackendContext": {
+            "additionalProperties": false,
+            "properties": {
+              "agent_account_id": {
+                "title": "Agent Account Id",
+                "type": "string"
+              },
+              "client_id": {
+                "title": "Client Id",
+                "type": "string"
+              },
+              "grant_id": {
+                "title": "Grant Id",
+                "type": "string"
+              },
+              "membership_id": {
+                "title": "Membership Id",
+                "type": "string"
+              },
+              "tenant_id": {
+                "title": "Tenant Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "tenant_id",
+              "membership_id",
+              "client_id",
+              "agent_account_id",
+              "grant_id"
+            ],
+            "title": "BackendContext",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "maxLength": 100,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "action": {
+            "enum": [
+              "balance:read",
+              "preferences:write"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "api_version": {
+            "const": "1",
+            "title": "Api Version",
+            "type": "string"
+          },
+          "context": {
+            "$ref": "#/$defs/BackendContext"
+          }
+        },
+        "required": [
+          "api_version",
+          "context",
+          "action",
+          "account_id"
+        ],
+        "title": "AuthorizationRequest",
+        "type": "object"
+      },
+      "response": {
+        "$defs": {
+          "BackendContext": {
+            "additionalProperties": false,
+            "properties": {
+              "agent_account_id": {
+                "title": "Agent Account Id",
+                "type": "string"
+              },
+              "client_id": {
+                "title": "Client Id",
+                "type": "string"
+              },
+              "grant_id": {
+                "title": "Grant Id",
+                "type": "string"
+              },
+              "membership_id": {
+                "title": "Membership Id",
+                "type": "string"
+              },
+              "tenant_id": {
+                "title": "Tenant Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "tenant_id",
+              "membership_id",
+              "client_id",
+              "agent_account_id",
+              "grant_id"
+            ],
+            "title": "BackendContext",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "action": {
+            "enum": [
+              "balance:read",
+              "preferences:write"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "api_version": {
+            "const": "1",
+            "title": "Api Version",
+            "type": "string"
+          },
+          "authorized": {
+            "title": "Authorized",
+            "type": "boolean"
+          },
+          "context": {
+            "$ref": "#/$defs/BackendContext"
+          }
+        },
+        "required": [
+          "api_version",
+          "context",
+          "authorized",
+          "action",
+          "account_id"
+        ],
+        "title": "AuthorizationReply",
+        "type": "object"
+      }
+    },
+    "/v1/engine/balance": {
+      "request": {
+        "$defs": {
+          "BackendContext": {
+            "additionalProperties": false,
+            "properties": {
+              "agent_account_id": {
+                "title": "Agent Account Id",
+                "type": "string"
+              },
+              "client_id": {
+                "title": "Client Id",
+                "type": "string"
+              },
+              "grant_id": {
+                "title": "Grant Id",
+                "type": "string"
+              },
+              "membership_id": {
+                "title": "Membership Id",
+                "type": "string"
+              },
+              "tenant_id": {
+                "title": "Tenant Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "tenant_id",
+              "membership_id",
+              "client_id",
+              "agent_account_id",
+              "grant_id"
+            ],
+            "title": "BackendContext",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "account_id": {
+            "maxLength": 100,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "title": "Account Id",
+            "type": "string"
+          },
+          "api_version": {
+            "const": "1",
+            "title": "Api Version",
+            "type": "string"
+          },
+          "context": {
+            "$ref": "#/$defs/BackendContext"
+          }
+        },
+        "required": [
+          "api_version",
+          "context",
+          "account_id"
+        ],
+        "title": "BalanceRequest",
+        "type": "object"
+      },
+      "response": {
+        "$defs": {
+          "AccountChoice": {
+            "additionalProperties": false,
+            "properties": {
+              "account_id": {
+                "title": "Account Id",
+                "type": "string"
+              },
+              "currency": {
+                "title": "Currency",
+                "type": "string"
+              },
+              "label": {
+                "title": "Label",
+                "type": "string"
+              }
+            },
+            "required": [
+              "account_id",
+              "label",
+              "currency"
+            ],
+            "title": "AccountChoice",
+            "type": "object"
+          },
+          "BackendContext": {
+            "additionalProperties": false,
+            "properties": {
+              "agent_account_id": {
+                "title": "Agent Account Id",
+                "type": "string"
+              },
+              "client_id": {
+                "title": "Client Id",
+                "type": "string"
+              },
+              "grant_id": {
+                "title": "Grant Id",
+                "type": "string"
+              },
+              "membership_id": {
+                "title": "Membership Id",
+                "type": "string"
+              },
+              "tenant_id": {
+                "title": "Tenant Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "tenant_id",
+              "membership_id",
+              "client_id",
+              "agent_account_id",
+              "grant_id"
+            ],
+            "title": "BackendContext",
+            "type": "object"
+          },
+          "BalanceResult": {
+            "additionalProperties": false,
+            "properties": {
+              "account": {
+                "$ref": "#/$defs/AccountChoice"
+              },
+              "available_to_spend": {
+                "$ref": "#/$defs/Money"
+              },
+              "kind": {
+                "const": "balance",
+                "default": "balance",
+                "title": "Kind",
+                "type": "string"
+              },
+              "observed_at": {
+                "format": "date-time",
+                "title": "Observed At",
+                "type": "string"
+              },
+              "provenance": {
+                "default": "synthetic",
+                "enum": [
+                  "synthetic",
+                  "bank"
+                ],
+                "title": "Provenance",
+                "type": "string"
+              }
+            },
+            "required": [
+              "account",
+              "available_to_spend",
+              "observed_at"
+            ],
+            "title": "BalanceResult",
+            "type": "object"
+          },
+          "Money": {
+            "additionalProperties": false,
+            "properties": {
+              "amount": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "title": "Amount"
+              },
+              "currency": {
+                "pattern": "^[A-Z]{3}$",
+                "title": "Currency",
+                "type": "string"
+              }
+            },
+            "required": [
+              "amount",
+              "currency"
+            ],
+            "title": "Money",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "api_version": {
+            "const": "1",
+            "title": "Api Version",
+            "type": "string"
+          },
+          "balance": {
+            "$ref": "#/$defs/BalanceResult"
+          },
+          "context": {
+            "$ref": "#/$defs/BackendContext"
+          }
+        },
+        "required": [
+          "api_version",
+          "context",
+          "balance"
+        ],
+        "title": "BalanceReply",
+        "type": "object"
+      }
+    }
+  },
+  "profile": "engine-bank-connector-v1"
+}

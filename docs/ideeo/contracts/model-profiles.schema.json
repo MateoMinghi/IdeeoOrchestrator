@@ -1,0 +1,178 @@
+{
+  "$defs": {
+    "ModelProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "credential_env": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Z][A-Z0-9_]{0,99}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Credential Env"
+        },
+        "enabled": {
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "fallback_profiles": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 2,
+          "title": "Fallback Profiles",
+          "type": "array"
+        },
+        "id": {
+          "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "input_usd_per_million": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9]{1,6}(\\.[0-9]{1,8})?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Input Usd Per Million"
+        },
+        "label": {
+          "default": "",
+          "maxLength": 100,
+          "title": "Label",
+          "type": "string"
+        },
+        "max_output_tokens": {
+          "default": 1024,
+          "maximum": 4096,
+          "minimum": 128,
+          "title": "Max Output Tokens",
+          "type": "integer"
+        },
+        "model": {
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9/._:-]*$",
+          "title": "Model",
+          "type": "string"
+        },
+        "output_usd_per_million": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9]{1,6}(\\.[0-9]{1,8})?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Output Usd Per Million"
+        },
+        "pricing_reference": {
+          "default": "",
+          "maxLength": 200,
+          "pattern": "^$|^[A-Za-z0-9][A-Za-z0-9_.:/#?=&%-]*$",
+          "title": "Pricing Reference",
+          "type": "string"
+        },
+        "processing_approvals": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 1000,
+          "title": "Processing Approvals",
+          "type": "object"
+        },
+        "provider": {
+          "enum": [
+            "gemini",
+            "openrouter",
+            "openai"
+          ],
+          "title": "Provider",
+          "type": "string"
+        },
+        "purposes": {
+          "items": {
+            "enum": [
+              "conversation",
+              "configuration",
+              "knowledge"
+            ],
+            "type": "string"
+          },
+          "maxItems": 3,
+          "title": "Purposes",
+          "type": "array"
+        },
+        "qualification_reference": {
+          "default": "",
+          "maxLength": 200,
+          "title": "Qualification Reference",
+          "type": "string"
+        },
+        "synthetic_tenants": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 1000,
+          "title": "Synthetic Tenants",
+          "type": "array"
+        },
+        "tenants": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 1000,
+          "title": "Tenants",
+          "type": "array"
+        },
+        "timeout_seconds": {
+          "default": 25,
+          "maximum": 60,
+          "minimum": 1,
+          "title": "Timeout Seconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "provider",
+        "model"
+      ],
+      "title": "ModelProfile",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "api_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Api Version",
+      "type": "string"
+    },
+    "profiles": {
+      "items": {
+        "$ref": "#/$defs/ModelProfile"
+      },
+      "maxItems": 100,
+      "title": "Profiles",
+      "type": "array"
+    }
+  },
+  "title": "ModelCatalog",
+  "type": "object"
+}

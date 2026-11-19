@@ -1,0 +1,8 @@
+{
+  "api_version": "1",
+  "environment": "preproduction",
+  "tenant_id": "payme-preproduction",
+  "balance_semantics": "available_to_spend",
+  "balance_contract_reference": "docs/contracts/TENANT_BACKENDS.md#whatsbank-preproduction-qualification",
+  "accounts": []
+}

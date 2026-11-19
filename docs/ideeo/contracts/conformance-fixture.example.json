@@ -1,0 +1,11 @@
+{
+  "account": {
+    "account_id": "everyday-a",
+    "label": "Cuenta diaria",
+    "currency": "MXN"
+  },
+  "available_to_spend": {
+    "amount": "1250.10",
+    "currency": "MXN"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "tenants": [
+    {
+      "tenant_id": "demo-bank",
+      "search_url": "https://listado.mercadolibre.com.mx/{query}",
+      "destinations": {
+        "listado.mercadolibre.com.mx": ["/"],
+        "www.mercadolibre.com.mx": ["/"],
+        "articulo.mercadolibre.com.mx": ["/MLM-"]
+      },
+      "synthetic_localhost": false
+    }
+  ]
+}
