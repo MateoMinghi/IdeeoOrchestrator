@@ -7,7 +7,7 @@ export type AdmissionContext = Readonly<{
   grant_id: string;
 }>;
 
-/** Proposed tenant status request; this extension is not implemented by the inspected PayMe broker. */
+/** Tenant status request; admission does not authorize tools, disclosure or financial operations. */
 export type AuthorityAdmissionRequest = Readonly<{
   api_version: 'ideeo-admission-1';
   request_id: string;

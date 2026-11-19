@@ -8,9 +8,11 @@ This repository is the OpenMaus-based candidate for Ideeo's shared multi-tenant 
 2. [Project context](product/PROJECT_CONTEXT.md), [UX](product/UX.md) and [data lifecycle](product/DATA_OWNERSHIP_AND_LIFECYCLE.md): shared product scope and behavior.
 3. [Candidate implementation status](IMPLEMENTATION_STATUS.md): what exists here versus what still requires implementation and qualification.
    Read the [tenant session integration](contracts/TENANT_SESSION_INTEGRATION.md) for the inspected PayMe cookie-to-token flow and SDK/WhatsApp client mapping.
-   The [admission contract](contracts/ADMISSION.md) describes the implemented isolated entry, synthetic current-status checks and the missing real tenant endpoint.
+   The [admission contract](contracts/ADMISSION.md) describes the isolated entry, actual PayMe tenant endpoint and synthetic integration, including unsupported backend evidence and remaining qualification.
 4. Applicable [contracts](contracts/SHARED_INTERFACE.md), [decision applicability](decisions/APPLICABILITY.md), [compliance policy](policies/COMPLIANCE.md) and [readiness policy](policies/PRODUCTION_READINESS.md).
 5. [Adaptation plan](../../output/ideeo-openmaus-product-adaptation-plan-2026-11-18.md) and the repository's [isolated verification guide](../verification/README.md).
+
+For implementation pickup, start with [the tenant API integration status](IMPLEMENTATION_STATUS.md#tenant-api-admission-local-integration-implemented). The original synthetic admission implementation is published on `dev` at `27865fc`; the subsequent PayMe integration is delivered to local `dev` (API `4efeaf5`) after isolated-worktree verification. The full conversation/UI/persistence journey remains incomplete.
 
 ## How to interpret the imported documents
 

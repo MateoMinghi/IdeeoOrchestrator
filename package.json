@@ -52,6 +52,7 @@
     "test:watch": "vitest",
     "test:ideeo-auth": "node --experimental-strip-types --test server/ideeo/identity.node-test.ts",
     "test:ideeo-admission": "node --experimental-strip-types --test server/ideeo/identity.node-test.ts server/ideeo/admission.node-test.ts",
+    "test:ideeo-payme": "node --experimental-strip-types scripts/testing/payme-admission.ts",
     "start:ideeo": "node --experimental-strip-types server/ideeo-main.ts",
     "test:cua": "pnpm build:cua && node scripts/smoke-cua.mjs",
     "test:cua-container": "node scripts/smoke-cua-container.mjs",

@@ -2,6 +2,20 @@
 
 Assessment date: 18 November 2026.
 
+Implementation progress updated: 19 November 2026. The original assessment and delivery windows below remain a dependency forecast. Use the [current implementation status](../docs/ideeo/IMPLEMENTATION_STATUS.md) for completed work and the next acceptance gate.
+
+## Implementation progress
+
+The documentation import, rewritten architecture and initial baseline are present. Commit `27865fcabadf5e5518263463d40d48c508f5d4fc`, published on `dev`, adds the tenant-token verifier and isolated product admission service. It supplies `GET /v2/session`, verified SDK/WhatsApp client mapping, bounded current-status requests and two independently authenticated synthetic tenant services. The reported verification is 53 passing Node test results, focused typecheck/lint and successful detection of deliberately removed revocation/context-binding guards; see the [verification record](../docs/ideeo/development/VERIFICATION.md).
+
+The implemented bootstrap uses `server/ideeo-main.ts` and `server/host/ideeo.ts`, separately from the upstream `server/index.ts`. This refines the original file map: importing the upstream root would initialize ambient application services before product admission. `server/routes/ideeo-session.ts` is a closed product handler, not an addition to the upstream device-authenticated route table. This proves runtime import isolation in the fixture, not complete release-artifact exclusion of enterprise code.
+
+**Tenant API milestone:** the [admission contract](../docs/ideeo/contracts/ADMISSION.md) is now implemented in an isolated PayMe API worktree based on `0d111de`, branch `ideeo-admission-integration`. The actual API and product entry passed a disposable-resource integration using tenant SQL/authentication code and synthetic status evidence. SDK cookie exchange, WhatsApp, fresh revocation/rebinding and safe unavailability are exercised. Sandbox success requires the new `ideeo-bank-admission-1` source extension; existing backend support is not claimed. Native WhatsApp projects current tenant-owned A0 records; hosted Armoni/native SDK remain unavailable where evidence is unsupported. These changes are delivered to local `dev` (API `4efeaf5`); real destinations remain disabled.
+
+The Days 1–2 foundation is therefore **partially complete**: product startup, token admission, synthetic tenant isolation and actual tenant API code integration with disposable resources exist; real source qualification, product database roles/records and independent Go authority integration do not. Conversation persistence, controlled model execution, typed tools, UI/reload, banking, durable tasks and browser acceptance remain to be implemented. None of the fourteen full product journeys is established by the admission-only checks.
+
+After reviewing this tenant integration evidence, the next product increment is encrypted conversation storage, followed by the controlled OpenMaus loop and complete UI/reload vertical slice. This admission-only milestone does not start that work. The [status page](../docs/ideeo/IMPLEMENTATION_STATUS.md) records implementation and external acceptance gaps. Recheck source branches and preserve existing changes before continuing; the sibling native-runtime plan remains a different candidate's direction.
+
 Local context: [documentation guide](../docs/ideeo/README.md), [rewritten architecture](../docs/ideeo/product/architecture/arquitectura-motor-agentes-rev4.html), and [candidate implementation status](../docs/ideeo/IMPLEMENTATION_STATUS.md). The documentation import preserves source provenance; it does not qualify runtime behavior.
 
 Repository-specific reassessment: copied from `OpenMausBot/output/ideeo-openmaus-product-adaptation-plan-2026-11-18.md` and revised against IdeeoOrchestrator's current source. The original sibling file is unchanged. Its SHA-256 at copy time was `299191545ab3f8668319108d5477841f324a6e25d03a62c27eb39479dec5a890`.

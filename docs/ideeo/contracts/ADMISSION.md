@@ -35,7 +35,7 @@ An authority HTTP 401/403 denies admission. Other non-200 statuses are unavailab
 
 ## Tenant status extension
 
-**External integration gap:** `POST /v2/engine/admission` and `ideeo-admission-1` are a proposed tenant-service extension implemented by the disposable fixture only. The inspected PayMe API at `0d111de98b996d68b4af30115de620c2254973ef` does not expose it. Its broker validates proof/context and has current checks in distinct sandbox, hosted-bank and native-bank paths. A successful existing `context` response does not explicitly attest all the states required here. No PayMe API files were changed by this implementation.
+**Implemented local integration:** `POST /v2/engine/admission` now implements `ideeo-admission-1` in the PayMe API worktree `.worktrees/payme-api-admission`, based on `0d111de98b996d68b4af30115de620c2254973ef`. The actual API and product entry are verified together using disposable SQL and synthetic source evidence. The API checkout's local `dev` now contains commit `4efeaf56d3e7f47248d76938f979b0d5a7d7b6cf`. This does not qualify existing live backend status support: generic context success never substitutes for the explicit evidence below.
 
 The request uses the existing broker authentication pattern: workload `Authorization: Bearer` plus the original tenant proof in `X-Authority-Delegation`. The latter is released only for a configured audience present in the signed token. The authority must independently verify both proofs, the workload's tenant/client permissions, the customer's exact context and its association with current records. An engine-supplied context is not authority by itself.
 
@@ -69,7 +69,20 @@ Statuses are `active`, `inactive`, `paused`, `revoked` or `expired`; only active
 
 [`shared/ideeo/admission.ts`](../../../shared/ideeo/admission.ts) defines these wire types. The client validates response shape, bounded scope values, current timestamps and complete caller/correlation binding. It accepts only JSON, limits the response to 16 KiB and imposes a total deadline of 50–5,000 ms. It makes one request through a dedicated HTTP agent, forwards no inbound cookies or identity-hint headers, and does not follow redirects or inherit an ambient proxy. No approval is cached. A disconnected caller aborts the pending authority request.
 
-The tenant must implement and qualify this status projection before real integration, including all backend variants, bank-link semantics, current grant/account ownership and current channel status. Admission cannot substitute for Go financial authority or bank final enforcement. Revocation after an admission response is handled by a fresh action/disclosure check at its own execution boundary, not by treating this response as an enduring permit.
+The PayMe route validates an 8 KiB strict request, exact proof/context/authentication binding, registered workload tenant/client, and current SQL records. SDK requires exactly one session matching signed second-resolution `auth_time`, with current revocation/absolute/idle expiry checks; ambiguity denies. WhatsApp requires the enabled channel, exact realm/generation/authentication time and current expiry/revocation. Local authority is checked again after backend I/O. Responses have a 2.5-second deadline; in-flight driver SQL may finish afterward but cannot trigger a subsequent bank call or admit the request. The tenant uses safe API error envelopes with 401/403/422/503, which the product maps to its public errors above.
+
+| PayMe variant | Evidence and supported behavior |
+| --- | --- |
+| Sandbox SDK/WhatsApp | Active tenant user/link with exact caller binding, current SDK session or WhatsApp binding, and one dedicated status-only backend response. No generic context, balances or history. |
+| Hosted Armoni | Unavailable: existing technical IDs/context do not establish current agent/grant status/expiry; account lookup retrieves balances and is not used for admission. |
+| Native preproduction WhatsApp | Current tenant-owned identity/technical assistant, user, exact A0 owner grant/account/capability and channel records. Identity status controls the local assistant lifecycle. No native bank identity decryption or provider calls; this does not attest bank membership, bank-account status or bank-issued mandates. |
+| Native SDK | Unavailable until the host/token/identity profile is adopted. No backend fallback. |
+
+The sandbox connector introduces a separate source extension: `POST /v2/engine/admission` with `api_version: ideeo-bank-admission-1`, `request_id` and the exact bank `context`. It authenticates with the configured bank workload credential and sends no customer JWT/cookie/channel proof. The source must independently verify workload tenant/client permission and current member/client/agent/grant association, then echo the request fields plus `checked_at`, `membership`, `agent_account` and `grant`. For WhatsApp, the API first validates the tenant channel and maps only to the stored registered bank client `payme-app`. It validates strict fields/correlation/freshness, limits the JSON response to 16 KiB and the total call to 1.5 seconds, and has no redirect, retry, cache or proxy inheritance.
+
+**Source adoption gap:** the new bank status extension exists only in the disposable synthetic source. Existing sandbox/bank support is not claimed; missing/unsupported evidence returns unavailable. The API's coordinated integration document is delivered in the registered worktree at repository-relative path `docs/integrations/ideeo-admission.md`, and is now also present in the original API checkout on local `dev`. Source qualification remains necessary before real integration.
+
+Admission cannot substitute for Go financial authority or bank final enforcement. Revocation after an admission response requires a fresh action/disclosure check at its execution boundary; this response is not an enduring permit.
 
 ## Startup and trusted configuration
 
@@ -83,8 +96,10 @@ Each tenant contains `issuer`, `tenantId`, `audience`, `publicKeys`, `clients`, 
 
 ## Verification and remaining product work
 
+The original candidate boundary is published in commit `27865fc` on `dev`. The tenant endpoint and cross-repository synthetic integration are subsequent local `dev` changes; see [current implementation status](../IMPLEMENTATION_STATUS.md#tenant-api-admission-local-integration-implemented) and [verification](../development/VERIFICATION.md#actual-payme-api-synthetic-integration--19-november-2026). The original two-tenant fixture remains a separate regression/isolation check.
+
 The [isolated admission fixture](../../verification/ideeo.md) starts the actual product entry as a separate process with temporary configuration/home, generated keys and two separate tenant HTTP services. Negative cases include revoked grants, paused agents, stale/replaced WhatsApp bindings, cross-tenant/caller claims, removed configuration, missing secrets, wrong workload credentials, unavailable authority, invalid replies and replay. Deliberately disabled guards must cause the corresponding acceptance checks to fail.
 
-Conversation, PostgreSQL, Go financial authority, task admission, banking handoffs, real tenant access and intended-consumer acceptance are not implemented by this boundary. The next product increment can attach encrypted conversation records and the OpenMaus loop to it while preserving current checks at each protected action and disclosure.
+Conversation storage, product PostgreSQL, Go financial authority, task admission, banking handoffs, real tenant access and intended-consumer acceptance are not implemented by this boundary. Disposable PGlite verifies actual tenant SQL/migrations, not product storage or production PostgreSQL operations. The next product increment can attach encrypted conversation records and the OpenMaus loop while preserving fresh checks at each protected action and disclosure.
 
 Affected existing controls include legal-register LR-01, LR-04 and LR-05; ISO/IEC 27001 identity/access controls 5.15–5.18, secure authentication 8.5, logging 8.15 and security testing 8.29. These are engineering mappings, not legal acceptance or certification.

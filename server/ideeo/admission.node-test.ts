@@ -4,6 +4,7 @@ import { readdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
+import { fixtureFetch as fetch } from '../../scripts/testing/fixture-http.ts';
 import { launchIdeeoFixture } from '../../scripts/testing/ideeo-fixture.ts';
 import { parseIdeeoConfiguration } from './config.ts';
 import { createAdmission } from './admission.ts';

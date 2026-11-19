@@ -44,9 +44,9 @@ These names belong to PayMe's integration. Other tenants have separate trusted i
 
 The credential is retained only inside an explicit `delegationFor(audience)` closure. It is released only when both trusted configuration and the signed token permit that audience and the token remains unexpired. This allows the tenant broker to receive the original proof, including tenant-specific claims, without copying tokens into enumerable conversation state. Actual forwarding must use trusted endpoints and reject redirects.
 
-The verifier authenticates proof only. The separate [product admission service](ADMISSION.md) now wires it into `GET /v2/session`, checks current status through a tenant connector and formats HTTP errors/challenges. That connector is qualified against two synthetic services only: the required status endpoint is not implemented by the inspected PayMe API. There is no customer-cookie fallback, background revocation subscription, token-renewal service or durable task admission here. Protected action approval and fresh disclosure authorization remain separate checks.
+The verifier authenticates proof only. The separate [product admission service](ADMISSION.md) wires it into `GET /v2/session`, checks current status through a tenant connector and formats HTTP errors/challenges. The required endpoint is now implemented in an isolated PayMe API worktree and tested over HTTP with actual SQL/authentication code, disposable resources and synthetic backend status. The independent two-tenant fixture remains. There is no customer-cookie fallback, background revocation subscription, token-renewal service or durable task admission here. Protected action approval and fresh disclosure authorization remain separate checks.
 
-Next tenant integration: implement the bounded status extension for every applicable PayMe backend, qualify its current membership/grant/agent/channel checks, and then configure real issuer keys and client mappings. Actual SDK and tenant-channel consumer acceptance remains pending. The current product startup deliberately accepts synthetic loopback profiles only.
+PayMe admission now rechecks SDK sessions using the signed authentication time and rejects missing/ambiguous, revoked, idle-expired or absolutely expired matches. WhatsApp checks current realm, generation, authentication time, expiry and revocation. Sandbox requires a new status-only source extension; unsupported source/hosted Armoni/native SDK evidence returns unavailable. Native WhatsApp can project its tenant-owned A0 authority without bank-data reads. Qualify source support and actual issuer/consumer adoption before configuring real destinations. The current product startup deliberately accepts synthetic loopback profiles only.
 
 ## Verification
 
@@ -58,7 +58,7 @@ The process-level suite is `pnpm test:ideeo-admission`; see the [isolated produc
 
 ## Inspected sources
 
-All paths below are relative to `Desktop/Ideeo-AI`; source repositories were read, not modified. The [source manifest](../SOURCE_MANIFEST.json) records file hashes and repository revisions for this inspection.
+The original inspection paths below are relative to `Desktop/Ideeo-AI`; those original checkouts were read, not modified. Subsequent PayMe implementation is in its registered `ideeo-admission-integration` worktree. The [source manifest](../SOURCE_MANIFEST.json) preserves the historical inspection and separately records working-tree integration hashes.
 
 - `payme-api/src/core/session.ts` and `src/modules/session/middleware.ts`: opaque cookie and current session checks.
 - `payme-api/src/core/csrf.ts`, `src/modules/nico/index.ts`, `src/contracts/nico.ts`: protected cookie exchange and public token contract.

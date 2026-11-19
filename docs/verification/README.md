@@ -1,6 +1,6 @@
 # Verifying OpenMausBot
 
-The separate Ideeo product admission entry uses the [isolated two-tenant fixture](ideeo.md).
+The separate Ideeo product admission entry uses the [isolated two-tenant fixture and actual PayMe API integration](ideeo.md).
 It launches only the new admission service; upstream application verification follows the launcher below.
 
 OpenMausBot has one development control surface: `pnpm control:omb`. It runs

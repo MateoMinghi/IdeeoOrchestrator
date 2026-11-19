@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { test } from 'node:test';
+import { fixtureFetch as fetch } from '../../scripts/testing/fixture-http.ts';
 import { exportSPKI, generateKeyPair, SignJWT } from 'jose';
 import { createTenantVerifier, InvalidTenantSession, type TenantTrustProfile } from './identity.ts';
 

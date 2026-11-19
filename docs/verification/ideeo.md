@@ -22,4 +22,16 @@ Required observations:
 
 For mutation checks, copy the candidate files and pinned dependencies into a separate temporary checkout. Disable one guard there, run the same suite, confirm the relevant expected denial fails, then restore the copy. Never weaken controls in the user's running application or original source tree.
 
-Record exact source, dependency/tool versions, test outcomes and scope in the [candidate verification record](../ideeo/development/VERIFICATION.md). The fixture implements a proposed [tenant admission extension](../ideeo/contracts/ADMISSION.md); it does not establish that the existing PayMe API exposes that endpoint or that live/native consumers have adopted it.
+Record exact source, dependency/tool versions, test outcomes and scope in the [candidate verification record](../ideeo/development/VERIFICATION.md). This independent two-tenant fixture alone does not establish actual API adoption. The cross-repository check below uses the implemented [tenant admission extension](../ideeo/contracts/ADMISSION.md).
+
+## Actual PayMe API with disposable resources
+
+```powershell
+pnpm test:ideeo-payme --api-root C:/path/to/isolated/payme-api
+```
+
+The explicit API checkout must contain `scripts/ideeo-admission-integration.ts` and its installed dependencies. The current registered worktree is `.worktrees/payme-api-admission`, at API commit `4efeaf56d3e7f47248d76938f979b0d5a7d7b6cf`, also on the original API checkout's local `dev`. This runner never discovers a running application or uses `.env`. It starts the actual API `createApp` with memory-only PGlite and migrations, synthetic tenant records, generated keys/credentials and an ephemeral status-only backend, then launches this checkout's actual `server/ideeo-main.ts` with a temporary home/config and allowlisted environment. It closes owned processes/listeners and removes only its checked temporary directory.
+
+The SDK journey exchanges a synthetic opaque session cookie at the real `/api/nico/token` route before calling the product. WhatsApp uses the actual tenant signer and current channel records. Checks cover success, signed cross-tenant/caller denial, expired proof, post-success revocation/rebinding, paused/expired source states, wrong workload proof, source/API outages, one bounded source call, malformed/oversized/unbound/stale/replayed responses and safe errors/logs. Native tenant-owned WhatsApp authority is checked against actual SQL; hosted Armoni/native SDK unsupported evidence must be unavailable. Assertions establish no generic bank calls, model turns, media inference or financial execution.
+
+The source status fixture is explicitly synthetic and implements the new `ideeo-bank-admission-1` extension. It does not prove a bank implements that protocol. Keep product real-destination restrictions and distinguish actual API code with synthetic resources from independent consumer or production acceptance. Run the original two-tenant suite separately; PayMe integration cannot replace tenant-isolation coverage.

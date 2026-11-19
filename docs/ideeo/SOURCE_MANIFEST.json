@@ -935,17 +935,17 @@
     {
       "destination": "docs/ideeo/development/VERIFICATION.md",
       "treatment": "candidate-authored documentation or source-reference index",
-      "destination_sha256": "7cd8510654906ce79b6eefd62f0372531dd6b04ce4d510cb2af19619427806ce"
+      "destination_sha256": "bafd84406e653497ee24ee45c9a715e0698aa93907edf169a13f300160399aa4"
     },
     {
       "destination": "docs/ideeo/IMPLEMENTATION_STATUS.md",
       "treatment": "candidate-authored documentation or source-reference index",
-      "destination_sha256": "c18a5ac9c0592c20f22084f4f43798bc395ffa419e41709ce67468cfcfeac715"
+      "destination_sha256": "7aa401f30e982c467ad5955356f3221428090847bc1181cc91c1d718f9194f67"
     },
     {
       "destination": "docs/ideeo/README.md",
       "treatment": "candidate-authored documentation or source-reference index",
-      "destination_sha256": "ff45ab0bc1de4c5c37a8f39d4237216f6e61acddbdd93789ee4acdd486a0014f"
+      "destination_sha256": "1363146d131893fd835fe3a107b1c75050a1468b919dea15fc833aa3e2762c2b"
     },
     {
       "destination": "docs/ideeo/reference/architecture/ideeo-ia-general-rev4.html",
@@ -965,12 +965,12 @@
     {
       "destination": "docs/ideeo/contracts/TENANT_SESSION_INTEGRATION.md",
       "treatment": "candidate-authored integration contract based on tenant_session_inspection",
-      "destination_sha256": "073421233ae0486173b1c3764456ffa21c50cfce140af232a683c6f0ec831153"
+      "destination_sha256": "c2bfaddce7507e6b31d667005d88ae879b00118f1a1e41f8128f0570a425864c"
     },
     {
       "destination": "docs/ideeo/contracts/ADMISSION.md",
       "treatment": "candidate-authored admission contract; tenant status endpoint remains a synthetic extension",
-      "destination_sha256": "4e539fba7880455b7d78f42933aabcb83819a27d6bfe7eef353f246b8eb8c5fc"
+      "destination_sha256": "828b46564473332b741ce0117405f26c696b99d6cc3a942f1c3f8e923b761f15"
     }
   ],
   "tenant_session_inspection": {
@@ -1091,5 +1091,174 @@
         "source_sha256": "99e23b27178cb8fa114182df47d7dc7ce43e2780f9d0d04d938039c4fcf4ecd1"
       }
     ]
+  },
+  "tenant_admission_integration": {
+    "date": "2026-11-19",
+    "classification": "actual API and product code; disposable SQL and synthetic source evidence; developer verification only",
+    "source_status_protocol": "ideeo-bank-admission-1; synthetic fixture support only; existing bank adoption unqualified",
+    "tenant_protocol": "ideeo-admission-1",
+    "product": {
+      "branch": "dev",
+      "base": "27865fcabadf5e5518263463d40d48c508f5d4fc",
+      "state": "delivered by the local dev commit containing this manifest; earlier documentation refresh preserved",
+      "files": [
+        {
+          "source": "package.json",
+          "working_sha256": "c2ad09ae818fa4cecb5f51b01861053401eecb2bdafb3a0d12926a949c5dfc03"
+        },
+        {
+          "source": "server/ideeo-main.ts",
+          "working_sha256": "4aa6a9563b4ed3c766f70a288441ea0ab6891518f841ff5a1b5f4469745afb76"
+        },
+        {
+          "source": "server/host/ideeo.ts",
+          "working_sha256": "878be283dce9121a84e79912034d88324472ff50fc093c1f9096a3863bbb8e84"
+        },
+        {
+          "source": "server/routes/ideeo-session.ts",
+          "working_sha256": "02101c0d5117005d67e7cb6c318dc89dea4e5482b42f256fcd920275e995eb08"
+        },
+        {
+          "source": "server/ideeo/admission.ts",
+          "working_sha256": "5e0b7bb004cb3ac4503336751bd8235d2b9b7a272328900f38a1bdb124f2a1b7"
+        },
+        {
+          "source": "server/ideeo/authority-client.ts",
+          "working_sha256": "09f4628d8fd4a0928aacb2768cda8ffc82b8cbfa7f2b796646a5da70d57ebf2d"
+        },
+        {
+          "source": "server/ideeo/config.ts",
+          "working_sha256": "6acc445f6d27cd0dbd8c0ed89ab384049c25d20b6202f7a8b5dd3b30b0ab5674"
+        },
+        {
+          "source": "server/ideeo/identity.ts",
+          "working_sha256": "8cfd1e8dc815a47d9518d30139b5dc10edb225dc307e776f5dde4a999cb2e3b0"
+        },
+        {
+          "source": "server/ideeo/admission.node-test.ts",
+          "working_sha256": "aa8c1c0ba9a661630b7b57207e5b8ee1cc74a0461095a424d6e7da6494493a71"
+        },
+        {
+          "source": "server/ideeo/identity.node-test.ts",
+          "working_sha256": "66f35ebd4f723b7e386e9ec07710e50989a42cb58a6933f06ecdd1d8ac9ee36a"
+        },
+        {
+          "source": "shared/ideeo/admission.ts",
+          "working_sha256": "97aabffdd7090984d13980a4f2e1f9eed52d8ce3073b17f8d7581e7fb2b7c0e2"
+        },
+        {
+          "source": "scripts/testing/ideeo-fixture.ts",
+          "working_sha256": "878681b16981a41ea400e44e154d66ee02b58573dafc53b0fdebc4c0c022273d"
+        },
+        {
+          "source": "scripts/testing/fixture-http.ts",
+          "working_sha256": "692d3d4d8aff447abbbb382d92ea25044010bfeebb61b0e244c5030cd77be4f6"
+        },
+        {
+          "source": "scripts/testing/payme-admission.ts",
+          "working_sha256": "5e8b5bbe5da6be8a81cdd3608d0d4a3b36687217ad23394f2c66b5cc6a139b02"
+        }
+      ],
+      "verification_state": "uncommitted changes; earlier documentation refresh preserved"
+    },
+    "api": {
+      "repository": "payme-api",
+      "branch": "ideeo-admission-integration",
+      "base": "0d111de98b996d68b4af30115de620c2254973ef",
+      "worktree": ".worktrees/payme-api-admission",
+      "state": "committed; original local dev fast-forwarded to the same commit",
+      "files": [
+        {
+          "source": "README.md",
+          "working_sha256": "b515d1106780f0de19caf2d601f4adf1f121cf493df12404275bd728e93fe8fe",
+          "committed_sha256": "108c9c56c1d7237bb5cf64d3a17593cd4afc1e65560d333a18cd8bc1779167ae"
+        },
+        {
+          "source": "docs/integrations/ideeo-admission.md",
+          "working_sha256": "81ba59064b90179756df779a7b6fd1830bc7f59b343411e8e5078b6eb917000e",
+          "verification_working_sha256": "2f0db5a58cf36f8be6c070c2024848d173bdf0d302add73ed8f2cfd0f751b10e",
+          "committed_sha256": "81ba59064b90179756df779a7b6fd1830bc7f59b343411e8e5078b6eb917000e"
+        },
+        {
+          "source": "openapi.json",
+          "working_sha256": "5344af8a8dbed97d72544579fd1054e247445bc0a52ddc66ea0d37577961c0d9",
+          "committed_sha256": "5344af8a8dbed97d72544579fd1054e247445bc0a52ddc66ea0d37577961c0d9"
+        },
+        {
+          "source": "scripts/ideeo-admission-integration.ts",
+          "working_sha256": "8d368b1b42d92fddaed2c2867604a71c7ce37b68647638f64584fdf8517443b9",
+          "committed_sha256": "8d368b1b42d92fddaed2c2867604a71c7ce37b68647638f64584fdf8517443b9"
+        },
+        {
+          "source": "src/adapters/armony/admission.ts",
+          "working_sha256": "f3e0757e2be1078d70a55b7a357c328155207d76f8657e4e98adae727afe453b",
+          "committed_sha256": "f3e0757e2be1078d70a55b7a357c328155207d76f8657e4e98adae727afe453b"
+        },
+        {
+          "source": "src/modules/broker/admission-contract.ts",
+          "working_sha256": "0bfb411baf7edc2482781a9a01c784cc944ae677adeede7f52ad44a879f5703e",
+          "committed_sha256": "0bfb411baf7edc2482781a9a01c784cc944ae677adeede7f52ad44a879f5703e"
+        },
+        {
+          "source": "src/modules/broker/admission.test.ts",
+          "working_sha256": "bc209d14290c22a780ee6a22969ec16c72a8d3f8e57cd4b7d3bb3d019b4e59a3",
+          "committed_sha256": "bc209d14290c22a780ee6a22969ec16c72a8d3f8e57cd4b7d3bb3d019b4e59a3"
+        },
+        {
+          "source": "src/modules/broker/admission.ts",
+          "working_sha256": "6b7a8b1c2b4cca0fc82fe9264aa9d5b81be1a0378ce31da2d3d8b5e47a72f104",
+          "committed_sha256": "6b7a8b1c2b4cca0fc82fe9264aa9d5b81be1a0378ce31da2d3d8b5e47a72f104"
+        },
+        {
+          "source": "src/modules/broker/credential.ts",
+          "working_sha256": "4ab0a003bfaea83105ee75a4294cbb32aaf69144cfa993ea322322406c8cfea7",
+          "committed_sha256": "4ab0a003bfaea83105ee75a4294cbb32aaf69144cfa993ea322322406c8cfea7"
+        },
+        {
+          "source": "src/modules/broker/index.ts",
+          "working_sha256": "1ab2c880d3b9e3064e87459e12c5e02e2c4d83f34b433b41a625b81ac64a1633",
+          "committed_sha256": "97e1e35ae5f25ca6a5b8d2b5a6102da3b908cc8ae2770e1dc644c72f3c270f4f"
+        },
+        {
+          "source": "src/testing/admission.ts",
+          "working_sha256": "19b5aa2897eabd98d28614600aa70457c4adca8ab5a83cefdfa091fdc54f31a3",
+          "committed_sha256": "19b5aa2897eabd98d28614600aa70457c4adca8ab5a83cefdfa091fdc54f31a3"
+        }
+      ],
+      "verification_state": "uncommitted; original dev checkout unchanged",
+      "commit": "4efeaf56d3e7f47248d76938f979b0d5a7d7b6cf",
+      "delivery_branch": "dev"
+    },
+    "results": {
+      "api_files": 47,
+      "api_tests": 589,
+      "admission_tests_included": 50,
+      "process_integration_checks": 30,
+      "independent_tenant_regression_results": 53,
+      "deliberate_mutations_detected": 2
+    },
+    "versions": {
+      "node": "24.15.0",
+      "product_jose": "6.2.10",
+      "api_jose": "6.2.15",
+      "typescript": "5.9.3",
+      "vitest": "5.0.5",
+      "pglite": "0.5.14",
+      "tsx": "4.23.15",
+      "hono": "4.13.14",
+      "hono_zod_openapi": "1.6.3",
+      "oxlint": "1.80.0"
+    },
+    "real_destinations_enabled": false,
+    "independent_acceptance": false,
+    "production_ready": false,
+    "evidence": "docs/ideeo/development/VERIFICATION.md",
+    "delivery": {
+      "date": "2026-11-19",
+      "user_authorized": "commit to dev",
+      "api_commit": "4efeaf56d3e7f47248d76938f979b0d5a7d7b6cf",
+      "pushed": false,
+      "deployed": false
+    }
   }
 }
