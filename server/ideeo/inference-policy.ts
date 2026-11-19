@@ -1,7 +1,7 @@
 import type { SyntheticMessage } from '../../shared/ideeo/conversations.ts';
 
-export type InferenceConfiguration = Readonly<{ mode: 'synthetic'; url: string; credentialEnv: string; model: 'ideeo-fixture' }
-  | { mode: 'openai-evaluation'; url: 'https://api.openai.com/v1'; credentialEnv: string; model: 'gpt-6-luna' }>;
+export type InferenceConfiguration = Readonly<({ mode: 'synthetic'; url: string; credentialEnv: string; model: 'ideeo-fixture' }
+  | { mode: 'openai-evaluation'; url: 'https://api.openai.com/v1'; credentialEnv: string; model: 'gpt-6-luna' }) & { textMode?: 'free-form' }>;
 export const fixturePrompts: Record<SyntheticMessage,string> = {
   'synthetic.hello': 'Say hello for this synthetic conversation.',
   'synthetic.follow-up': 'Look up the synthetic color using fixture_catalog, then say the color.',
@@ -15,7 +15,8 @@ export const fixtureAnswers = new Set(['Hello from the synthetic conversation.',
 export function parseInferenceConfiguration(value: unknown): InferenceConfiguration {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Invalid inference configuration');
   const v = value as Record<string,unknown>;
-  if (Object.keys(v).sort().join(',') !== 'credentialEnv,mode,model,url'
+  if (!['credentialEnv,mode,model,url','credentialEnv,mode,model,textMode,url'].includes(Object.keys(v).sort().join(','))
+    || Object.hasOwn(v,'textMode') && v.textMode !== 'free-form'
     || typeof v.credentialEnv !== 'string' || !/^[A-Z][A-Z0-9_]{0,99}$/.test(v.credentialEnv) || typeof v.url !== 'string') throw new Error('Invalid inference configuration');
   if (v.mode === 'openai-evaluation' && v.url === 'https://api.openai.com/v1' && v.model === 'gpt-6-luna') return Object.freeze(v as InferenceConfiguration);
   if (v.mode !== 'synthetic' || v.model !== 'ideeo-fixture') throw new Error('Unqualified model profile');

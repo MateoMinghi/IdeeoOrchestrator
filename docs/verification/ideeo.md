@@ -85,3 +85,35 @@ node --experimental-strip-types scripts/testing/payme-storage.ts --api-root C:/p
 The runner selects only `OPENAI_API_KEY` from that file, starts actual tenant API/product code with synthetic identity/source resources and a fresh product PostgreSQL cluster, and activates the distinct `openai-evaluation` profile. It never loads the sibling application or its other environment settings. It reaches only OpenAI's fixed HTTPS Chat Completions endpoint with `gpt-6-luna`, reasoning disabled, no automatic model retries, a 256-token output ceiling and eight-second physical timeout. Pre-debited disposable SQL quotas leave 12 model attempts and two tools across process restart. No fixture proxies the real model under a synthetic label.
 
 The 32 checks extend the actual API/scripted loop with constrained live draft, revision, recall and recall after restart. Responses must stay within the five approved synthetic strings; this is not an unrestricted semantic benchmark. The runner prints only check names/status/counts and aggregate token usage/estimated standard cost, never the key or raw provider errors. Unknown usage remains explicitly unknown and the invoice is not verified. The fixture closes owned processes/listeners/databases afterward. Preserve the independent scripted/two-tenant regressions and record new live evidence separately from historical zero-call runs.
+
+## Free-form and React product entry
+
+These commands use local scripted inference, never an OpenAI key:
+
+```powershell
+node --experimental-strip-types --test server/ideeo/free-form.node-test.ts src/ideeo/client.node-test.ts
+node scripts/testing/free-form-mutation.mjs
+node --experimental-strip-types scripts/testing/payme-storage.ts --api-root .worktrees/payme-api-admission --free-form --ui
+pnpm typecheck:ideeo-ui
+pnpm build:ideeo-ui
+```
+
+The registered worktree must be at the intended inspected API revision with dependencies installed. The original PayMe checkout is not modified. `--free-form` selects `textMode:free-form`, adds `inference:disclose` to the synthetic signed/current grant intersection and passes the synthetic-only activation flag. The existing durable SQL limits remain. The separate authorized live campaign below uses free-form semantic criteria rather than the earlier exact-answer vocabulary.
+
+The Node suite checks bounded invented text and UTF-8, explicit disclosure, no input-side effects on denial, projection recall after restart, encryption, output withholding, unknown/repeated tools, revocation during inference, second-tenant isolation, bounded context and the exact remaining daily-budget boundary. The mutation runner copies source and required protocol files into a checked temporary directory, removes only the two transport disclosure checks there, requires the original denial assertion to fail, then restores and reruns. It never mutates the original product source or a live database.
+
+`--ui` launches Vite and headless Chrome in a disposable browser profile against the owned API/product processes. On Windows it uses the installed Chrome path; `OMB_CDP_CHROME` can select another installed executable when invoking the helper directly. The fixture owns its synthetic HttpOnly cookie and maps only its local token-exchange/product routes. Assertions cover committed rendering, reload without inference, lost-response same-key replay, typed tool execution, no token/transcript web storage, current revocation, different-tenant denial, inert HTML and stale-response suppression. Four synthetic screenshots are written to `output/ideeo-free-form-ui/` for visual inspection. They are developer evidence, not native SDK/device or human acceptance.
+
+Preserve the original loop, admission and storage regressions. The local UI build writes only `dist/ideeo`; no command deploys it. Record dependency substitutions, setup failures, warnings, source hashes and acceptance limits in the [candidate verification record](../ideeo/development/VERIFICATION.md#free-form-controls-and-react-product-entry--19-november-2026).
+
+### Authorized free-form live campaign
+
+Only with explicit live-call authorization:
+
+```powershell
+node --experimental-strip-types scripts/testing/payme-storage.ts --api-root .worktrees/payme-api-admission --free-form --openai-evaluation --key-file C:/Users/mateo/Desktop/Ideeo-IA-general/.env
+```
+
+This selects only `OPENAI_API_KEY`, never loads sibling application/environment configuration, and uses fresh synthetic tenant/API/PostgreSQL resources. The existing ledger pre-debit leaves twelve model attempts and two tools, including across restart. The fixed model is `gpt-6-luna`, with 256 output tokens, eight-second physical timeout, 15-second operation deadline, `store:false`, disabled reasoning and no automatic live retries. `--ui` is refused with live evaluation because that harness controls a scripted model.
+
+The runner checks drafting/revision/Spanish continuity/refusal/reloaded recall without providing an answer allowlist, then retains current authorization, replay, ciphertext and quota-denial checks. It prints only safe check summaries, approved synthetic answer text and aggregate measured usage/estimated cost. No key, raw provider reply, private reasoning or real identity is printed. The budget-exhaustion case sets the disposable quota to its ceiling; it does not spend the remaining allowance. Treat this as a small developer campaign, not independent acceptance or broad privacy qualification.

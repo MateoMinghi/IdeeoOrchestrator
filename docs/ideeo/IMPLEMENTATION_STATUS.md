@@ -55,22 +55,37 @@ The user authorized the sibling `.env` OpenAI key for inexpensive testing. An ex
 
 The key was not printed, persisted in product records or sent as model context. No real bank/customer application was used. [Exact evidence](development/VERIFICATION.md#authorized-openai-luna-evaluation--19-november-2026) records the narrow scope: this is a closed-vocabulary live integration, not general conversational semantics, production readiness or independent acceptance. Arbitrary-content policy and actual consumer/UI work remain next gates.
 
+## Free-form controls and React consumer: local implementation
+
+The user subsequently requested committing and pushing this product increment to `dev`; it is delivered by the commit containing this note. Historical uncommitted/no-push statements below describe verification time. PayMe remains unchanged, and no deployment or independent acceptance is implied.
+
+This uncommitted increment starts from clean product `dev` at `7cff7a62463bf8ab687acbcf2435152fab5e2ff6`. The original PayMe checkout was read-only and clean at `e55abc73e672ae7af44ce9f8e36e93e33a66eb0d`. Neither repository was pushed or deployed. No new live-model call or real customer data was used.
+
+- Protocol 3 adds explicitly activated free-form synthetic text, a request disclosure marker and separate current `inference:disclose` permission. Bounded text screening, versioned encrypted model projections, role/content filtering and output withholding preserve the shared OpenMaus runtime, exact provider profiles and existing durable budgets. The screen is heuristic; arbitrary customer-data protection and live free-form semantics are not qualified.
+- The React product entry `ideeo.html` reuses existing chat presentation and send controls with a new product client. It obtains fresh tenant proof through the actual PayMe cookie-exchange seam, uses only authenticated product routes, shows committed history, replays an unchanged pending send with the same key, and suppresses stale or unauthorized results. Tokens and transcript/draft content are not persisted in browser storage. This entry does not adapt every upstream desktop screen.
+- Developer evidence: 16 free-form results; disclosure mutation detected in a disposable source copy; 29 existing loop results; 76 admission/storage results; 28 actual API/free-form checks plus browser journeys; 28 original API/loop regression checks; two client tests; focused static checks and a local production UI bundle. Browser evidence covers real cookie exchange, tool execution, reload, lost-response replay, revocation, second-tenant denial, inert HTML and stale-response suppression, with synthetic resources only.
+- [Loop extension](contracts/CONVERSATION_LOOP.md#free-form-synthetic-content-extension), [UI contract](contracts/CONVERSATION_UI.md), [reproducible commands](../verification/ideeo.md#free-form-and-react-product-entry) and [exact evidence/limitations](development/VERIFICATION.md#free-form-controls-and-react-product-entry--19-november-2026).
+
+This is implementation and synthetic developer verification. New live free-form semantic evaluation, independent security/privacy review, different-human acceptance, actual tenant hosting/device/Meta adoption and production processing/budget/retention operations remain outstanding. The earlier constrained Luna run is not reclassified as free-form evidence.
+
 ## Following milestones
+
+The subsequent user-authorized free-form Luna campaign passed **38 integration checks and five semantic criteria**, using **ten calls, 3,620 input tokens and 136 output tokens**, estimated at **$0.00043** at the previously documented standard rates. It tested actual API/product code with disposable resources and invented content; no runtime control was weakened. [Exact evidence](development/VERIFICATION.md#authorized-free-form-luna-evaluation--19-november-2026) records the bounds, answers and remaining acceptance gaps. The preceding no-live-call statements describe the initial local implementation only. No push or deployment occurred.
 
 | Order | Work | Exit evidence |
 | --- | --- | --- |
 | Completed development increment | Encrypted conversation/turn/answer records with complete caller scope, idempotency and committed publication | Synthetic process/PostgreSQL and actual API evidence above; independent and production acceptance pending |
 | Completed development increment | Shared OpenMaus loop with controlled fixture transport, explicit tool permission and durable attempt accounting | Synthetic continuity, crash/retry, current authority and upstream regression evidence; real-model acceptance pending |
-| Next | Expand from constrained live evaluation to qualified text/disclosure and budget behavior in isolated resources | Open-ended semantic and privacy evidence before broader inputs or destinations are enabled |
-| Then | Wire the existing React chat to the product API | Authenticated conversation → authorized tool → committed answer → UI → reload, with another tenant denied |
+| Implemented locally; qualification pending | Free-form synthetic text with disclosure/privacy and retained-budget controls | Scripted-provider and actual API evidence plus bounded live Luna semantic campaign recorded; broad robustness and independent review remain |
+| Implemented locally; acceptance pending | React product chat entry connected to authenticated API | Browser conversation → authorized tool → committed answer → UI → reload, with another tenant denied; tenant hosting/device and human acceptance remain |
 | Later, by dependency | Protected banking handoffs/agent controls, durable tasks, browser evidence, administration and release qualification | The complete journeys in the [adaptation plan](../../output/ideeo-openmaus-product-adaptation-plan-2026-11-18.md) |
 
 ## Component status
 
 | Area | Existing foundation | Ideeo adaptation / acceptance still required |
 | --- | --- | --- |
-| Conversation | OpenMaus model/tool iteration, streaming, retries and interruption | Controlled synthetic inference, closed tool and committed publication implemented; live semantics, real input and consumer qualification pending |
-| UI | React conversation and task interaction components | Product API, tenant identity, protected handoffs and durable recovery views |
+| Conversation | OpenMaus model/tool iteration, streaming, retries and interruption | Controlled free-form synthetic inference, closed tool, disclosure checks and committed publication implemented; live free-form semantics and customer-data qualification pending |
+| UI | React conversation and task interaction components; authenticated product chat entry with isolated API/browser evidence | Broader upstream adaptation, tenant hosting/device acceptance, protected handoffs and durable pending-turn recovery |
 | Browser | Default agent-browser integration, observations, takeover and process management | Caller/task/generation fencing, qualified isolation and egress, encrypted evidence and disposal qualification |
 | Identity | Isolated `/v2/session`; ES256 verifier; SDK/WhatsApp mapping; actual PayMe status endpoint verified with disposable SQL and synthetic source; independent two-tenant fixture | Real source/status and issuer qualification, bank-delegation/external-agent profiles; intended-consumer adoption |
 | Records | Encrypted product PostgreSQL conversations/turns/answers, complete caller binding, forced RLS, bounded idempotency/retention and atomic outbox; synthetic process verification | Asynchronous inference/lease lifecycle, authorized outbox dispatch, production key custody, cleanup scheduling, backup recovery and independent acceptance |

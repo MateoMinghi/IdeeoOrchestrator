@@ -7,6 +7,7 @@ export async function launchModelFixture() {
   const observed: {messages:unknown[];tools:unknown;authorization:string|undefined}[]=[];
   let fault='none', calls=0, redirects=0;
   let beforeReply:((call:number)=>Promise<void>)|undefined;
+  let answerText: ((messages: readonly {role:string;content:string}[]) => string) | undefined;
   const server=createServer(async(req,res)=>{
     if(req.url==='/redirect-target'){redirects++;res.writeHead(500);res.end();return;}
     calls++;const call=calls;
@@ -29,7 +30,7 @@ export async function launchModelFixture() {
         : prompt===fixturePrompts['synthetic.follow-up'] ? 'The synthetic color is blue.' : [...fixtureAnswers][0];
       const toolRound=prompt===fixturePrompts['synthetic.follow-up'] && messages.at(-1)?.role!=='tool';
       const tool=toolRound || fault==='unknown-tool' || fault==='repeat-tool';
-      const content=fault==='secret' ? 'synthetic-private-output-canary' : fault==='empty' ? '' : tool ? null : text;
+      const content=fault==='credential' ? credential : fault==='banking' ? 'Your balance is $123.45.' : fault==='secret' ? 'synthetic-private-output-canary' : fault==='empty' ? '' : tool ? null : answerText?.(messages) ?? text;
       reply(200,{choices:[{message:{role:'assistant',content,reasoning_content:'synthetic-private-reasoning',reasoning_details:[{text:'synthetic-private-reasoning'}],
         ...(tool ? {tool_calls:[{id:'fixture-call-1',type:'function',function:{name:fault==='unknown-tool'?'host_shell':'fixture_catalog',arguments:JSON.stringify({item:'color'})}}]} : {})},
         finish_reason:fault==='length'?'length':tool?'tool_calls':'stop'}],...(fault==='unknown-usage'?{}:{usage:{prompt_tokens:15,completion_tokens:10}})});
@@ -39,6 +40,7 @@ export async function launchModelFixture() {
   const address=server.address();if(!address || typeof address==='string')throw new Error('Model fixture listener unavailable');
   return {url:`http://127.0.0.1:${address.port}/v1`,credential,observed,
     setFault(value:string){fault=value;calls=0;},onCheck(hook?:typeof beforeReply){beforeReply=hook;},
+    setAnswer(answer?: typeof answerText){answerText=answer;},
     observations:()=>({calls,redirects}),
     stop:()=>new Promise<void>(resolve=>{server.close(()=>resolve());server.closeAllConnections();}),
   };

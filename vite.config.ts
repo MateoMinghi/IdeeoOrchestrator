@@ -47,7 +47,7 @@ const include = [
 export default defineConfig({
   plugins: [react(), tailwindcss(), railPage()],
   build: {
-    rollupOptions: { input: { index: page("./index.html"), rail: page("./rail.html") } },
+    rollupOptions: { input: { index: page("./index.html"), rail: page("./rail.html"), ideeo: page("./ideeo.html") } },
   },
   define: {
     __APP_VERSION__: JSON.stringify(version),

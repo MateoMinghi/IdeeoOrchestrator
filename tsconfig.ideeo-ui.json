@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "types": ["node"] },
+  "include": ["src/ideeo/**/*", "src/types/ogb.d.ts", "node_modules/vite/client.d.ts"]
+}

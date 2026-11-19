@@ -7,10 +7,13 @@ import { launchIdeeoFixture } from './ideeo-fixture.ts';
 import { fixtureFetch } from './fixture-http.ts';
 import { launchModelFixture } from './model-fixture.ts';
 import { readEvaluationKey } from './openai-key.ts';
+import { evaluateFreeForm, assertFreeFormRecall, type LiveFreeFormObservation } from './live-free-form.ts';
 
 const apiRoot = process.argv[2];
 const evaluation=process.argv.includes('--openai-evaluation');
-const loop=process.argv.includes('--loop') || evaluation;
+const freeForm=process.argv.includes('--free-form'), ui=process.argv.includes('--ui');
+if(ui && evaluation) throw new Error('Live evaluation does not use the scripted UI harness');
+const loop=process.argv.includes('--loop') || evaluation || freeForm;
 const evaluationKey=evaluation ? await readEvaluationKey(process.argv[process.argv.indexOf('--openai-evaluation')+1]) : undefined;
 if (!apiRoot) throw new Error('Explicit isolated API source required');
 const { admissionFixture } = await import(pathToFileURL(resolve(apiRoot, 'src/testing/admission.ts')).href);
@@ -21,12 +24,13 @@ let pg: Awaited<ReturnType<typeof launchPostgresFixture>> | undefined;
 let product: Awaited<ReturnType<typeof launchIdeeoFixture>> | undefined;
 let model: Awaited<ReturnType<typeof launchModelFixture>> | undefined;
 const results: { name: string; status: number; sourceCalls: number }[] = [];
+const semantics: LiveFreeFormObservation[]=[];
 try {
   pg = await launchPostgresFixture();
   if(loop && !evaluation) model=await launchModelFixture();
   if(evaluation) await pg.admin`insert into ideeo.inference_budget(tenant_id,day,model_attempts,tool_attempts)
     values('payme',(clock_timestamp() at time zone 'UTC')::date,52,62)`;
-  const permissions = 'conversation:read conversation:write'+(loop?' inference:invoke tool:fixture:read':'');
+  const permissions = 'conversation:read conversation:write'+(loop?' inference:invoke tool:fixture:read':'')+(freeForm?' inference:disclose':'');
   api.d.env.NICO_SCOPES = permissions;
   api.d.nicoJwt = createNicoJwt({ privateKeyPem: api.d.env.NICO_JWT_PRIVATE_KEY, kid: api.d.env.NICO_JWT_KID,
     issuer: api.d.env.NICO_JWT_ISSUER, ttlSeconds: api.d.env.NICO_JWT_TTL_SECONDS, scopes: permissions });
@@ -35,11 +39,11 @@ try {
   const key = () => randomBytes(32).toString('base64');
   const secrets = { STORAGE_DATABASE: pg.runtimeUrl, STORAGE_FINGERPRINT: key(),
     STORAGE_KEYS: JSON.stringify(Object.fromEntries(['alpha', 'beta', 'payme'].map(id => [id, { first: key() }]))),...(model?{FIXTURE_MODEL:model.credential}:{}),
-    ...(evaluationKey?{OPENAI_EVALUATION_KEY:evaluationKey,IDEEO_OPENAI_EVALUATION:'synthetic-content-only'}:{}) };
+    ...(evaluationKey?{OPENAI_EVALUATION_KEY:evaluationKey,IDEEO_OPENAI_EVALUATION:'synthetic-content-only'}:{}),...(freeForm?{IDEEO_FREE_FORM_EVALUATION:'synthetic-content-only'}:{}) };
   product = await launchIdeeoFixture({ storage: { mode: 'synthetic', databaseEnv: 'STORAGE_DATABASE', keyringEnv: 'STORAGE_KEYS',
     fingerprintKeyEnv: 'STORAGE_FINGERPRINT', activeKeyId: 'first', contentTtlSeconds: 600, replayTtlSeconds: 1200 }, secrets,
-    ...(model?{inference:{mode:'synthetic' as const,url:model.url,model:'ideeo-fixture' as const,credentialEnv:'FIXTURE_MODEL'}}:{}),
-    ...(evaluation?{inference:{mode:'openai-evaluation' as const,url:'https://api.openai.com/v1' as const,model:'gpt-6-luna' as const,credentialEnv:'OPENAI_EVALUATION_KEY'}}:{}),
+    ...(model?{inference:{mode:'synthetic' as const,url:model.url,model:'ideeo-fixture' as const,credentialEnv:'FIXTURE_MODEL',...(freeForm?{textMode:'free-form' as const}:{})}}:{}),
+    ...(evaluation?{inference:{mode:'openai-evaluation' as const,url:'https://api.openai.com/v1' as const,model:'gpt-6-luna' as const,credentialEnv:'OPENAI_EVALUATION_KEY',...(freeForm?{textMode:'free-form' as const}:{})}}:{}),
     additionalTenants: [{ credential: api.workload, config: {
       issuer: api.d.env.NICO_JWT_ISSUER, tenantId: 'payme', audience: 'ai-engine',
       publicKeys: { [api.d.nicoJwt.kid]: api.d.nicoJwt.publicKeyPem },
@@ -54,7 +58,12 @@ try {
   const whatsapp: string = await api.token('whatsapp');
   const protectedValues = [sdk, whatsapp, api.workload, api.bankCredential, api.sessionCredential, secrets.STORAGE_FINGERPRINT,
     'protected-backend-error', 'unread-protected-value',...(evaluationKey?[evaluationKey]:[])];
-  async function check(name: string, path: string, proof: string, expected: number, sourceCalls: number, body?: object, idempotency = randomUUID()) {
+  async function check(name: string, path: string, proof: string, expected: number, sourceCalls: number, body?: object, idempotency: string = randomUUID()) {
+    if(freeForm && body && 'message' in body && typeof body.message==='string') {
+      const {fixturePrompts}=await import('../../server/ideeo/inference-policy.ts');
+      body={message:{text:fixturePrompts[body.message as keyof typeof fixturePrompts],disclosure:'model'}};
+      if(sourceCalls>=5) sourceCalls+=sourceCalls===9?4:2;
+    }
     const before = api.state.calls, start = Date.now();
     const response = await fixtureFetch(product!.url + path, { method: body ? 'POST' : 'GET', headers: { authorization: `Bearer ${proof}`,
       ...(body ? { 'content-type': 'application/json', 'idempotency-key': idempotency } : {}) }, ...(body ? { body: JSON.stringify(body) } : {}) });
@@ -73,8 +82,34 @@ try {
   const waConversation = await check('WhatsApp creates separate conversation', '/v2/conversations', whatsapp, 200, 3, {});
   const waPath = `/v2/conversations/${waConversation.conversation_id}/turns`;
   await check('WhatsApp commits synthetic turn', waPath, whatsapp, 200, loop?5:3, { message: 'synthetic.hello' });
-  if(loop) await check('current typed-tool authority and second inference round',sdkPath,sdk,200,9,{message:'synthetic.follow-up'});
-  if(evaluation) {
+  if(loop) {
+    const color=await check('current typed-tool authority and second inference round',sdkPath,sdk,200,9,{message:'synthetic.follow-up'});
+    if(evaluation && freeForm) assert.ok(/blue/i.test(color.answer?.text??''),'Live answer uses the authorized color tool result');
+  }
+  if(ui) {
+    const {verifyIdeeoUi}=await import('./ideeo-ui.ts');
+    const beta=product.tenants[1];beta.set({scopes:permissions.split(' ')});
+    const other=await beta.token('sdk',{scope:permissions});
+    model!.setAnswer(()=> 'Join us in the invented moon garden.');
+    await verifyIdeeoUi({apiUrl,productUrl:product.url,apiOrigin:api.d.env.PUBLIC_ORIGIN,cookie:api.sessionCredential,otherToken:other,answer:text=>model!.setAnswer(()=>text),
+      revoke:async()=>{await api.db.update(sessions).set({revokedAt:new Date()});},
+      restore:async()=>{await api.db.update(sessions).set({revokedAt:null});},
+      attempts:async()=>Number((await pg!.admin`select count(*)::int as n from ideeo.inference_attempts where kind='model'`)[0].n)});
+    model!.setAnswer();
+  }
+  if(evaluation && freeForm) {
+    const before=Number((await pg.admin`select count(*)::int as n from ideeo.inference_attempts`)[0].n);
+    await check('synthetic credential text denied before dispatch',sdkPath,sdk,422,1,{message:{text:'password: invented-secret',disclosure:'model'}});
+    api.state.grant.scopes=permissions.split(' ').filter(scope=>scope!=='inference:disclose');
+    try{await check('missing current disclosure permission denies live dispatch',sdkPath,sdk,403,2,{message:{text:'Write an invented story.',disclosure:'model'}});}
+    finally{api.state.grant.scopes=permissions.split(' ');}
+    assert.equal(Number((await pg.admin`select count(*)::int as n from ideeo.inference_attempts`)[0].n),before);
+    semantics.push(...await evaluateFreeForm({
+      turn:(name,message,key)=>check(name,sdkPath,sdk,200,7,{message},key),
+      replay:(message,key)=>check('free-form committed replay',sdkPath,sdk,200,3,{message},key),
+    }));
+  }
+  if(evaluation && !freeForm) {
     for(const [message,expected] of [['synthetic.draft','You are invited to our synthetic picnic on Saturday.'],
       ['synthetic.revise','Join our synthetic picnic on Saturday.'],['synthetic.recall','The last invitation was: Join our synthetic picnic on Saturday.']]) {
       const result=await check(message,sdkPath,sdk,200,5,{message});
@@ -85,7 +120,9 @@ try {
   await check('signed foreign tenant denied', sdkPath, await api.signedToken({ tenant_id: 'other' }), 401, 0);
   await check('signed different caller denied', sdkPath, await api.signedToken({ sub: 'other' }), 403, 0);
   await product.restart();
-  if(evaluation) {
+  if(evaluation && freeForm) semantics.push(assertFreeFormRecall(await check('free-form recall after process reload',sdkPath,sdk,200,7,
+    {message:{text:'From our invitation before the security question, what is the final picnic place and day? Answer in English briefly. Do not use tools.',disclosure:'model'}})));
+  if(evaluation && !freeForm) {
     const recalled=await check('live recall after process reload',sdkPath,sdk,200,5,{message:'synthetic.recall'});
     assert.ok(recalled.answer?.text==='The last invitation was: Join our synthetic picnic on Saturday.','Reloaded live context matched');
   }
@@ -127,10 +164,20 @@ try {
   }
   api.state.fault = 'none';
   const before = api.state.calls;
-  api.state.beforeReply = async () => { if (api.state.calls === before + (loop?5:3)) await api.db.update(sessions).set({ revokedAt: new Date() }); };
+  api.state.beforeReply = async () => { if (api.state.calls === before + (freeForm?7:loop?5:3)) await api.db.update(sessions).set({ revokedAt: new Date() }); };
   await check('logout before disclosure hides committed answer', sdkPath, sdk, 403, loop?5:3, { message: loop?'synthetic.hello':'synthetic.follow-up' });
   delete api.state.beforeReply;
   await api.db.update(sessions).set({ revokedAt: null });
+  if(evaluation && freeForm) {
+    const before=Number((await pg.admin`select count(*)::int as n from ideeo.inference_attempts`)[0].n);
+    await pg.admin`update ideeo.inference_budget set model_attempts=64 where tenant_id='payme'`;
+    await product.restart();
+    const fresh=await check('exhausted tenant can create only an empty conversation','/v2/conversations',sdk,200,3,{});
+    await check('exhausted budget denies live call after restart',`/v2/conversations/${fresh.conversation_id}/turns`,sdk,409,3,{message:{text:'Write an invented story.',disclosure:'model'}});
+    assert.equal(Number((await pg.admin`select count(*)::int as n from ideeo.inference_attempts`)[0].n),before);
+    const stored=JSON.stringify(await pg.admin`select user_content,answer_content from ideeo.turns`);
+    for(const text of ['Velvet Orchard','Wednesday',...protectedValues])assert.ok(!stored.includes(text),'Durable ciphertext excludes tested plaintext and credentials');
+  }
   api.d.env.CORE_API_MODE = 'tenant';
   await check('unsupported hosted evidence remains unavailable', sdkPath, sdk, 503, 0);
   api.d.env.CORE_API_MODE = 'sandbox';
@@ -149,7 +196,7 @@ try {
     for(const secret of [...protectedValues,model.credential,'synthetic-private-reasoning'])assert.ok(!input.includes(secret));
     assert.ok(model.observations().calls>0);
   }
-  console.log(JSON.stringify({ classification: evaluation ? 'actual OpenAI/API/product; constrained synthetic-content evaluation, not production acceptance' : 'actual API/product, synthetic identities and source; developer evidence only', loop, postgres: pg.version, checks: results.length, results }));
+  console.log(JSON.stringify({ classification: evaluation ? freeForm ? 'actual OpenAI/API/product; bounded free-form synthetic-content evaluation, not independent acceptance' : 'actual OpenAI/API/product; constrained synthetic-content evaluation, not production acceptance' : 'actual API/product, synthetic identities and source; developer evidence only', loop, postgres: pg.version, checks: results.length, results, semantics }));
 } finally {
   if(evaluation && pg) {
     try {

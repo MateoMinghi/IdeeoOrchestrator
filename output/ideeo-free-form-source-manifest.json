@@ -1,0 +1,179 @@
+{
+    "recorded_at":  "2026-11-19T11:33:04.7595621-06:00",
+    "product_base":  "7cff7a62463bf8ab687acbcf2435152fab5e2ff6",
+    "branch":  "dev",
+    "delivery":  "uncommitted local changes",
+    "api_revision":  "e55abc73e672ae7af44ce9f8e36e93e33a66eb0d",
+    "protocol":  "ideeo-conversation-storage-3",
+    "schema":  2,
+    "real_customer_data":  false,
+    "new_live_model_calls":  0,
+    "deployment":  false,
+    "pushed":  false,
+    "independent_acceptance":  false,
+    "results":  {
+                    "browser_groups":  11,
+                    "disclosure_mutation":  "baseline passed, removed check detected, restored passed",
+                    "ui_build":  "passed with recorded warnings",
+                    "full_repository_typecheck":  "not passed; setup and memory limitations recorded",
+                    "admission_storage_node":  76,
+                    "focused_ui_typecheck":  "passed with installed type-path overrides",
+                    "free_form_node":  16,
+                    "client_node":  2,
+                    "actual_api_constrained":  28,
+                    "focused_product_typecheck":  "passed",
+                    "existing_react_vitest":  3,
+                    "original_loop_node":  29,
+                    "actual_api_free_form":  28
+                },
+    "files":  [
+                  {
+                      "sha256":  "c9f6d3cdf202dec68d56813b266fc99f209f7cb19e5ee6387a1b97ace2ce7199",
+                      "path":  "docs/ideeo/contracts/CONVERSATION_LOOP.md"
+                  },
+                  {
+                      "sha256":  "31d49b63bbaf4430366282a42c9673bd0422bd6d90e221bb888f6f8b14d6ab98",
+                      "path":  "docs/ideeo/contracts/CONVERSATION_UI.md"
+                  },
+                  {
+                      "sha256":  "7dd1a12441c04178205e9096fe2ffca4d519d93c57853816b0b3437e77fa088d",
+                      "path":  "docs/ideeo/development/VERIFICATION.md"
+                  },
+                  {
+                      "sha256":  "d56b375a5c0add2c1e282696bd15356c87ecf9cf4cdaaf5b009f07ecc1722125",
+                      "path":  "docs/ideeo/IMPLEMENTATION_STATUS.md"
+                  },
+                  {
+                      "sha256":  "516310c85c1c8b8105863142b070afc795898bd880d061363debe594e733907d",
+                      "path":  "docs/ideeo/README.md"
+                  },
+                  {
+                      "sha256":  "09a033330d874dc393c865223b3c88303244f2f7eb78b660ec136480de7ca727",
+                      "path":  "docs/verification/ideeo.md"
+                  },
+                  {
+                      "sha256":  "0b9d83ad31959c9e5c31d0b862d53f2b32a7a1ccb4e5405b55ca30fa012ec90c",
+                      "path":  "ideeo.html"
+                  },
+                  {
+                      "sha256":  "1707cc2acdd682308f06daf7be1ffab0b55a92cdd948c1fe05928805f4541d15",
+                      "path":  "output/ideeo-free-form-ui/daylight-1440.png"
+                  },
+                  {
+                      "sha256":  "bc81b41986c5a438806b4007f5c924b2d8663a80a2286053b23d2e3f97c0db07",
+                      "path":  "output/ideeo-free-form-ui/daylight-390.png"
+                  },
+                  {
+                      "sha256":  "f701d2e77d2992d47bbcbdbc9c4ef1547f55cf9093b27747fcfabeeeb6811f44",
+                      "path":  "output/ideeo-free-form-ui/midnight-1440.png"
+                  },
+                  {
+                      "sha256":  "254e76acececaa556a36f0dacb669721ffe0eca1f964cc276d02fbfae054ae05",
+                      "path":  "output/ideeo-free-form-ui/midnight-390.png"
+                  },
+                  {
+                      "sha256":  "80c2cdc2ba5d9e5d16830367020454e9d0d81c8e2c8753449811495a4725eb6c",
+                      "path":  "package.json"
+                  },
+                  {
+                      "sha256":  "a42566282e526aec92b779cfafffc05dd8e4e00e90bac7ac0a0d1bafbc231e25",
+                      "path":  "scripts/testing/free-form-mutation.mjs"
+                  },
+                  {
+                      "sha256":  "c4c31104d732321756d0c12b1affee555abe63b6432a4e3613d45e7c5a33a71f",
+                      "path":  "scripts/testing/ideeo-ui.ts"
+                  },
+                  {
+                      "sha256":  "dfe49e9314a9b6fbaa6aedd868a8b15892aed4bcf59ad67cae1ff7ed04174ce7",
+                      "path":  "scripts/testing/model-fixture.ts"
+                  },
+                  {
+                      "sha256":  "8f34e731dd406a51f53151a7e25874c2ca4ba248f69ddef6fd8f41d715508724",
+                      "path":  "scripts/testing/payme-storage.ts"
+                  },
+                  {
+                      "sha256":  "f3e9117627aed8c18354b6a6255a38e596f99fb7e7c046d2d6016387f0c2f840",
+                      "path":  "scripts/testing/payme-storage-worker.ts"
+                  },
+                  {
+                      "sha256":  "a64380bd4319777dbe5e5845454993a30388245c6f20474ee60f81e1858ba548",
+                      "path":  "server/ideeo/conversation-loop.ts"
+                  },
+                  {
+                      "sha256":  "2e279fc127e9b67be0e68d161dad4005feb3ff624cb0248de4ce8edae8b75f64",
+                      "path":  "server/ideeo/conversations.ts"
+                  },
+                  {
+                      "sha256":  "af18251a1750ad51be5bfeacd5dbf96d481fa71a16d8a372670616dfac11c7a9",
+                      "path":  "server/ideeo/free-form.node-test.ts"
+                  },
+                  {
+                      "sha256":  "350c33e5992d2cc85b790de6641a3370786689a90e9711d2a1953864b942501d",
+                      "path":  "server/ideeo/inference.ts"
+                  },
+                  {
+                      "sha256":  "bd5c2a9656c05385d165736840d201e358d2da774733b49d1ade04b29e56e96f",
+                      "path":  "server/ideeo/inference-policy.ts"
+                  },
+                  {
+                      "sha256":  "cb023b6b87d4bf8985987693a22781790889983a1b94469c3634e2dd4d8f63b9",
+                      "path":  "server/ideeo/model-transport.ts"
+                  },
+                  {
+                      "sha256":  "0a5957ba3feefa7cde2fc5076d3fcb8f1afeba003a218b5ef73468e37f77b858",
+                      "path":  "server/ideeo/storage/conversations.ts"
+                  },
+                  {
+                      "sha256":  "8cfb027e8e9efa96945171415e709969f6c0e0917c7cea580be9bf39138a4e47",
+                      "path":  "server/ideeo/text-policy.ts"
+                  },
+                  {
+                      "sha256":  "55426422ccbd6a5df570c5da0fd95cbc8a082a9dbba2afe6d6487d88f2b6820f",
+                      "path":  "server/routes/ideeo-conversations.ts"
+                  },
+                  {
+                      "sha256":  "db0cf744ab805d74806ccf1e7ab6431a3d5a4078ab822b4011a9321cf04c9f4e",
+                      "path":  "shared/ideeo/conversations.ts"
+                  },
+                  {
+                      "sha256":  "885eecd232bf817f670bb3e70e9336b742f4c94426c6b26d76cc2cc49d929c7a",
+                      "path":  "src/components/chat-bubble.ts"
+                  },
+                  {
+                      "sha256":  "211ef7291bda92226b99f8863169f73c732caddc71a1cf5098b8216631f81cb4",
+                      "path":  "src/components/chat-bubble-style.ts"
+                  },
+                  {
+                      "sha256":  "be320d48a002197bf2c9a7c74ac1cc96cf553a98bb39811754139733820a7cc2",
+                      "path":  "src/ideeo/client.node-test.ts"
+                  },
+                  {
+                      "sha256":  "1a44977a47dd5fabfd66c690af530f1bd795ab6bee3fed8cca56346302270d8c",
+                      "path":  "src/ideeo/client.ts"
+                  },
+                  {
+                      "sha256":  "5883251722a966fef37f8f43a4bcc464a4fafc6c9fcf909d7620611a686bc6e1",
+                      "path":  "src/ideeo/IdeeoChat.tsx"
+                  },
+                  {
+                      "sha256":  "a34602071772e343ed566beeba0980e6d09a79b5ad835ad94d01ef3f72a19fff",
+                      "path":  "src/ideeo/main.tsx"
+                  },
+                  {
+                      "sha256":  "01ee2a41c7caa138dad1c076b1e0b44448cc94d1e90508c1ce1c76dae5e87f6b",
+                      "path":  "src/locales/en.json"
+                  },
+                  {
+                      "sha256":  "347735e97478f20144ea4d70a3817eb63bd06c45f7c0e678097aad52bbe0eff7",
+                      "path":  "tsconfig.ideeo-ui.json"
+                  },
+                  {
+                      "sha256":  "3f020c840e3cd78d01090b0aa03322a2d6f8ca2fafc7fd3ed6a637ddb4a78646",
+                      "path":  "vite.config.ts"
+                  },
+                  {
+                      "sha256":  "fdbc647d51a02b02f7cc989ce15a42cc4d6973a87c1e9472c6c2c857e991bc20",
+                      "path":  "vite.ideeo.config.ts"
+                  }
+              ]
+}

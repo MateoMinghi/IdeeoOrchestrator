@@ -5,14 +5,21 @@ import { fixtureAnswers, fixturePrompts, type InferenceConfiguration } from './i
 import { controlledModelTransport, evaluationSystem, fixtureSystem, fixtureTool } from './model-transport.ts';
 import type { ConversationGenerator } from './inference.ts';
 import { ConversationError } from './storage/conversations.ts';
+import { freeFormSystem, isFreeFormMessage, permittedText, permittedProjection, secretValues } from './text-policy.ts';
 
 export function createConversationGenerator(config: InferenceConfiguration, secrets: Readonly<Record<string,string|undefined>>): ConversationGenerator {
   const evaluation=config.mode==='openai-evaluation';
   if (evaluation && secrets.IDEEO_OPENAI_EVALUATION !== 'synthetic-content-only') throw new Error('OpenAI evaluation requires explicit activation');
-  const answerKind=evaluation ? 'openmaus_openai_evaluation' : 'openmaus_fixture';
+  const freeForm = config.textMode === 'free-form';
+  if (freeForm && secrets.IDEEO_FREE_FORM_EVALUATION !== 'synthetic-content-only') throw new Error('Free-form evaluation requires explicit activation');
+  const answerKind=freeForm ? evaluation ? 'free_form_openai_evaluation' : 'free_form_fixture' : evaluation ? 'openmaus_openai_evaluation' : 'openmaus_fixture';
   const credential=secrets[config.credentialEnv];
   if (!credential || credential.length<16 || credential.length>1024 || /[\r\n]/.test(credential)) throw new Error('Missing model credential');
   return async context => {
+    if (freeForm !== isFreeFormMessage(context.message)) throw new ConversationError(422,'input_profile_mismatch');
+    const forbidden = [...secretValues(secrets),...context.forbidden ?? []];
+    if (isFreeFormMessage(context.message) && !permittedText(context.message.text,1500,forbidden)) throw new ConversationError(422,'content_not_permitted');
+    context = {...context,forbidden};
     const thread=randomUUID();
     let boundaryFailure:unknown, answer='', running=true;
     const guarded=async <T>(work:()=>Promise<T>) => {
@@ -58,14 +65,23 @@ export function createConversationGenerator(config: InferenceConfiguration, secr
     });
     try {
       context.signal.throwIfAborted();
-      const transcript=context.history.filter(turn=>turn.answer.kind===answerKind).flatMap(turn=>{
-        if(!fixtureAnswers.has(turn.answer.text)) throw new ConversationError(503,'model_unavailable');
+      let contextBytes = 0;
+      const pairs=context.history.filter(turn=>turn.answer.kind===answerKind).reverse().map(turn=>{
+        if (freeForm) {
+          if (!permittedProjection(turn.projection)) throw new ConversationError(503,'model_unavailable');
+          return [{role:'user' as const,text:turn.projection.user},{role:'assistant' as const,text:turn.projection.assistant}];
+        }
+        if(typeof turn.message !== 'string' || !fixtureAnswers.has(turn.answer.text)) throw new ConversationError(503,'model_unavailable');
         return [{role:'user' as const,text:fixturePrompts[turn.message]},{role:'assistant' as const,text:turn.answer.text}];
       });
-      await runtime.adapter.sendTurn({threadId:thread,text:fixturePrompts[context.message],system:evaluation ? evaluationSystem : fixtureSystem,transcript,guestConfined:true});
+      const selected: typeof pairs = [];
+      for (const pair of pairs) { contextBytes += Buffer.byteLength(JSON.stringify(pair)); if (contextBytes > 7000) break; selected.push(pair); }
+      const transcript=selected.reverse().flat();
+      const prompt=isFreeFormMessage(context.message) ? context.message.text : fixturePrompts[context.message];
+      await runtime.adapter.sendTurn({threadId:thread,text:prompt,system:freeForm ? freeFormSystem : evaluation ? evaluationSystem : fixtureSystem,transcript,guestConfined:true});
       if(!await done) throw boundaryFailure ?? new ConversationError(503,'model_unavailable');
       context.signal.throwIfAborted();
-      if(!fixtureAnswers.has(answer)) throw new ConversationError(503,'model_unavailable');
+      if(freeForm ? !permittedText(answer,2000,forbidden) : !fixtureAnswers.has(answer)) throw new ConversationError(503,'model_unavailable');
       return {kind:answerKind,text:answer};
     } finally {
       running=false; context.signal.removeEventListener('abort',abort); await runtime.dispose();

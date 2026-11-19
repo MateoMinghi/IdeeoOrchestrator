@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import type postgres from 'postgres';
-import type { ConversationHistory, ConversationView, SyntheticMessage, TurnView } from '../../../shared/ideeo/conversations.ts';
+import type { ConversationHistory, ConversationView, ConversationMessage, TurnView } from '../../../shared/ideeo/conversations.ts';
+import { isFreeFormMessage, permittedText, permittedProjection, secretValues, TEXT_POLICY, type ModelProjection } from '../text-policy.ts';
 import type { StorageConfiguration } from './config.ts';
 import { createContentProtection, type CallerScope, type ContentBinding } from './crypto.ts';
 import { openStorageDatabase, verifyRuntimeRole } from './database.ts';
@@ -24,6 +25,7 @@ const view = (row: ConversationRow): ConversationView => ({ conversation_id: row
 
 export async function createConversationStore(config: StorageConfiguration, tenants: readonly string[], secrets: Readonly<Record<string, string | undefined>>) {
   const protection = createContentProtection(config, tenants, secrets);
+  const forbidden = secretValues(secrets);
   const sql = openStorageDatabase(secrets[config.databaseEnv], 'ideeo_runtime');
   try { await verifyRuntimeRole(sql); } catch (error) { await sql.end({ timeout: 2 }); throw error; }
   const accounting = openStorageDatabase(secrets[config.databaseEnv], 'ideeo_runtime');
@@ -48,19 +50,26 @@ export async function createConversationStore(config: StorageConfiguration, tena
     assertContentLive(row.expires_at.toISOString());
     return row;
   }
-  function turnView(scope: CallerScope, row: TurnRow): TurnView {
+  function decodedTurn(scope: CallerScope, row: TurnRow): { turn: TurnView; projection?: ModelProjection } {
     assertContentLive(row.expires_at.toISOString());
     if (!row.user_content || !row.answer_content) throw new ConversationError(410, 'conversation_expired');
     const binding: ContentBinding = { scope, conversationId: row.conversation_id, turnId: row.id, sequence: row.sequence, expiresAt: row.expires_at.toISOString() };
-    const user = protection.decrypt(binding, 'user', row.user_content);
+    const stored = protection.decrypt(binding, 'user', row.user_content);
+    const projected = stored && typeof stored === 'object' && 'message' in stored && 'projection' in stored ? stored : undefined;
+    const user = projected ? projected.message : stored;
     const answer = protection.decrypt(binding, 'answer', row.answer_content);
-    if (typeof user !== 'string' || !Object.hasOwn(fixturePrompts,user) || !answer || typeof answer !== 'object'
-      || !('kind' in answer) || !['synthetic_storage','openmaus_fixture','openmaus_openai_evaluation'].includes(String(answer.kind)) || !('text' in answer) || typeof answer.text !== 'string'
+    if (!(typeof user === 'string' && Object.hasOwn(fixturePrompts,user)) && !isFreeFormMessage(user) || !answer || typeof answer !== 'object'
+      || !('kind' in answer) || !['synthetic_storage','openmaus_fixture','openmaus_openai_evaluation','free_form_fixture','free_form_openai_evaluation'].includes(String(answer.kind)) || !('text' in answer) || typeof answer.text !== 'string'
       || Object.keys(answer).length !== 2 || answer.text.length > 2000) throw new Error('Invalid stored turn');
-    if (answer.kind !== 'synthetic_storage' && !fixtureAnswers.has(answer.text)) throw new Error('Invalid inference projection');
-    return { turn_id: row.id, conversation_id: row.conversation_id, event_id: row.event_id, sequence: row.sequence,
-      status: 'completed', message: user as SyntheticMessage, answer: { kind: answer.kind as TurnView['answer']['kind'], text: answer.text }, created_at: row.created_at.toISOString(), expires_at: row.expires_at.toISOString() };
+    if (isFreeFormMessage(user)) {
+      if (!String(answer.kind).startsWith('free_form_') || !projected || !permittedProjection(projected.projection)
+        || projected.projection.user !== user.text || projected.projection.assistant !== answer.text) throw new Error('Invalid inference projection');
+    } else if (String(answer.kind).startsWith('free_form_') || answer.kind !== 'synthetic_storage' && !fixtureAnswers.has(answer.text)) throw new Error('Invalid inference projection');
+    return { turn: { turn_id: row.id, conversation_id: row.conversation_id, event_id: row.event_id, sequence: row.sequence,
+      status: 'completed', message: user as ConversationMessage, answer: { kind: answer.kind as TurnView['answer']['kind'], text: answer.text }, created_at: row.created_at.toISOString(), expires_at: row.expires_at.toISOString() },
+      ...(projected && permittedProjection(projected.projection) ? {projection:projected.projection} : {}) };
   }
+  const turnView = (scope: CallerScope, row: TurnRow) => decodedTurn(scope,row).turn;
   return Object.freeze({
     async create(scope: CallerScope, key: string, authorize: Authorize, signal: AbortSignal): Promise<ConversationView> {
       const keyHash = protection.fingerprint(scope, 'create-key', key);
@@ -76,9 +85,13 @@ export async function createConversationStore(config: StorageConfiguration, tena
         return view(row);
       });
     },
-    async append(scope: CallerScope, id: string, key: string, message: SyntheticMessage, authorize: Authorize, signal: AbortSignal,
+    async append(scope: CallerScope, id: string, key: string, message: ConversationMessage, authorize: Authorize, signal: AbortSignal,
       generator?: ConversationGenerator, authorizeInference?: (kind: InferenceKind) => Promise<void>): Promise<TurnView> {
-      if (!Object.hasOwn(fixturePrompts,message) || !generator && message !== 'synthetic.hello' && message !== 'synthetic.follow-up') throw new ConversationError(422, 'synthetic_input_required');
+      const freeForm = isFreeFormMessage(message);
+      const excluded = [...forbidden,...Object.values(scope),id];
+      if (freeForm) {
+        if (!generator || !permittedText(message.text,1500,excluded)) throw new ConversationError(422,'content_not_permitted');
+      } else if (typeof message !== 'string' || !Object.hasOwn(fixturePrompts,message) || !generator && message !== 'synthetic.hello' && message !== 'synthetic.follow-up') throw new ConversationError(422, 'synthetic_input_required');
       const keyHash = protection.fingerprint(scope, 'turn-key', key);
       const fingerprint = protection.fingerprint(scope, 'turn-input', { conversation_id: id, message });
       const row = await scoped(scope, signal, async tx => {
@@ -97,7 +110,7 @@ export async function createConversationStore(config: StorageConfiguration, tena
           if (!authorizeInference) throw new Error('Missing inference authority');
           const previous = await tx<TurnRow[]>`select t.*,o.id as event_id from ideeo.turns t join ideeo.outbox o on o.scope=t.scope and o.turn_id=t.id
             where t.conversation_id=${id} order by t.sequence desc limit 20`;
-          generated = await generator({ message, signal, history: previous.reverse().map(p => turnView(scope,p)), authorize: authorizeInference,
+          generated = await generator({ message, signal, forbidden: excluded, history: previous.reverse().map(p => {const decoded=decodedTurn(scope,p);return {...decoded.turn,projection:decoded.projection};}), authorize: authorizeInference,
             checkpoint: async () => { signal.throwIfAborted(); await tx`select 1`; assertContentLive(parent.expires_at.toISOString()); },
             reserve: kind => scoped(scope,signal,async ledger => {
               const [reserved] = await ledger`select * from ideeo.reserve_inference(${ledger.json(scope)},${keyHash},${id},${fingerprint},${kind})`;
@@ -109,11 +122,12 @@ export async function createConversationStore(config: StorageConfiguration, tena
               if (!finished.ok) throw new Error('Inference settlement failed');
             },false,accounting),
           });
-          if (!['openmaus_fixture','openmaus_openai_evaluation'].includes(generated.kind) || !fixtureAnswers.has(generated.text)) throw new Error('Unqualified model answer');
+          if (freeForm ? !['free_form_fixture','free_form_openai_evaluation'].includes(generated.kind) || !permittedText(generated.text,2000,excluded)
+            : !['openmaus_fixture','openmaus_openai_evaluation'].includes(generated.kind) || !fixtureAnswers.has(generated.text)) throw new Error('Unqualified model answer');
         }
         const turnId = randomUUID(), eventId = randomUUID();
         const binding = { scope, conversationId: id, turnId, sequence: parent.next_sequence, expiresAt: parent.expires_at.toISOString() };
-        const user = protection.encrypt(binding, 'user', message);
+        const user = protection.encrypt(binding, 'user', freeForm ? {message,projection:{policy:TEXT_POLICY,user:message.text,assistant:generated.text}} : message);
         const answer = protection.encrypt(binding, 'answer', generated);
         const [saved] = await tx<TurnRow[]>`insert into ideeo.turns (scope,id,conversation_id,idempotency_key,fingerprint,sequence,status,user_content,answer_content,created_at,expires_at)
           values (${tx.json(scope)},${turnId},${id},${keyHash},${fingerprint},${parent.next_sequence},'completed',${tx.json(user)},${tx.json(answer)},clock_timestamp(),${parent.expires_at}) returning *`;

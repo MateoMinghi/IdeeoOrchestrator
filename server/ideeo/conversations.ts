@@ -2,7 +2,9 @@ import type { createAdmission } from './admission.ts';
 import { AdmissionError } from './authority-client.ts';
 import { callerScope } from './storage/crypto.ts';
 import { assertContentLive, type createConversationStore } from './storage/conversations.ts';
-import type { SyntheticMessage } from '../../shared/ideeo/conversations.ts';
+import type { ConversationMessage } from '../../shared/ideeo/conversations.ts';
+import { isFreeFormMessage, permittedText } from './text-policy.ts';
+import { ConversationError } from './storage/conversations.ts';
 import type { ConversationGenerator, InferenceKind } from './inference.ts';
 
 export function createConversationService(admission: Awaited<ReturnType<typeof createAdmission>>, store: Awaited<ReturnType<typeof createConversationStore>>, generator?: ConversationGenerator) {
@@ -14,7 +16,7 @@ export function createConversationService(admission: Awaited<ReturnType<typeof c
       signal.throwIfAborted();
       const fresh = await admission.admit(proof, signal);
       if (JSON.stringify(callerScope(fresh.principal)) !== JSON.stringify(scope) || !fresh.scopes.includes('conversation:read')
-        || write && !fresh.scopes.includes('conversation:write') || kind && !fresh.scopes.includes(kind === 'model' ? 'inference:invoke' : 'tool:fixture:read')) throw new AdmissionError(403);
+        || write && !fresh.scopes.includes('conversation:write') || kind && !fresh.scopes.includes(kind === 'model' ? 'inference:invoke' : kind === 'disclosure' ? 'inference:disclose' : 'tool:fixture:read')) throw new AdmissionError(403);
       signal.throwIfAborted();
     };
     return { scope, reauthorize };
@@ -27,8 +29,9 @@ export function createConversationService(admission: Awaited<ReturnType<typeof c
       assertContentLive(result.expires_at);
       return result;
     },
-    async append(proof: string, id: string, key: string, message: SyntheticMessage, signal: AbortSignal) {
+    async append(proof: string, id: string, key: string, message: ConversationMessage, signal: AbortSignal) {
       const { scope, reauthorize } = await access(proof, true, signal);
+      if (isFreeFormMessage(message) && !permittedText(message.text,1500,[proof,proof.replace(/^Bearer /,'')])) throw new ConversationError(422,'content_not_permitted');
       const result = await store.append(scope, id, key, message, reauthorize, signal, generator, reauthorize);
       await reauthorize();
       assertContentLive(result.expires_at);
