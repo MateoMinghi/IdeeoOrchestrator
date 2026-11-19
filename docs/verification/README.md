@@ -1,6 +1,6 @@
 # Verifying OpenMausBot
 
-The separate Ideeo product entry uses the [isolated tenant, PayMe API and PostgreSQL storage fixtures](ideeo.md).
+The separate Ideeo product entry uses the [isolated tenant, PayMe API and PostgreSQL storage and controlled-loop fixtures](ideeo.md).
 Those fixtures launch the product service without upstream application state; upstream verification follows the launcher below.
 
 OpenMausBot has one development control surface: `pnpm control:omb`. It runs

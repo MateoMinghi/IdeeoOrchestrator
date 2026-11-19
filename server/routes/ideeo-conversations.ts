@@ -5,6 +5,8 @@ import type { createConversationService } from '../ideeo/conversations.ts';
 import { ConversationError } from '../ideeo/storage/conversations.ts';
 import { AdmissionError } from '../ideeo/authority-client.ts';
 import { InvalidTenantSession } from '../ideeo/identity.ts';
+import { fixturePrompts } from '../ideeo/inference-policy.ts';
+import type { SyntheticMessage } from '../../shared/ideeo/conversations.ts';
 
 const invalid = () => new ConversationError(422, 'invalid_request');
 async function json(req: IncomingMessage): Promise<Record<string, unknown>> {
@@ -55,8 +57,8 @@ export function createIdeeoConversationRoutes(service: ReturnType<typeof createC
           result = await service.create(req.headers.authorization, key, controller.signal);
         } else {
           if (Object.keys(body).join(',') !== 'message') throw invalid();
-          if (body.message !== 'synthetic.hello' && body.message !== 'synthetic.follow-up') throw new ConversationError(422, 'synthetic_input_required');
-          result = await service.append(req.headers.authorization, match![1], key, body.message, controller.signal);
+          if (typeof body.message !== 'string' || !Object.hasOwn(fixturePrompts,body.message)) throw new ConversationError(422, 'synthetic_input_required');
+          result = await service.append(req.headers.authorization, match![1], key, body.message as SyntheticMessage, controller.signal);
         }
       } else {
         if (req.headers['transfer-encoding'] || Number(req.headers['content-length'] ?? 0) !== 0) throw invalid();

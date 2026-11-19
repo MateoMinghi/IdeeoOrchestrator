@@ -14,17 +14,18 @@ export async function verifyRuntimeRole(sql: postgres.Sql) {
   if (!role || role.name !== 'ideeo_runtime' || role.rolsuper || role.rolcreaterole || role.rolcreatedb
     || role.rolreplication || role.rolbypassrls || role.memberships) throw new Error('Unsafe storage runtime role');
   const versions = await sql`select version from ideeo.schema_version`;
-  if (versions.length !== 1 || versions[0].version !== 1) throw new Error('Unsupported storage schema');
+  if (versions.length !== 1 || versions[0].version !== 2) throw new Error('Unsupported storage schema');
   const tables = await sql`select c.relname, c.relrowsecurity, c.relforcerowsecurity, r.rolname as owner,
       has_table_privilege(current_user, c.oid, 'TRUNCATE') as can_truncate,
       has_table_privilege(current_user, c.oid, 'DELETE,UPDATE,TRIGGER,REFERENCES') as can_mutate,
+      (c.relname LIKE 'inference_%' AND has_table_privilege(current_user,c.oid,'INSERT')) as can_insert_ledger,
       has_schema_privilege(current_user, 'ideeo', 'CREATE') as can_create
     from pg_class c join pg_namespace n on c.relnamespace=n.oid join pg_roles r on c.relowner=r.oid
-    where n.nspname='ideeo' and c.relname in ('conversations','turns','outbox')`;
-  if (tables.length !== 3 || tables.some(t => !t.relrowsecurity || !t.relforcerowsecurity
-    || t.owner !== 'ideeo_owner' || t.can_truncate || t.can_mutate || t.can_create)) throw new Error('Unsafe storage isolation');
+    where n.nspname='ideeo' and c.relname in ('conversations','turns','outbox','inference_operations','inference_attempts','inference_budget')`;
+  if (tables.length !== 6 || tables.some(t => !t.relrowsecurity || !t.relforcerowsecurity
+    || t.owner !== 'ideeo_owner' || t.can_truncate || t.can_mutate || t.can_insert_ledger || t.can_create)) throw new Error('Unsafe storage isolation');
   const columns = await sql`select c.relname, a.attname from pg_attribute a join pg_class c on a.attrelid=c.oid
-    join pg_namespace n on c.relnamespace=n.oid where n.nspname='ideeo' and c.relname in ('conversations','turns','outbox')
+    join pg_namespace n on c.relnamespace=n.oid where n.nspname='ideeo' and c.relname in ('conversations','turns','outbox','inference_operations','inference_attempts','inference_budget')
     and a.attnum>0 and not a.attisdropped and has_column_privilege(current_user,c.oid,a.attname,'UPDATE')`;
   if (columns.length !== 1 || columns[0].relname !== 'conversations' || columns[0].attname !== 'next_sequence') throw new Error('Unsafe storage update grants');
   const [maintenance] = await sql`select has_function_privilege(current_user,'ideeo.purge_expired()','EXECUTE') as allowed`;

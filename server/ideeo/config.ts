@@ -1,5 +1,6 @@
 import type { TenantTrustProfile } from './identity.ts';
 import { parseStorageConfiguration, type StorageConfiguration } from './storage/config.ts';
+import { parseInferenceConfiguration, type InferenceConfiguration } from './inference-policy.ts';
 
 export type TenantConfiguration = TenantTrustProfile & Readonly<{
   authority: Readonly<{
@@ -16,6 +17,7 @@ export type IdeeoConfiguration = Readonly<{
   listen: Readonly<{ host: '127.0.0.1'; port: number }>;
   tenants: readonly TenantConfiguration[];
   storage?: StorageConfiguration;
+  inference?: InferenceConfiguration;
 }>;
 
 function record(value: unknown, fields?: readonly string[]): Record<string, unknown> {
@@ -48,7 +50,8 @@ function list(value: unknown): unknown[] {
 
 export function parseIdeeoConfiguration(value: unknown): IdeeoConfiguration {
   const candidate = record(value);
-  const root = record(value, ['environment', 'listen', 'tenants', ...(Object.hasOwn(candidate, 'storage') ? ['storage'] : [])]);
+  const root = record(value, ['environment', 'listen', 'tenants', ...(Object.hasOwn(candidate, 'storage') ? ['storage'] : []), ...(Object.hasOwn(candidate, 'inference') ? ['inference'] : [])]);
+  if (root.inference && !root.storage) throw new Error('Inference requires durable storage');
   const listen = record(root.listen, ['host', 'port']);
   if (root.environment !== 'development' || listen.host !== '127.0.0.1') {
     throw new Error('Only isolated development listeners are qualified');
@@ -92,5 +95,6 @@ export function parseIdeeoConfiguration(value: unknown): IdeeoConfiguration {
   }
   return Object.freeze({ environment: 'development',
     listen: Object.freeze({ host: '127.0.0.1', port: integer(listen.port, 0, 65535) }),
-    tenants: Object.freeze(tenants), ...(Object.hasOwn(root, 'storage') ? { storage: parseStorageConfiguration(root.storage) } : {}) });
+    tenants: Object.freeze(tenants), ...(Object.hasOwn(root, 'storage') ? { storage: parseStorageConfiguration(root.storage) } : {}),
+    ...(Object.hasOwn(root, 'inference') ? { inference: parseInferenceConfiguration(root.inference) } : {}) });
 }

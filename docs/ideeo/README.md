@@ -10,10 +10,11 @@ This repository is the OpenMaus-based candidate for Ideeo's shared multi-tenant 
    Read the [tenant session integration](contracts/TENANT_SESSION_INTEGRATION.md) for the inspected PayMe cookie-to-token flow and SDK/WhatsApp client mapping.
    The [admission contract](contracts/ADMISSION.md) describes the isolated entry, actual PayMe tenant endpoint and synthetic integration, including unsupported backend evidence and remaining qualification.
    The [conversation storage contract](contracts/CONVERSATION_STORAGE.md) defines encrypted records, explicit conversation permissions, transaction/replay behavior and development-only limits.
+   The [controlled loop contract](contracts/CONVERSATION_LOOP.md) defines shared OpenMaus execution, current model/tool permission, durable attempt budgets and synthetic-only limits.
 4. Applicable [contracts](contracts/SHARED_INTERFACE.md), [decision applicability](decisions/APPLICABILITY.md), [compliance policy](policies/COMPLIANCE.md) and [readiness policy](policies/PRODUCTION_READINESS.md).
 5. [Adaptation plan](../../output/ideeo-openmaus-product-adaptation-plan-2026-11-18.md) and the repository's [isolated verification guide](../verification/README.md).
 
-For implementation pickup, start with [the storage integration status](IMPLEMENTATION_STATUS.md#conversation-storage-implemented-with-synthetic-integration). Product local `dev` commit `a0d3273` contains the PayMe admission integration (API `4efeaf5`); the subsequent storage commit adds encrypted storage verified against disposable real PostgreSQL and the actual API with synthetic source evidence. Next is controlled adaptation of the existing OpenMaus loop, then UI/reload. The full customer conversation journey remains incomplete.
+For implementation pickup, start with [the controlled loop status](IMPLEMENTATION_STATUS.md#controlled-loop-implemented-with-synthetic-integration). Product storage `4bc30d6` and API `f00f482` were pushed to `dev`; the subsequent increment, delivered by the containing commit to local `dev`, integrates the existing OpenMaus loop, controlled model/tool ports and durable attempt accounting. It runs against the actual API and disposable databases with a scripted model, plus a separately authorized constrained GPT-6 Luna evaluation. The live run passed 32 checks using nine inexpensive calls. Arbitrary-content/data-disclosure qualification and the authenticated React/reload journey remain open.
 
 ## How to interpret the imported documents
 
@@ -37,7 +38,7 @@ The architecture preserves the substantive product model and replaces the other 
 | Directory | Contents |
 | --- | --- |
 | `product/` | Scope, experience, privacy, integration context, skill research and architecture |
-| `contracts/` | Candidate session, admission and storage contracts; sixteen imported behavior/API documents, sixteen JSON schemas, OpenAPI and a synthetic conformance example |
+| `contracts/` | Candidate session, admission, storage and controlled-loop contracts; sixteen imported behavior/API documents, sixteen JSON schemas, OpenAPI and a synthetic conformance example |
 | `decisions/` | Original decisions with [candidate applicability](decisions/APPLICABILITY.md) |
 | `compliance/` | Fifteen connected legal, security, AI, privacy, risk, supplier and continuity records; draft statuses retained |
 | `policies/`, `workflows/` | Delivery and review rules, with source-specific operating details qualified for this checkout |

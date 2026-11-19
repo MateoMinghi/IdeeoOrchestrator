@@ -55,3 +55,33 @@ Fault injection is confined to the newly owned cluster. A deferred constraint tr
 `payme-storage.ts` launches the explicit API checkout through its installed TS loader. Its worker uses the actual API `admissionFixture`/signer/migrations and product entry, adding disposable real PostgreSQL for product records. It explicitly configures synthetic conversation scopes; SDK uses the actual cookie exchange. It checks WhatsApp, reload/replay, current scope intersection, logout, revocation, rebinding, cross-caller denial, wrong workload, source/API outages and native/hosted limits. API application source is unchanged. The PGlite tenant database and PostgreSQL product database are distinct resources.
 
 Cleanup closes owned clients/children/listeners and removes only resolved temporary paths with the expected prefix. Logs and the product home are checked for credential/transcript leakage. Run the original admission and PayMe suites as regressions; storage checks do not replace them. Record source hashes, commands, versions, failures and acceptance limits in the [candidate verification record](../ideeo/development/VERIFICATION.md). Do not infer real backend adoption, production retention or SDK/Meta UI compatibility from these developer fixtures.
+
+## Controlled conversation loop
+
+Use the [loop contract](../ideeo/contracts/CONVERSATION_LOOP.md) and current schema-2 migrations. From the product root, with installed dependencies:
+
+```powershell
+node --experimental-strip-types --test server/ideeo/conversation-loop.node-test.ts
+node --experimental-strip-types scripts/testing/payme-storage.ts --api-root C:/path/to/isolated/payme-api --loop
+node scripts/testing/loop-upstream.mjs
+```
+
+Equivalent scripts are `test:ideeo-loop`, `test:ideeo-payme-loop` and `test:ideeo-loop-upstream`. The first launches disposable PostgreSQL, two independent authority fixtures, a generated-key HTTP model script and the actual product entry with a temporary home. A module-loader guard rejects ambient host composition imports. No real model, API key, bank or user application is used. The model script is protocol evidence, not semantic acceptance. Its private-reasoning/error/output canaries must not reach product replies, model context, logs or durable plaintext.
+
+Verify greeting, draft, revision, recall, process reload, one authorized typed-tool round, cross-caller/channel denial, revocation after success/dispatch, missing model/tool scopes, replay and concurrency. Each physical request must have a committed attempt; inject timeouts, redirects, oversized/private/invalid output, unknown/repeated tools, commit failure and process death. Check consumed attempts/deadlines survive retry/restart; different input cannot inherit an operation; a new conversation/channel cannot reset the tenant quota; a second tenant remains independent. Deliberately raise the SQL attempt ceiling and require the original bound assertion to fail, then restore it. Migration starts with a retained schema-1 record and must preserve it under schema 2.
+
+The PayMe runner uses actual cookie exchange, signer, migrations and admission route, with synthetic source/identities and separate product PostgreSQL. It checks exact source-call bounds, both channels, current scope narrowing, revocation/logout/rebinding, final-disclosure revocation, wrong workload and source/API outages. No API runtime change is required for the explicit extra scopes.
+
+The upstream runner uses a disposable home and selected original OpenMaus suites with scripted providers/MCP; it preserves the shared loop's streaming/protocol/retry/approval behavior. Those upstream capabilities are not automatically enabled by the product adapter. Run the independent admission, storage, actual API and mutation regressions as well. Record exact versions, commands, failures and scope in the [verification record](../ideeo/development/VERIFICATION.md).
+
+## Authorized OpenAI evaluation
+
+This command spends OpenAI tokens. Run it only with explicit live-call authorization and an explicit key-file path; it is not part of automatic tests:
+
+```powershell
+node --experimental-strip-types scripts/testing/payme-storage.ts --api-root C:/path/to/isolated/payme-api --openai-evaluation --key-file C:/path/to/authorized/.env
+```
+
+The runner selects only `OPENAI_API_KEY` from that file, starts actual tenant API/product code with synthetic identity/source resources and a fresh product PostgreSQL cluster, and activates the distinct `openai-evaluation` profile. It never loads the sibling application or its other environment settings. It reaches only OpenAI's fixed HTTPS Chat Completions endpoint with `gpt-6-luna`, reasoning disabled, no automatic model retries, a 256-token output ceiling and eight-second physical timeout. Pre-debited disposable SQL quotas leave 12 model attempts and two tools across process restart. No fixture proxies the real model under a synthetic label.
+
+The 32 checks extend the actual API/scripted loop with constrained live draft, revision, recall and recall after restart. Responses must stay within the five approved synthetic strings; this is not an unrestricted semantic benchmark. The runner prints only check names/status/counts and aggregate token usage/estimated standard cost, never the key or raw provider errors. Unknown usage remains explicitly unknown and the invoice is not verified. The fixture closes owned processes/listeners/databases afterward. Preserve the independent scripted/two-tenant regressions and record new live evidence separately from historical zero-call runs.

@@ -34,6 +34,10 @@ function requireActive(value: unknown) {
   if (value !== 'active') throw new AdmissionError(403);
 }
 
+export function assertAuthorityFreshness(checkedAt: number, startedAt: number, receivedAt: number) {
+  if (receivedAt < startedAt || checkedAt < startedAt - 1 || checkedAt > receivedAt + 1) throw new AdmissionError(503);
+}
+
 function post(url: string, headers: Record<string, string>, body: string, timeoutMs: number, signal: AbortSignal): Promise<unknown> {
   return new Promise((resolve, reject) => {
     const agent = new Agent({ keepAlive: false });
@@ -94,7 +98,7 @@ export function createAuthorityClient(config: TenantConfiguration['authority'], 
         || Object.entries(context).some(([k, v]) => bound[k] !== v)) throw new AdmissionError(503);
       const now = Math.floor(Date.now() / 1000);
       const checkedAt = epoch(reply.checked_at);
-      if (checkedAt < startedAt || checkedAt > now) throw new AdmissionError(503);
+      assertAuthorityFreshness(checkedAt, startedAt, now);
       requireActive(object(reply.membership, ['status']).status);
       requireActive(object(reply.agent_account, ['status']).status);
       const grant = object(reply.grant, ['status', 'expires_at', 'scopes']);

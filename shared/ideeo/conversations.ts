@@ -1,6 +1,6 @@
-/** Development storage protocol; synthetic answers are not model or banking results. */
-export const CONVERSATION_VERSION = 'ideeo-conversation-storage-1' as const;
-export type SyntheticMessage = 'synthetic.hello' | 'synthetic.follow-up';
+/** Development protocol; answer kind distinguishes scripted and constrained live evaluation. */
+export const CONVERSATION_VERSION = 'ideeo-conversation-storage-2' as const;
+export type SyntheticMessage = 'synthetic.hello' | 'synthetic.follow-up' | 'synthetic.draft' | 'synthetic.revise' | 'synthetic.recall';
 export type ConversationView = Readonly<{
   conversation_id: string;
   created_at: string;
@@ -13,7 +13,7 @@ export type TurnView = Readonly<{
   sequence: number;
   status: 'completed';
   message: SyntheticMessage;
-  answer: Readonly<{ kind: 'synthetic_storage'; text: string }>;
+  answer: Readonly<{ kind: 'synthetic_storage' | 'openmaus_fixture' | 'openmaus_openai_evaluation'; text: string }>;
   created_at: string;
   expires_at: string;
 }>;

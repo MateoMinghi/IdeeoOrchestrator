@@ -4,13 +4,15 @@ import { parseIdeeoConfiguration } from '../ideeo/config.ts';
 import { createIdeeoSessionRoutes } from '../routes/ideeo-session.ts';
 import { createConversationService } from '../ideeo/conversations.ts';
 import { createIdeeoConversationRoutes } from '../routes/ideeo-conversations.ts';
+import { createConversationGenerator } from '../ideeo/conversation-loop.ts';
 
 export async function createIdeeoHost(rawConfiguration: unknown, secrets: Readonly<Record<string, string | undefined>>) {
   const config = parseIdeeoConfiguration(rawConfiguration);
   const admission = await createAdmission(config, secrets);
   const route = createIdeeoSessionRoutes(admission);
+  const generator = config.inference ? createConversationGenerator(config.inference,secrets) : undefined;
   const store = config.storage ? await (await import('../ideeo/storage/conversations.ts')).createConversationStore(config.storage, config.tenants.map(t => t.tenantId), secrets) : undefined;
-  const conversations = store ? createIdeeoConversationRoutes(createConversationService(admission, store)) : undefined;
+  const conversations = store ? createIdeeoConversationRoutes(createConversationService(admission, store,generator)) : undefined;
   const dispatch = async (req: import('node:http').IncomingMessage, res: import('node:http').ServerResponse) => {
     if (conversations && await conversations(req, res)) return;
     await route(req, res);

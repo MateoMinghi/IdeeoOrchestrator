@@ -4,6 +4,8 @@ import type { ConversationHistory, ConversationView, SyntheticMessage, TurnView 
 import type { StorageConfiguration } from './config.ts';
 import { createContentProtection, type CallerScope, type ContentBinding } from './crypto.ts';
 import { openStorageDatabase, verifyRuntimeRole } from './database.ts';
+import { fixtureAnswers, fixturePrompts } from '../inference-policy.ts';
+import type { ConversationGenerator, InferenceKind } from '../inference.ts';
 
 export class ConversationError extends Error {
   readonly status: number;
@@ -24,10 +26,11 @@ export async function createConversationStore(config: StorageConfiguration, tena
   const protection = createContentProtection(config, tenants, secrets);
   const sql = openStorageDatabase(secrets[config.databaseEnv], 'ideeo_runtime');
   try { await verifyRuntimeRole(sql); } catch (error) { await sql.end({ timeout: 2 }); throw error; }
+  const accounting = openStorageDatabase(secrets[config.databaseEnv], 'ideeo_runtime');
 
-  async function scoped<T>(scope: CallerScope, signal: AbortSignal, work: (tx: postgres.TransactionSql) => Promise<T>, snapshot = false): Promise<T> {
+  async function scoped<T>(scope: CallerScope, signal: AbortSignal, work: (tx: postgres.TransactionSql) => Promise<T>, snapshot = false, client = sql): Promise<T> {
     signal.throwIfAborted();
-    return await sql.begin(snapshot ? 'isolation level repeatable read' : 'isolation level read committed', async tx => {
+    return await client.begin(snapshot ? 'isolation level repeatable read' : 'isolation level read committed', async tx => {
       await tx`select set_config('ideeo.caller', ${JSON.stringify(scope)}, true)`;
       signal.throwIfAborted();
       const result = await work(tx);
@@ -51,11 +54,12 @@ export async function createConversationStore(config: StorageConfiguration, tena
     const binding: ContentBinding = { scope, conversationId: row.conversation_id, turnId: row.id, sequence: row.sequence, expiresAt: row.expires_at.toISOString() };
     const user = protection.decrypt(binding, 'user', row.user_content);
     const answer = protection.decrypt(binding, 'answer', row.answer_content);
-    if ((user !== 'synthetic.hello' && user !== 'synthetic.follow-up') || !answer || typeof answer !== 'object'
-      || !('kind' in answer) || answer.kind !== 'synthetic_storage' || !('text' in answer) || typeof answer.text !== 'string'
+    if (typeof user !== 'string' || !Object.hasOwn(fixturePrompts,user) || !answer || typeof answer !== 'object'
+      || !('kind' in answer) || !['synthetic_storage','openmaus_fixture','openmaus_openai_evaluation'].includes(String(answer.kind)) || !('text' in answer) || typeof answer.text !== 'string'
       || Object.keys(answer).length !== 2 || answer.text.length > 2000) throw new Error('Invalid stored turn');
+    if (answer.kind !== 'synthetic_storage' && !fixtureAnswers.has(answer.text)) throw new Error('Invalid inference projection');
     return { turn_id: row.id, conversation_id: row.conversation_id, event_id: row.event_id, sequence: row.sequence,
-      status: 'completed', message: user, answer: { kind: 'synthetic_storage', text: answer.text }, created_at: row.created_at.toISOString(), expires_at: row.expires_at.toISOString() };
+      status: 'completed', message: user as SyntheticMessage, answer: { kind: answer.kind as TurnView['answer']['kind'], text: answer.text }, created_at: row.created_at.toISOString(), expires_at: row.expires_at.toISOString() };
   }
   return Object.freeze({
     async create(scope: CallerScope, key: string, authorize: Authorize, signal: AbortSignal): Promise<ConversationView> {
@@ -72,8 +76,9 @@ export async function createConversationStore(config: StorageConfiguration, tena
         return view(row);
       });
     },
-    async append(scope: CallerScope, id: string, key: string, message: SyntheticMessage, authorize: Authorize, signal: AbortSignal): Promise<TurnView> {
-      if (message !== 'synthetic.hello' && message !== 'synthetic.follow-up') throw new ConversationError(422, 'synthetic_input_required');
+    async append(scope: CallerScope, id: string, key: string, message: SyntheticMessage, authorize: Authorize, signal: AbortSignal,
+      generator?: ConversationGenerator, authorizeInference?: (kind: InferenceKind) => Promise<void>): Promise<TurnView> {
+      if (!Object.hasOwn(fixturePrompts,message) || !generator && message !== 'synthetic.hello' && message !== 'synthetic.follow-up') throw new ConversationError(422, 'synthetic_input_required');
       const keyHash = protection.fingerprint(scope, 'turn-key', key);
       const fingerprint = protection.fingerprint(scope, 'turn-input', { conversation_id: id, message });
       const row = await scoped(scope, signal, async tx => {
@@ -87,11 +92,29 @@ export async function createConversationStore(config: StorageConfiguration, tena
         await lock(tx, protection.fingerprint(scope, 'conversation-lock', id));
         const parent = await conversation(tx, id);
         if (parent.next_sequence > 1000) throw new ConversationError(409, 'conversation_limit');
+        let generated: TurnView['answer'] = { kind: 'synthetic_storage', text: message === 'synthetic.hello' ? 'Synthetic greeting recorded.' : 'Synthetic follow-up recorded.' };
+        if (generator) {
+          if (!authorizeInference) throw new Error('Missing inference authority');
+          const previous = await tx<TurnRow[]>`select t.*,o.id as event_id from ideeo.turns t join ideeo.outbox o on o.scope=t.scope and o.turn_id=t.id
+            where t.conversation_id=${id} order by t.sequence desc limit 20`;
+          generated = await generator({ message, signal, history: previous.reverse().map(p => turnView(scope,p)), authorize: authorizeInference,
+            checkpoint: async () => { signal.throwIfAborted(); await tx`select 1`; assertContentLive(parent.expires_at.toISOString()); },
+            reserve: kind => scoped(scope,signal,async ledger => {
+              const [reserved] = await ledger`select * from ideeo.reserve_inference(${ledger.json(scope)},${keyHash},${id},${fingerprint},${kind})`;
+              if (reserved.code !== 'reserved') throw new ConversationError(reserved.code === 'conversation_expired' ? 410 : 409, reserved.code);
+              return {id: String(reserved.attempt_id), deadline: reserved.deadline as Date};
+            },false,accounting),
+            finish: (attemptId,usage) => scoped(scope,signal,async ledger => {
+              const [finished] = await ledger`select ideeo.finish_inference(${ledger.json(scope)},${attemptId},${usage?.input ?? null},${usage?.output ?? null}) as ok`;
+              if (!finished.ok) throw new Error('Inference settlement failed');
+            },false,accounting),
+          });
+          if (!['openmaus_fixture','openmaus_openai_evaluation'].includes(generated.kind) || !fixtureAnswers.has(generated.text)) throw new Error('Unqualified model answer');
+        }
         const turnId = randomUUID(), eventId = randomUUID();
         const binding = { scope, conversationId: id, turnId, sequence: parent.next_sequence, expiresAt: parent.expires_at.toISOString() };
         const user = protection.encrypt(binding, 'user', message);
-        const answer = protection.encrypt(binding, 'answer', { kind: 'synthetic_storage', text: message === 'synthetic.hello'
-          ? 'Synthetic greeting recorded.' : 'Synthetic follow-up recorded.' });
+        const answer = protection.encrypt(binding, 'answer', generated);
         const [saved] = await tx<TurnRow[]>`insert into ideeo.turns (scope,id,conversation_id,idempotency_key,fingerprint,sequence,status,user_content,answer_content,created_at,expires_at)
           values (${tx.json(scope)},${turnId},${id},${keyHash},${fingerprint},${parent.next_sequence},'completed',${tx.json(user)},${tx.json(answer)},clock_timestamp(),${parent.expires_at}) returning *`;
         await tx`insert into ideeo.outbox(scope,id,turn_id,conversation_id,sequence,kind,created_at)
@@ -113,6 +136,6 @@ export async function createConversationStore(config: StorageConfiguration, tena
       const turns = result.rows.slice(0, limit).map(row => turnView(scope, row));
       return { ...view(result.parent), turns, next_after: result.rows.length > limit ? turns.at(-1)!.sequence : null };
     },
-    close: () => sql.end({ timeout: 2 }),
+    close: async () => { await Promise.all([sql.end({ timeout: 2 }),accounting.end({ timeout: 2 })]); },
   });
 }

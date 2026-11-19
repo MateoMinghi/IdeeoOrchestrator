@@ -9,7 +9,7 @@ import postgres from 'postgres';
 import { migrateConversationStorage } from '../../server/ideeo/storage/migrate.ts';
 
 const run = promisify(execFile);
-export async function launchPostgresFixture() {
+export async function launchPostgresFixture(options: { beforeUpgrade?: (sql: postgres.TransactionSql) => Promise<void> } = {}) {
   const root = await mkdtemp(join(tmpdir(), 'ideeo-postgres-'));
   const data = join(root, 'data');
   const bin = process.env.IDEEO_TEST_PG_BIN ?? (process.platform === 'win32' ? 'C:/Program Files/PostgreSQL/18/bin' : '/usr/lib/postgresql/18/bin');
@@ -69,6 +69,15 @@ export async function launchPostgresFixture() {
     const bootstrap = postgres(url('fixture_admin', password, 'postgres'), { max: 1, onnotice: () => {} });
     try { await bootstrap.unsafe(`CREATE DATABASE ${database}`); } finally { await bootstrap.end(); }
     const adminUrl = url('fixture_admin', password);
+    if (options.beforeUpgrade) {
+      const initial = postgres(adminUrl, { max: 1, onnotice: () => {} });
+      try {
+        await initial.begin(async tx => {
+          await tx.unsafe(await readFile(new URL('../../migrations/ideeo/001_conversations.sql', import.meta.url), 'utf8'));
+          await options.beforeUpgrade!(tx);
+        });
+      } finally { await initial.end(); }
+    }
     await migrateConversationStorage(adminUrl);
     await migrateConversationStorage(adminUrl);
     admin = postgres(adminUrl, { max: 2, onnotice: () => {} });

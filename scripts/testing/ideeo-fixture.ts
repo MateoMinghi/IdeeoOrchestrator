@@ -4,10 +4,11 @@ import { mkdtemp, mkdir, readFile, realpath, rm, writeFile } from 'node:fs/promi
 import { createServer, type Server } from 'node:http';
 import { tmpdir } from 'node:os';
 import { basename, dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { exportSPKI, generateKeyPair, jwtVerify, SignJWT } from 'jose';
 import type { StorageConfiguration } from '../../server/ideeo/storage/config.ts';
 import type { TenantConfiguration } from '../../server/ideeo/config.ts';
+import type { InferenceConfiguration } from '../../server/ideeo/inference-policy.ts';
 
 type Status = 'active' | 'inactive' | 'paused' | 'revoked' | 'expired';
 export type TenantFixtureState = {
@@ -126,7 +127,8 @@ async function createTenantFixture(id: string) {
   };
 }
 
-export async function launchIdeeoFixture(options: { storage?: StorageConfiguration; secrets?: Record<string, string>;
+export async function launchIdeeoFixture(options: { storage?: StorageConfiguration; inference?: InferenceConfiguration; secrets?: Record<string, string>;
+  guardHostImports?: boolean;
   additionalTenants?: readonly { config: TenantConfiguration; credential: string }[] } = {}) {
   const root = await mkdtemp(join(tmpdir(), 'ideeo-admission-'));
   const tenants: Awaited<ReturnType<typeof createTenantFixture>>[] = [];
@@ -152,8 +154,12 @@ export async function launchIdeeoFixture(options: { storage?: StorageConfigurati
     for (const id of ['alpha', 'beta']) tenants.push(await createTenantFixture(id));
     const configuredTenants = [...tenants, ...options.additionalTenants ?? []];
     const config = { environment: 'development', listen: { host: '127.0.0.1', port: 0 },
-      tenants: configuredTenants.map(t => ({ ...t.config, authority: { ...t.config.authority } })), ...(options.storage ? { storage: options.storage } : {}) };
+      tenants: configuredTenants.map(t => ({ ...t.config, authority: { ...t.config.authority } })), ...(options.storage ? { storage: options.storage } : {}),
+      ...(options.inference ? { inference:options.inference } : {}) };
     const configPath = join(root, 'config.json');
+    const guardPath=join(root,'guard.mjs');
+    if(options.guardHostImports) await writeFile(guardPath,`import {registerHooks} from 'node:module';
+registerHooks({resolve(specifier,context,next){const result=next(specifier,context);if(/\\/server\\/(config\\.ts|drivers\\/(native|chat-mcp-tools|openai-chat)\\.ts)$/.test(result.url))throw Error('Host composition forbidden in product fixture');return result;}});`);
     await writeFile(configPath, JSON.stringify(config));
     const home = join(root, 'home');
     await mkdir(home);
@@ -163,14 +169,18 @@ export async function launchIdeeoFixture(options: { storage?: StorageConfigurati
     let logs = '';
     const start = async () => {
       await writeFile(configPath, JSON.stringify(config));
-      child = spawn(process.execPath, ['--experimental-strip-types', fileURLToPath(new URL('../../server/ideeo-main.ts', import.meta.url)), '--config', configPath],
+      child = spawn(process.execPath, ['--experimental-strip-types',...(options.guardHostImports?['--import',pathToFileURL(guardPath).href]:[]), fileURLToPath(new URL('../../server/ideeo-main.ts', import.meta.url)), '--config', configPath],
       { cwd: root, env: environment, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
     const ownedChild = child;
     child.stderr!.on('data', chunk => { logs = (logs + chunk.toString()).slice(-4096); });
     return new Promise<string>((resolve, reject) => {
       const timer = setTimeout(() => reject(new Error('Fixture startup timed out')), 10000);
       ownedChild.once('error', () => { clearTimeout(timer); reject(new Error('Fixture startup failed')); });
-      ownedChild.once('exit', () => { clearTimeout(timer); reject(new Error('Fixture exited before readiness')); });
+      ownedChild.once('exit', code => {
+        clearTimeout(timer);
+        const category = logs.includes('Host composition forbidden') ? 'host-import' : logs.match(/\bERR_[A-Z_]+\b/)?.[0] ?? 'startup';
+        reject(new Error(`Fixture exited before readiness (${code}, ${category})`));
+      });
       let output = '';
       ownedChild.stdout!.on('data', chunk => {
         output += chunk.toString();

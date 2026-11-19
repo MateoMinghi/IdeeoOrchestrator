@@ -7,12 +7,14 @@ export async function migrateConversationStorage(databaseUrl: string) {
     await sql.begin(async tx => {
       await tx`select pg_advisory_xact_lock(7291364)`;
       const [schema] = await tx`select to_regclass('ideeo.schema_version') as name`;
+      let version = 0;
       if (schema.name) {
         const versions = await tx`select version from ideeo.schema_version`;
-        if (versions.length !== 1 || versions[0].version !== 1) throw new Error('Unsupported storage schema');
-        return;
+        if (versions.length !== 1 || ![1,2].includes(versions[0].version)) throw new Error('Unsupported storage schema');
+        version = versions[0].version;
       }
-      await tx.unsafe(await readFile(new URL('../../../migrations/ideeo/001_conversations.sql', import.meta.url), 'utf8'));
+      if (version < 1) await tx.unsafe(await readFile(new URL('../../../migrations/ideeo/001_conversations.sql', import.meta.url), 'utf8'));
+      if (version < 2) await tx.unsafe(await readFile(new URL('../../../migrations/ideeo/002_inference.sql', import.meta.url), 'utf8'));
     });
   } finally { await sql.end({ timeout: 2 }); }
 }
