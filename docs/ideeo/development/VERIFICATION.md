@@ -4,7 +4,7 @@ This record belongs to the OpenMaus-based candidate. The [source candidate verif
 
 ## Current scope
 
-The initial documentation change imports requirements and source references, rewrites the architecture and connects repository entry instructions. No server, model, database, authority, bank, worker or browser-task runtime behavior was changed or qualified. HTML rendering is document QA, not application acceptance.
+The initial documentation import and HTML rendering checks qualify documentation only. Subsequent sections record the token verifier and isolated product admission service. Those services have synthetic developer verification; conversation, database, financial authority, real bank, worker and browser-task integration remain unqualified.
 
 Run application verification through the root [isolated fixture guide](../../verification/README.md). Extend that harness with disposable product PostgreSQL, authority, Temporal and browser resources when implementing the product. Never verify mutations against the user's live application or data.
 
@@ -23,3 +23,23 @@ The [adaptation plan](../../../output/ideeo-openmaus-product-adaptation-plan-202
 - `git diff --check` passed for tracked entry-document changes. No application runtime tests were run because application code was unchanged.
 
 These checks establish documentation integrity and rendering only. Independent human acceptance and product integration qualification remain pending.
+
+## Tenant-token verifier — 19 November 2026
+
+The verifier and its Node tests are in `server/ideeo/identity.ts` and `identity.node-test.ts`. The [tenant session contract](../contracts/TENANT_SESSION_INTEGRATION.md) records the inspected cookie exchange and signed SDK/WhatsApp identities. Its initial module qualification below preceded the product-route wiring recorded in the next section. The verifier itself makes no current-authority decision.
+
+Twenty-five checks passed, including synthetic cryptographic proof, two tenant namespaces, channel binding, malformed/expired credentials, tampering, audience restrictions, key rotation and an ephemeral loopback HTTP fixture. No existing application, bank, issuer or model was contacted. A focused strict typecheck of both files also passed.
+
+The checkout had no installed dependency tree. Verification used disposable copies of these two source files and the already-installed `jose` 6.2.10 artifact matching this repository's pin, under a temporary directory. Node was 24.15.0; the focused compiler was TypeScript 7.0.2 with explicit Node types. The compiler's initial fixture lacked its native platform package, then lacked the explicit Node types option; both fixture setup issues were corrected before the passing check. The package-manager launcher attempted a fetch and failed; no dependency installation or full repository build was completed. No product-route test or independent acceptance was run. The normal repository command after dependency installation is `pnpm test:ideeo-auth`.
+
+## Isolated product admission — 19 November 2026
+
+The [product fixture](../../verification/ideeo.md) launched the actual `server/ideeo-main.ts` entry in a separate process with temporary home/configuration, ephemeral loopback listener, generated keys and two independent tenant services. Its closed `/v2/session` route checked tenant/customer proof and a freshly correlated current-state response. The fixture exercised SDK and WhatsApp routing, overlapping tenant identifiers, wrong customer/grant/agent/client, inactive membership, paused agent, revoked/expired/narrowed grant, revoked/expired/replaced channel, authentication-time mismatch and proof expiry during the authority call.
+
+**Results:** 53 passing Node test results across the verifier and admission suites. Authority outage, bounded timeout, redirect, malformed/oversized/secret-echo response, mismatched caller, stale/future observation and replay all denied admission without retries or another-tenant fallback. Wrong workload credentials and removed tenant configuration failed closed. Missing configuration/secrets prevented process startup; legacy/tool/conversation routes stayed closed and the temporary home stayed empty. No real API, bank, model or user application was contacted.
+
+Two deliberate mutations were made only in a disposable source copy. Removing active-state enforcement caused membership, agent, grant and channel revocation tests to fail. Removing response-context binding caused the cross-tenant response case to fail. Both guards were restored and the complete 53-result run passed afterward.
+
+A focused strict TypeScript check of all candidate modules, shared wire types and fixture/tests passed with the server's ES2023/Node settings. The fixture initially lacked the transitive `undici-types` dependency; supplying it exposed unknown JSON-result types in the tests, which were corrected with runtime shape assertions. Targeted Oxlint passed with no warnings. Tools: Node 24.15.0, `jose` 6.2.10, TypeScript 7.0.2, Oxlint 1.80.0. The isolated test checkout used exact copies of the candidate files and the installed pinned `jose` artifact; it was not a full repository dependency installation or build.
+
+**External gap:** the proposed `ideeo-admission-1` status endpoint is implemented only by the synthetic fixture. The inspected PayMe broker does not expose it. Real destinations are disabled in this startup profile pending tenant implementation and qualification. Financial authority, conversation/history persistence, consumer/device acceptance, independent review and production approval remain outstanding. Admission is not a durable or financial permit.

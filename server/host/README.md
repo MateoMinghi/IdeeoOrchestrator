@@ -1,5 +1,10 @@
 # server/host — the server's host modules
 
+The isolated Ideeo admission profile uses `createIdeeoHost` with explicit dependencies
+and a separate `server/ideeo-main.ts` entry. It must not import the upstream composition
+root: that would initialize application services before product admission. The rules
+below govern modules composed into the upstream `server/index.ts`.
+
 `server/index.ts` is being taken apart into modules that live here (and in
 `server/routes/` for HTTP routes). The rules, so the file never grows back:
 

@@ -1,5 +1,10 @@
 # server/routes
 
+`ideeo-session.ts` belongs to the isolated product listener and receives its admission
+dependency explicitly. It is not registered in the upstream table or authenticated by
+device/workspace sessions. Its closed routes and tenant proof follow the
+[product admission contract](../../docs/ideeo/contracts/ADMISSION.md).
+
 New HTTP routes go here as modules. Do not add route `if` blocks to `server/index.ts`.
 `scripts/testing/index-route-ratchet.test.ts` fails when `index.ts` gains a path guard. Moving a route out needs no
 change there: the numbers are lowered at each release.

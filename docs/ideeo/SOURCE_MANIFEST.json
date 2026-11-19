@@ -262,8 +262,8 @@
       "source_kind": "committed",
       "source_sha256": "ddab18b04d73fa68d8e7d0f66c010f9587858a0564f7e82f50640d8ccfd8f554",
       "destination": "docs/ideeo/contracts/AUTH_PROFILE.md",
-      "treatment": "reference with applicability notice and local links",
-      "destination_sha256": "847b8b71e2dd3f5ae48fd478e3e0f7230cd25d457d6a78f42c157521f683b802"
+      "treatment": "reference with applicability notice and local links; candidate cookie-to-token integration note",
+      "destination_sha256": "1d1236b043a35d6aa1411eddd3ba68a1afd70f2ef04ed766493167323bb77795"
     },
     {
       "source": "docs/contracts/BACKGROUND_TASKS.md",
@@ -831,7 +831,7 @@
       "source_sha256": "961ae120819cfd7ad3572cf0366c90e60eec022a64104943af527193207ff4b1",
       "destination": "docs/ideeo/product/architecture/arquitectura-motor-agentes-rev4.html",
       "treatment": "rewritten for the OpenMaus-based candidate; source retained separately",
-      "destination_sha256": "90fe295d91027506c06c894bce0b3c10c13608e6604378241a21f8d5ce3791cf",
+      "destination_sha256": "497f7904a9651a9c82cb0e80239a0723c2d6acbaf76cd0d214c26ac3fc80cdde",
       "historical_copy": "docs/ideeo/reference/architecture/ideeo-ia-general-rev4.html"
     },
     {
@@ -935,17 +935,17 @@
     {
       "destination": "docs/ideeo/development/VERIFICATION.md",
       "treatment": "candidate-authored documentation or source-reference index",
-      "destination_sha256": "c9912adcca0801f753604796128ac168d475de27610d8f805fc3fc09cda22e1d"
+      "destination_sha256": "7cd8510654906ce79b6eefd62f0372531dd6b04ce4d510cb2af19619427806ce"
     },
     {
       "destination": "docs/ideeo/IMPLEMENTATION_STATUS.md",
       "treatment": "candidate-authored documentation or source-reference index",
-      "destination_sha256": "76e75b5aefaac576d68acefc68379cbb1361b29eb3af5bd24916df7b3a018345"
+      "destination_sha256": "c18a5ac9c0592c20f22084f4f43798bc395ffa419e41709ce67468cfcfeac715"
     },
     {
       "destination": "docs/ideeo/README.md",
       "treatment": "candidate-authored documentation or source-reference index",
-      "destination_sha256": "b7902944066ede6a219873c78a4bc5909923d5f28386a0ae138dc833e1364b65"
+      "destination_sha256": "ff45ab0bc1de4c5c37a8f39d4237216f6e61acddbdd93789ee4acdd486a0014f"
     },
     {
       "destination": "docs/ideeo/reference/architecture/ideeo-ia-general-rev4.html",
@@ -961,6 +961,135 @@
       "destination": "docs/ideeo/reference/SOURCE_REFERENCES.md",
       "treatment": "candidate-authored documentation or source-reference index",
       "destination_sha256": "070e1a53357d5a58603bb10c4f8ec0f95351a2e181a6c9795dafbbb85df11e1b"
+    },
+    {
+      "destination": "docs/ideeo/contracts/TENANT_SESSION_INTEGRATION.md",
+      "treatment": "candidate-authored integration contract based on tenant_session_inspection",
+      "destination_sha256": "073421233ae0486173b1c3764456ffa21c50cfce140af232a683c6f0ec831153"
+    },
+    {
+      "destination": "docs/ideeo/contracts/ADMISSION.md",
+      "treatment": "candidate-authored admission contract; tenant status endpoint remains a synthetic extension",
+      "destination_sha256": "4e539fba7880455b7d78f42933aabcb83819a27d6bfe7eef353f246b8eb8c5fc"
     }
-  ]
+  ],
+  "tenant_session_inspection": {
+    "date": "2026-11-19",
+    "source_collection": "Desktop/Ideeo-AI",
+    "treatment": "read-only source inspection; no source code imported; findings recorded in contracts/TENANT_SESSION_INTEGRATION.md",
+    "files": [
+      {
+        "repository": "payme-api",
+        "source": "src/core/session.ts",
+        "source_revision": "0d111de98b996d68b4af30115de620c2254973ef",
+        "tracked_file_matches_HEAD": true,
+        "source_sha256": "5fdc9d6e25a655b6e4a26151f655137c5d86cf826efafdc6b45eff11ec652980"
+      },
+      {
+        "repository": "payme-api",
+        "source": "src/modules/session/middleware.ts",
+        "source_revision": "0d111de98b996d68b4af30115de620c2254973ef",
+        "tracked_file_matches_HEAD": true,
+        "source_sha256": "49e4b3525a918f74b22e1897a201aa3a5674e943656e821d84ca397edf14ca06"
+      },
+      {
+        "repository": "payme-api",
+        "source": "src/core/csrf.ts",
+        "source_revision": "0d111de98b996d68b4af30115de620c2254973ef",
+        "tracked_file_matches_HEAD": true,
+        "source_sha256": "ebdd0f3520c7e14d2d534bd40d26321f06c9aa752d30d32fdd0c99b20ea08cb1"
+      },
+      {
+        "repository": "payme-api",
+        "source": "src/modules/nico/index.ts",
+        "source_revision": "0d111de98b996d68b4af30115de620c2254973ef",
+        "tracked_file_matches_HEAD": true,
+        "source_sha256": "dab2381df57be178738aad3d0b1ffd9e817e1d2e152fa91a18d88e641c411613"
+      },
+      {
+        "repository": "payme-api",
+        "source": "src/contracts/nico.ts",
+        "source_revision": "0d111de98b996d68b4af30115de620c2254973ef",
+        "tracked_file_matches_HEAD": true,
+        "source_sha256": "a50f9bbb0f3fa65f8f96992edc5a69e9110ad01c19f6489b1847a7939e8a3d0e"
+      },
+      {
+        "repository": "payme-api",
+        "source": "src/core/nico-jwt.ts",
+        "source_revision": "0d111de98b996d68b4af30115de620c2254973ef",
+        "tracked_file_matches_HEAD": true,
+        "source_sha256": "2c345a6f3125335bfc64a18196beae17424e889f6e7aab5a4304d4f52bfc061b"
+      },
+      {
+        "repository": "payme-api",
+        "source": "src/modules/whatsapp/signature.ts",
+        "source_revision": "0d111de98b996d68b4af30115de620c2254973ef",
+        "tracked_file_matches_HEAD": true,
+        "source_sha256": "ed77116860af993ad03e74e809ff6c05095c52fe6ee7edd35ac6097c58ff445e"
+      },
+      {
+        "repository": "payme-api",
+        "source": "src/modules/whatsapp/channel.ts",
+        "source_revision": "0d111de98b996d68b4af30115de620c2254973ef",
+        "tracked_file_matches_HEAD": true,
+        "source_sha256": "30e6f44a6ce71d4af3b18aaebe732043393af46d4d043383893f626494c5bb3c"
+      },
+      {
+        "repository": "payme-api",
+        "source": "src/modules/broker/index.ts",
+        "source_revision": "0d111de98b996d68b4af30115de620c2254973ef",
+        "tracked_file_matches_HEAD": true,
+        "source_sha256": "7efffc5593178bd0e45e705e8fd680a7c4f49bfdd8f2e030fceee3f487aa8591"
+      },
+      {
+        "repository": "payme-web",
+        "source": "src/features/nico-host/NicoPage.tsx",
+        "source_revision": "3cf13816917fdb27402f35e79f54eed3948e72c8",
+        "tracked_file_matches_HEAD": true,
+        "source_sha256": "ac2e47a470681b226d054aa63e06bdabb7ef68d7dda6d39f8a7d1e47f19c495c"
+      },
+      {
+        "repository": "payme-web",
+        "source": "src/features/nico-host/token.ts",
+        "source_revision": "3cf13816917fdb27402f35e79f54eed3948e72c8",
+        "tracked_file_matches_HEAD": true,
+        "source_sha256": "bb6723439d0dfd3b9295e11966465f77c1998d81f7f9910a4644ef518964be98"
+      },
+      {
+        "repository": "payme-web",
+        "source": "src/api/client.ts",
+        "source_revision": "3cf13816917fdb27402f35e79f54eed3948e72c8",
+        "tracked_file_matches_HEAD": true,
+        "source_sha256": "dbb68a63bcc18bf66583ebcda4fae74243bdb77a9d2a75a84b66474c439f5499"
+      },
+      {
+        "repository": "nico-sdk",
+        "source": "src/transport/client.ts",
+        "source_revision": "1dcdc753ee46bb9f5e5300ad4f90419c2ff71f5f",
+        "tracked_file_matches_HEAD": true,
+        "source_sha256": "9ed0529292cf8e283cc838ba8cee40fa29bedf49c52bee850719eb2041d58e83"
+      },
+      {
+        "repository": "nico-sdk",
+        "source": "src/contract/host.ts",
+        "source_revision": "1dcdc753ee46bb9f5e5300ad4f90419c2ff71f5f",
+        "tracked_file_matches_HEAD": true,
+        "source_sha256": "3f695e5d9d05d4e3e16da630d3bafdce63e839eac93268b1caa45a20a51f362d"
+      },
+      {
+        "repository": "payme-api",
+        "source": "src/modules/broker/armoni.ts",
+        "source_revision": "0d111de98b996d68b4af30115de620c2254973ef",
+        "tracked_file_matches_HEAD": true,
+        "source_sha256": "a24c937578398dafa45e7d7b447a0fdcebb626b6e8ee6d6680b6f856a7e590be"
+      },
+      {
+        "repository": "payme-api",
+        "source": "src/modules/native-bank/authority.ts",
+        "source_revision": "0d111de98b996d68b4af30115de620c2254973ef",
+        "tracked_file_matches_HEAD": true,
+        "source_sha256": "99e23b27178cb8fa114182df47d7dc7ce43e2780f9d0d04d938039c4fcf4ecd1"
+      }
+    ]
+  }
 }

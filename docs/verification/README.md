@@ -1,5 +1,8 @@
 # Verifying OpenMausBot
 
+The separate Ideeo product admission entry uses the [isolated two-tenant fixture](ideeo.md).
+It launches only the new admission service; upstream application verification follows the launcher below.
+
 OpenMausBot has one development control surface: `pnpm control:omb`. It runs
 the published `openmausbot` verbs (docs/headless-cli.md), which call the MCP
 tools in `scripts/mcp-server.ts`, so verification uses the same URL

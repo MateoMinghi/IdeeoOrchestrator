@@ -6,6 +6,10 @@ This implements the Sprint 1 subset of [ADR-001](../decisions/001-tenant-authent
 
 [ADR-011](../decisions/011-tenant-api-and-channel-ownership.md) places applicant/session exchange and enrollment in the tenant backend. The credential below authenticates SDK and tenant-channel API callers; a phone/Meta sender or pre-account applicant is not a substitute for it. Route profiles use the verified `client_id`, not a request channel hint.
 
+## Candidate integration note
+
+The newer [tenant session integration](TENANT_SESSION_INTEGRATION.md) documents PayMe's opaque `payme_session` cookie, its exchange at `/api/nico/token`, and signed `payme-app` / `payme-whatsapp` client identities. The imported development profile below remains source-candidate context. IdeeoOrchestrator now has an [isolated admission service](ADMISSION.md) with a verifier and synthetic current-status checks. The required real tenant status endpoint and consumer qualification remain pending.
+
 ## Trust and deployment boundary
 
 The executable service currently supports **development with synthetic identities and records only**. `ENGINE_ENVIRONMENT` accepts `development`; real deployment is deliberately unsupported until its tenant session/assurance contract and separate authority boundary are implemented and verified. The isolated issuer is not a bank authentication service.

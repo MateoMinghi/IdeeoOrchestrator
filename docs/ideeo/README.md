@@ -7,6 +7,8 @@ This repository is the OpenMaus-based candidate for Ideeo's shared multi-tenant 
 1. [Architecture — revision 5](product/architecture/arquitectura-motor-agentes-rev4.html): the architecture for this candidate, its retained product boundaries, module ownership, journeys and delivery gates. The filename is retained for link compatibility; its content has been rewritten.
 2. [Project context](product/PROJECT_CONTEXT.md), [UX](product/UX.md) and [data lifecycle](product/DATA_OWNERSHIP_AND_LIFECYCLE.md): shared product scope and behavior.
 3. [Candidate implementation status](IMPLEMENTATION_STATUS.md): what exists here versus what still requires implementation and qualification.
+   Read the [tenant session integration](contracts/TENANT_SESSION_INTEGRATION.md) for the inspected PayMe cookie-to-token flow and SDK/WhatsApp client mapping.
+   The [admission contract](contracts/ADMISSION.md) describes the implemented isolated entry, synthetic current-status checks and the missing real tenant endpoint.
 4. Applicable [contracts](contracts/SHARED_INTERFACE.md), [decision applicability](decisions/APPLICABILITY.md), [compliance policy](policies/COMPLIANCE.md) and [readiness policy](policies/PRODUCTION_READINESS.md).
 5. [Adaptation plan](../../output/ideeo-openmaus-product-adaptation-plan-2026-11-18.md) and the repository's [isolated verification guide](../verification/README.md).
 
