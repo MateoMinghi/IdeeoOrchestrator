@@ -49,6 +49,23 @@ test('helper, fallback and unqualified context cannot dispatch',async()=>{
   ] as const) await assert.rejects(send(url,request),{code:'model_unavailable'});
 });
 
+test('model transport preserves authority and storage failures',async t=>{
+  const model=await launchModelFixture();
+  t.after(()=>model.stop());
+  const config={mode:'synthetic' as const,url:model.url,credentialEnv:'MODEL',model:'ideeo-fixture' as const};
+  const body={model:config.model,stream:true,max_tokens:256,messages:[{role:'system',content:fixtureSystem}],tools:[fixtureTool]};
+  for(const boundary of ['checkpoint','authorize','reserve','finish','reauthorize'] as const)await t.test(boundary,async()=>{
+    const failure=new Error('Synthetic non-provider boundary failure');
+    let checks=0;
+    const context:InferenceContext={message:'synthetic.hello',history:[],signal:new AbortController().signal,
+      checkpoint:async()=>{},authorize:async()=>{},reserve:async()=>({id:'attempt',deadline:new Date(Date.now()+15000)}),finish:async()=>{}};
+    if(boundary==='reauthorize')context.authorize=async()=>{if(++checks===2)throw failure;};
+    else context[boundary]=async()=>{throw failure;};
+    const send=controlledModelTransport(config,model.credential,context);
+    await assert.rejects(send(config.url+'/chat/completions',{method:'POST',body:JSON.stringify(body)}),error=>error===failure);
+  });
+});
+
 test('controlled OpenMaus loop through actual product and PostgreSQL',{timeout:180000},async t=>{
   const retained=randomUUID();
   const pg=await launchPostgresFixture({beforeUpgrade:async sql=>{
@@ -60,7 +77,7 @@ test('controlled OpenMaus loop through actual product and PostgreSQL',{timeout:1
   t.after(async()=>{await product?.stop();await model.stop();await pg.stop();});
   await t.test('schema one record survives the explicit forward migration',async()=>{
     const [schema]=await pg.admin`select version from ideeo.schema_version`;
-    assert.equal(schema.version,2);
+    assert.equal(schema.version,4);
     const [record]=await pg.admin`select id,next_sequence from ideeo.conversations where id=${retained}`;
     assert.equal(record.id,retained);assert.equal(record.next_sequence,1);
   });

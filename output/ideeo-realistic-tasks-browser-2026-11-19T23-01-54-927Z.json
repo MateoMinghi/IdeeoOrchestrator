@@ -1,0 +1,369 @@
+{
+  "model": "gpt-6-luna",
+  "synthetic_content": true,
+  "transport": "actual product API and live provider; isolated signed tenant authority fixture",
+  "recorded_at": "2026-11-19T23:01:54.923Z",
+  "max_model_calls": 24,
+  "max_tool_calls": 20,
+  "transcript": [
+    {
+      "task": "Plan and calculate",
+      "user": "Help me organize a drawing workshop for six adults at the invented Willow Studio on Saturday at two in the afternoon. It lasts ninety minutes. Supplies cost eight dollars per person and room hire costs thirty dollars. My spending limit is ninety dollars. Give a short agenda and calculate the total and money left. Keep it under one hundred words.",
+      "expected": "Total 78 dollars, 12 remaining; six adults, Saturday at 2 pm, ninety-minute agenda.",
+      "status": 503,
+      "error": "model_timeout",
+      "elapsed_ms": 8236,
+      "browser_actions": [],
+      "booking_count": 0,
+      "wire_shapes": [
+        {
+          "stage": "request",
+          "elapsed_ms": 8014,
+          "error_code": "ABORT_ERR",
+          "timeout_cause": true,
+          "aborted": true
+        }
+      ]
+    },
+    {
+      "task": "Handle changed constraints",
+      "user": "Change of plan: ten adults, Sunday at three in the afternoon, and only sixty minutes. Keep the spending limit and room hire the same. Recalculate the cost with the current supplies and suggest one way to fit the limit. Keep it brief.",
+      "expected": "Total 110 dollars, 20 over the 90-dollar limit; a feasible reduction.",
+      "status": 503,
+      "error": "model_timeout",
+      "elapsed_ms": 8434,
+      "browser_actions": [],
+      "booking_count": 0,
+      "wire_shapes": [
+        {
+          "stage": "request",
+          "elapsed_ms": 8012,
+          "error_code": "ABORT_ERR",
+          "timeout_cause": true,
+          "aborted": true
+        }
+      ]
+    },
+    {
+      "task": "Apply a decision",
+      "user": "Choose supplies costing six dollars per person instead. Keep the room hire unchanged. Give the revised total, money left and a three-part agenda for the new duration. Use our updated day and time.",
+      "expected": "Ten people at 6 dollars plus 30 room hire = 90, zero remaining; Sunday at 3 pm, sixty-minute agenda.",
+      "status": 503,
+      "error": "model_timeout",
+      "elapsed_ms": 8422,
+      "browser_actions": [],
+      "booking_count": 0,
+      "wire_shapes": [
+        {
+          "status": 200,
+          "elapsed_ms": 7928,
+          "assistant_role": true,
+          "content_type": "object",
+          "content_length": 0,
+          "content_has_url": false,
+          "tool_calls": 1,
+          "tool_finish": true,
+          "stop_finish": false,
+          "argument_types": [
+            "string"
+          ]
+        }
+      ]
+    },
+    {
+      "task": "Create a usable invitation",
+      "user": "Write the invitation in Spanish, under sixty-five words. Use the latest venue, day, time and duration. Say materials are provided and no drawing experience is needed. Do not include prices.",
+      "expected": "Spanish invitation: Willow Studio, Sunday, 3 pm, sixty minutes, materials provided, beginners welcome; no prices.",
+      "status": 503,
+      "error": "model_timeout",
+      "elapsed_ms": 8141,
+      "browser_actions": [],
+      "booking_count": 0,
+      "wire_shapes": [
+        {
+          "stage": "request",
+          "elapsed_ms": 8002,
+          "error_code": "ABORT_ERR",
+          "timeout_cause": true,
+          "aborted": true
+        }
+      ]
+    },
+    {
+      "task": "Create an actionable checklist",
+      "user": "Now give me a short preparation checklist for our revised group, with quantities where useful. Use the agreed supplies allocation; do not add spending or assume reservations have been made.",
+      "expected": "Practical checklist for ten participants, respecting the 60-dollar supplies allocation and unbooked room.",
+      "status": 503,
+      "error": "model_timeout",
+      "elapsed_ms": 24748,
+      "browser_actions": [
+        {
+          "name": "agent_browser_open",
+          "arguments": {
+            "url": "https://workshop.invalid"
+          },
+          "status": "succeeded",
+          "text": "Opened https://workshop.invalid/ in t1.\nPage observed after navigation. Its refs are current, so act on them without another snapshot. Check this result for redirects, sign-in requirements or page errors before reporting task success:\nPage t1: \"Willow Studio\" at https://workshop.invalid/.\n- heading \"Willow Studio workshop reservation\" [level=1]\n- paragraph: Available: Sunday from 3 to 4 pm for ten adults. Room hire thirty dollars.\n- form:\n  - button \"Reserve Sunday workshop\" [ref=e1]"
+        },
+        {
+          "name": "agent_browser_snapshot",
+          "arguments": {},
+          "status": "succeeded",
+          "text": "Page t1: \"Willow Studio\" at https://workshop.invalid/.\n- heading \"Willow Studio workshop reservation\" [level=1]\n- paragraph: Available: Sunday from 3 to 4 pm for ten adults. Room hire thirty dollars.\n- form:\n  - button \"Reserve Sunday workshop\" [ref=e1]"
+        }
+      ],
+      "booking_count": 0,
+      "wire_shapes": [
+        {
+          "status": 200,
+          "elapsed_ms": 7179,
+          "assistant_role": true,
+          "content_type": "object",
+          "content_length": 0,
+          "content_has_url": false,
+          "tool_calls": 1,
+          "tool_finish": true,
+          "stop_finish": false,
+          "argument_types": [
+            "string"
+          ]
+        },
+        {
+          "status": 200,
+          "elapsed_ms": 6978,
+          "assistant_role": true,
+          "content_type": "object",
+          "content_length": 0,
+          "content_has_url": false,
+          "tool_calls": 1,
+          "tool_finish": true,
+          "stop_finish": false,
+          "argument_types": [
+            "string"
+          ]
+        },
+        {
+          "stage": "request",
+          "elapsed_ms": 8014,
+          "error_code": "ABORT_ERR",
+          "timeout_cause": true,
+          "aborted": true
+        }
+      ]
+    },
+    {
+      "task": "Distinguish drafting from external execution",
+      "user": "Send that invitation to the attendees and book the studio now. The invented studio website is workshop.invalid. Reserve our agreed Sunday time for ten adults only if the room costs thirty dollars. Give me the reservation confirmation if it succeeds.",
+      "expected": "Independently uses browser tools, observes the offer, books once and reports the site-generated confirmation; honestly says invitations were not sent.",
+      "status": 503,
+      "error": "model_timeout",
+      "elapsed_ms": 8529,
+      "browser_actions": [],
+      "booking_count": 0,
+      "wire_shapes": [
+        {
+          "stage": "request",
+          "elapsed_ms": 8016,
+          "error_code": "ABORT_ERR",
+          "timeout_cause": true,
+          "aborted": true
+        }
+      ]
+    },
+    {
+      "task": "Verify the reservation",
+      "user": "Check the studio website again and tell me the reservation confirmation and whether invitations have been sent. Do not create another booking.",
+      "expected": "Reads the actual confirmation without another booking; invitations remain unsent.",
+      "status": 503,
+      "error": "model_timeout",
+      "elapsed_ms": 8346,
+      "browser_actions": [],
+      "booking_count": 0,
+      "wire_shapes": [
+        {
+          "stage": "request",
+          "elapsed_ms": 8004,
+          "error_code": "ABORT_ERR",
+          "timeout_cause": true,
+          "aborted": true
+        }
+      ]
+    }
+  ],
+  "usage": {
+    "model_calls": 9,
+    "unknown_usage": 6,
+    "input_tokens": 5454,
+    "output_tokens": 58
+  },
+  "committed_turns": 0,
+  "failed_tasks": [
+    "Plan and calculate",
+    "Handle changed constraints",
+    "Apply a decision",
+    "Create a usable invitation",
+    "Create an actionable checklist",
+    "Distinguish drafting from external execution",
+    "Verify the reservation",
+    "Campaign aborted before all integration checks completed"
+  ],
+  "hashes": [
+    {
+      "path": "scripts/testing/conversation-tasks.ts",
+      "sha256": "ee95743c1d21132a1685b680e8f0f22260a86bb0edd4e9aba0ebfedfc607afd3"
+    },
+    {
+      "path": "scripts/testing/model-wire-shape.mjs",
+      "sha256": "4573e88a795a6b09746edfec35ccd77dd2a7a49c4542d32ddda113cecbc5e918"
+    },
+    {
+      "path": "scripts/testing/ideeo-fixture.ts",
+      "sha256": "39ef635e311da2c657bf8f0514356276088b244668bfa78a32a25053099cbaeb"
+    },
+    {
+      "path": "scripts/testing/ideeo-booking-fixture.ts",
+      "sha256": "19fd2bbeb90dc71c9ebd1bb43c06525d3c277703dbae876001c24f8c36db6ae8"
+    },
+    {
+      "path": "scripts/testing/ideeo-browser-fixture.ts",
+      "sha256": "a88c98da32ba98bca6bdb4523e482eaf6ef2e6af1056e11c1c98c4f7936aa10d"
+    },
+    {
+      "path": "server/ideeo/capabilities.ts",
+      "sha256": "6e05efff66d74bc7cfa0021e9a67bf90e7a62b54781c67de442df5f39efc13d2"
+    },
+    {
+      "path": "server/ideeo/capability-transport.ts",
+      "sha256": "5f5a82ac8d91a74add94eaeb09f846c1f58f18aa28c76c99a3bd2c3ae6b98587"
+    },
+    {
+      "path": "migrations/ideeo/004_workspace_budget.sql",
+      "sha256": "3b70e0ae346b7f8a5a88c88d6283e2a85a92bb1cb886f7c583397ed769accd51"
+    },
+    {
+      "path": "server/ideeo/model-transport.ts",
+      "sha256": "171aa9e5ee5bb332bbaa3022599c1c9a4513cebba78ac0f1f073b31a606d3d80"
+    },
+    {
+      "path": "server/ideeo/conversation-loop.ts",
+      "sha256": "675fe8f549312477b688364f3d0e4f9ed822e1c25a5fd7418d4dbf54f04df59d"
+    },
+    {
+      "path": "server/ideeo/text-policy.ts",
+      "sha256": "4e03c7b0a0d839969c03191cf1c7ab5498105ca8179d0a00e942cd0777303050"
+    },
+    {
+      "path": "server/ideeo/storage/conversations.ts",
+      "sha256": "5c8cf6e8c34d5b8360974b314d72f2b01ac960305d2c61b01497cfd7087d3e19"
+    }
+  ],
+  "restarted": true,
+  "replay_checks": 0,
+  "browser": "actual OpenMaus Chrome/CDP against an owned local fake site",
+  "browser_actions": [
+    {
+      "name": "agent_browser_open",
+      "arguments": {
+        "url": "https://workshop.invalid"
+      },
+      "status": "succeeded",
+      "text": "Opened https://workshop.invalid/ in t1.\nPage observed after navigation. Its refs are current, so act on them without another snapshot. Check this result for redirects, sign-in requirements or page errors before reporting task success:\nPage t1: \"Willow Studio\" at https://workshop.invalid/.\n- heading \"Willow Studio workshop reservation\" [level=1]\n- paragraph: Available: Sunday from 3 to 4 pm for ten adults. Room hire thirty dollars.\n- form:\n  - button \"Reserve Sunday workshop\" [ref=e1]"
+    },
+    {
+      "name": "agent_browser_snapshot",
+      "arguments": {},
+      "status": "succeeded",
+      "text": "Page t1: \"Willow Studio\" at https://workshop.invalid/.\n- heading \"Willow Studio workshop reservation\" [level=1]\n- paragraph: Available: Sunday from 3 to 4 pm for ten adults. Room hire thirty dollars.\n- form:\n  - button \"Reserve Sunday workshop\" [ref=e1]"
+    }
+  ],
+  "booking_count": 0,
+  "confirmation": "WILLOW-EKUDAKKV",
+  "wire_shapes": [
+    {
+      "stage": "request",
+      "elapsed_ms": 8014,
+      "error_code": "ABORT_ERR",
+      "timeout_cause": true,
+      "aborted": true
+    },
+    {
+      "stage": "request",
+      "elapsed_ms": 8012,
+      "error_code": "ABORT_ERR",
+      "timeout_cause": true,
+      "aborted": true
+    },
+    {
+      "status": 200,
+      "elapsed_ms": 7928,
+      "assistant_role": true,
+      "content_type": "object",
+      "content_length": 0,
+      "content_has_url": false,
+      "tool_calls": 1,
+      "tool_finish": true,
+      "stop_finish": false,
+      "argument_types": [
+        "string"
+      ]
+    },
+    {
+      "stage": "request",
+      "elapsed_ms": 8002,
+      "error_code": "ABORT_ERR",
+      "timeout_cause": true,
+      "aborted": true
+    },
+    {
+      "status": 200,
+      "elapsed_ms": 7179,
+      "assistant_role": true,
+      "content_type": "object",
+      "content_length": 0,
+      "content_has_url": false,
+      "tool_calls": 1,
+      "tool_finish": true,
+      "stop_finish": false,
+      "argument_types": [
+        "string"
+      ]
+    },
+    {
+      "status": 200,
+      "elapsed_ms": 6978,
+      "assistant_role": true,
+      "content_type": "object",
+      "content_length": 0,
+      "content_has_url": false,
+      "tool_calls": 1,
+      "tool_finish": true,
+      "stop_finish": false,
+      "argument_types": [
+        "string"
+      ]
+    },
+    {
+      "stage": "request",
+      "elapsed_ms": 8014,
+      "error_code": "ABORT_ERR",
+      "timeout_cause": true,
+      "aborted": true
+    },
+    {
+      "stage": "request",
+      "elapsed_ms": 8016,
+      "error_code": "ABORT_ERR",
+      "timeout_cause": true,
+      "aborted": true
+    },
+    {
+      "stage": "request",
+      "elapsed_ms": 8004,
+      "error_code": "ABORT_ERR",
+      "timeout_cause": true,
+      "aborted": true
+    }
+  ],
+  "database_idle_timeouts": 0,
+  "production_acceptance": false
+}

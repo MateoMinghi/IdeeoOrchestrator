@@ -59,7 +59,7 @@ export async function createConversationStore(config: StorageConfiguration, tena
     const user = projected ? projected.message : stored;
     const answer = protection.decrypt(binding, 'answer', row.answer_content);
     if (!(typeof user === 'string' && Object.hasOwn(fixturePrompts,user)) && !isFreeFormMessage(user) || !answer || typeof answer !== 'object'
-      || !('kind' in answer) || !['synthetic_storage','openmaus_fixture','openmaus_openai_evaluation','free_form_fixture','free_form_openai_evaluation'].includes(String(answer.kind)) || !('text' in answer) || typeof answer.text !== 'string'
+      || !('kind' in answer) || !['synthetic_storage','openmaus_fixture','openmaus_openai_evaluation','free_form_fixture','free_form_openai_evaluation','free_form_gemini_evaluation'].includes(String(answer.kind)) || !('text' in answer) || typeof answer.text !== 'string'
       || Object.keys(answer).length !== 2 || answer.text.length > 2000) throw new Error('Invalid stored turn');
     if (isFreeFormMessage(user)) {
       if (!String(answer.kind).startsWith('free_form_') || !projected || !permittedProjection(projected.projection)
@@ -86,7 +86,7 @@ export async function createConversationStore(config: StorageConfiguration, tena
       });
     },
     async append(scope: CallerScope, id: string, key: string, message: ConversationMessage, authorize: Authorize, signal: AbortSignal,
-      generator?: ConversationGenerator, authorizeInference?: (kind: InferenceKind) => Promise<void>): Promise<TurnView> {
+      generator?: ConversationGenerator, authorizeInference?: (kind: InferenceKind, permission?: string) => Promise<void>, workspace = false): Promise<TurnView> {
       const freeForm = isFreeFormMessage(message);
       const excluded = [...forbidden,...Object.values(scope),id];
       if (freeForm) {
@@ -110,10 +110,17 @@ export async function createConversationStore(config: StorageConfiguration, tena
           if (!authorizeInference) throw new Error('Missing inference authority');
           const previous = await tx<TurnRow[]>`select t.*,o.id as event_id from ideeo.turns t join ideeo.outbox o on o.scope=t.scope and o.turn_id=t.id
             where t.conversation_id=${id} order by t.sequence desc limit 20`;
-          generated = await generator({ message, signal, forbidden: excluded, history: previous.reverse().map(p => {const decoded=decodedTurn(scope,p);return {...decoded.turn,projection:decoded.projection};}), authorize: authorizeInference,
+          const executionId=randomUUID();
+          generated = await generator({ message, signal, forbidden: excluded, execution:{scope,conversationId:id}, history: previous.reverse().map(p => {const decoded=decodedTurn(scope,p);return {...decoded.turn,projection:decoded.projection};}), authorize: authorizeInference,
+            claimTools:()=>scoped(scope,signal,async ledger=>{
+              const [claim]=await ledger`select ideeo.claim_tool_execution(${ledger.json(scope)},${keyHash},${id},${fingerprint},${executionId}) as claimed`;
+              if(!claim.claimed) throw new ConversationError(409,'capability_reconciliation_required');
+            },false,accounting),
             checkpoint: async () => { signal.throwIfAborted(); await tx`select 1`; assertContentLive(parent.expires_at.toISOString()); },
             reserve: kind => scoped(scope,signal,async ledger => {
-              const [reserved] = await ledger`select * from ideeo.reserve_inference(${ledger.json(scope)},${keyHash},${id},${fingerprint},${kind})`;
+              const [reserved] = workspace
+                ? await ledger`select * from ideeo.reserve_workspace_inference(${ledger.json(scope)},${keyHash},${id},${fingerprint},${kind})`
+                : await ledger`select * from ideeo.reserve_inference(${ledger.json(scope)},${keyHash},${id},${fingerprint},${kind})`;
               if (reserved.code !== 'reserved') throw new ConversationError(reserved.code === 'conversation_expired' ? 410 : 409, reserved.code);
               return {id: String(reserved.attempt_id), deadline: reserved.deadline as Date};
             },false,accounting),
@@ -122,7 +129,7 @@ export async function createConversationStore(config: StorageConfiguration, tena
               if (!finished.ok) throw new Error('Inference settlement failed');
             },false,accounting),
           });
-          if (freeForm ? !['free_form_fixture','free_form_openai_evaluation'].includes(generated.kind) || !permittedText(generated.text,2000,excluded)
+          if (freeForm ? !['free_form_fixture','free_form_openai_evaluation','free_form_gemini_evaluation'].includes(generated.kind) || !permittedText(generated.text,2000,excluded)
             : !['openmaus_fixture','openmaus_openai_evaluation'].includes(generated.kind) || !fixtureAnswers.has(generated.text)) throw new Error('Unqualified model answer');
         }
         const turnId = randomUUID(), eventId = randomUUID();

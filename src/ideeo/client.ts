@@ -32,8 +32,8 @@ export const payMeToken: TenantTokenSource = async signal => {
 };
 
 export function createProductClient(getToken: TenantTokenSource) {
-  async function session<T>(signal: AbortSignal, work: (request: (path:string,body?:object,key?:string)=>Promise<Record<string,unknown>>) => Promise<T>) {
-    signal=AbortSignal.any([signal,AbortSignal.timeout(30000)]);
+  async function session<T>(signal: AbortSignal, work: (request: (path:string,body?:object,key?:string)=>Promise<Record<string,unknown>>) => Promise<T>, timeoutMs=30000) {
+    signal=AbortSignal.any([signal,AbortSignal.timeout(timeoutMs)]);
     const token=await getToken(signal);signal.throwIfAborted();
     if (!token || token.length>12000 || /[\r\n]/.test(token)) throw new ProductApiError('authentication_required');
     const request=async(path:string,body?:object,key?:string)=>{
@@ -62,7 +62,7 @@ export function createProductClient(getToken: TenantTokenSource) {
       const result=await request(`/v2/conversations/${conversationId(id)}/turns`,{message:{text,disclosure:'model'}},key);
       if(result.conversation_id!==id || result.status!=='completed' || !uuid.test(String(result.turn_id))) throw new ProductApiError('unavailable');
       return result as unknown as TurnView;
-    }),
+    },70000),
     history: (id:string,signal:AbortSignal)=>session(signal,async request=>{
       const turns: TurnView[]=[];let after=0;
       for(let page=0;page<20;page++) {

@@ -1,5 +1,7 @@
 # Controlled OpenMaus conversation loop
 
+The optional [workspace capability extension](WORKSPACE_CAPABILITIES.md) adds caller-scoped tools and separately authorized screenshots to the free-form development profile. Statements below about the single color tool describe the original profile. The database is now schema 4 after the durable execution-claim and bounded workspace-budget migrations; the public conversation protocol remains `ideeo-conversation-storage-3`.
+
 Current protocol is `ideeo-conversation-storage-3`. The constrained profiles below remain supported. The opt-in free-form extension has scripted-provider evidence and a separately authorized, bounded live Luna campaign. Independent acceptance remains outstanding.
 
 This development increment uses the existing OpenMaus Chat Completions loop through explicit product ports. `openai-chat-runtime.ts` contains the shared implementation; `openai-chat.ts` supplies the upstream application's defaults, and `server/ideeo/conversation-loop.ts` supplies the product's restricted ports. There is no second conversation engine. The original profile uses a scripted local model. A separately activated, user-authorized OpenAI evaluation profile now has bounded live evidence below. Neither profile establishes SDK/device, independent or production acceptance.
@@ -94,6 +96,38 @@ See [verification](../development/VERIFICATION.md#free-form-controls-and-react-p
 
 The user subsequently authorized the key in `Desktop/Ideeo-IA-general/.env` for inexpensive live testing. The actual PayMe/API/product/PostgreSQL fixture activates both evaluation flags and `textMode:free-form`, with the same fixed OpenAI endpoint/model and no runtime policy changes. It pre-debits the disposable tenant ledger to allow at most twelve model calls and two tool executions. No automatic live retries, real customer data, general external tool or bank destination is enabled.
 
-`scripts/testing/live-free-form.ts` defines task-specific checks for a short original invitation, revision of its day, Spanish continuity, refusal of a cross-tenant/authorization-header disclosure request and recall after process restart. These constraints are supplied as ordinary user requests; the expected final answers are not supplied to the model. The same run checks SDK/WhatsApp, the actual typed color tool, no-call credential/disclosure denials, replay, current revocation, ciphertext privacy and denial after forcing the disposable tenant budget exhausted. The scripted UI harness cannot be combined with live evaluation.
+`scripts/testing/live-free-form.ts` defines task-specific checks for a short original invitation, revision of its day, Spanish continuity, refusal of a cross-tenant/authorization-header disclosure request and recall after process restart. These constraints are supplied as ordinary user requests; the expected final answers are not supplied to the model. The same run checks SDK/WhatsApp, the actual typed color tool, no-call credential/disclosure denials, replay, current revocation, ciphertext privacy and denial after forcing the disposable tenant budget exhausted. The initial campaign did not combine browser and live evaluation.
 
 One campaign passed 38 integration checks and all five semantic criteria using ten calls, 3,620 input tokens and 136 output tokens, with zero unknown-usage attempts. At the previously documented standard rates, the estimate is $0.00043; invoice and current account-specific pricing were not reconciled. The [evidence](../development/VERIFICATION.md#authorized-free-form-luna-evaluation--19-november-2026) retains the approved synthetic answers. This is a small developer evaluation of `gpt-6-luna` (alias, not an immutable snapshot), not general semantic/privacy robustness, live React acceptance or production qualification.
+
+## Response hardening and live browser evaluation
+
+Model transport failures are classified before the route's generic storage fallback: the adapter's elapsed request deadline returns HTTP 503 `model_timeout`; network failures and malformed provider JSON return `model_unavailable`. Authority checks and storage checkpoint/reservation/settlement failures retain their own errors. Unknown token usage remains unknown, and failed attempts remain charged. This classification change does not extend the eight-second live transport limit, nine-second shared-loop idle limit or durable operation budgets. The transport timer also covers post-response checks; a near-deadline response can therefore still be withheld. See the [failure investigation](../development/VERIFICATION.md#conversation-failure-investigation--19-november-2026).
+
+Provider messages must now explicitly have role `assistant`; a response with another role is withheld rather than silently relabelled. The original shared loop and all other runtime policies remain unchanged. Expanded isolated evidence covers malformed/empty/mismatched responses, timeout accounting, twenty-pair context selection through 23 turns, concurrent idempotency and two product processes competing for a tenant's last quota reservation. Deliberately removing the role check or disclosure checks is detected in separate disposable mutations.
+
+The runner now accepts `--free-form --ui --openai-evaluation --key-file <authorized-path>`. This selects a separate browser campaign under the same twelve-model/two-tool maximum. It performs the color lookup through the browser, omitting the duplicate API-only color scenario. Browser criteria cover ordinary writing/revision, committed reload/retry, authorized tool use and current identity; three further Spanish/French/English prompts challenge unauthorized disclosure and fabricated authority. It does not run the original five-case invitation campaign simultaneously. No automatic live retries or broader provider access is introduced. See the [acceptance candidate](../development/CONVERSATION_ACCEPTANCE.md) and dated verification evidence.
+
+## Explicit Gemini evaluation profile
+
+The user separately authorized the sibling `.env` Gemini key for inexpensive synthetic testing. Trusted configuration may select only:
+
+```json
+{
+  "mode": "gemini-evaluation",
+  "url": "https://generativelanguage.googleapis.com/v1beta/openai",
+  "credentialEnv": "GEMINI_EVALUATION_KEY",
+  "model": "gemini-2.5-flash-lite",
+  "textMode": "free-form"
+}
+```
+
+Startup requires both `IDEEO_GEMINI_EVALUATION=synthetic-content-only` and `IDEEO_FREE_FORM_EVALUATION=synthetic-content-only`. OpenAI activation does not enable Gemini. There is no automatic provider fallback, browser-selected endpoint, live destination labelled synthetic, or environment-based provider discovery. The key reader selects only `GEMINI_API_KEY` for this explicit choice. No new SDK or conversation engine is introduced.
+
+Google's [OpenAI-compatible API](https://aistudio.google.com/docs/openai) preserves the shared OpenMaus Chat Completions loop. The controlled adapter sends `stream:false`, `max_tokens:256` and `reasoning_effort:none` to the exact Google HTTPS endpoint. OpenAI-specific `store`, `max_completion_tokens` and `parallel_tool_calls` fields are not sent. This is not a claim of zero retention or no training; the [supplier record](../compliance/SUPPLIERS.md) leaves account tier, region, contract and real-data processing unqualified. Only invented non-sensitive text is permitted.
+
+All existing caller scopes, current disclosure/model/tool permission checks, fixed operation deadlines, separately committed attempts, byte/context bounds, encryption, revocation and final publication checks remain. Replies have kind `free_form_gemini_evaluation`; only matching Gemini projections enter subsequent Gemini context. Protocol 3 and SQL schema 2 remain, with an additive development answer kind. Older readers lacking this kind cannot read its records; rollback requires a compatible reader.
+
+Gemini tool replies may omit `content`. The adapter normalizes absent text to null only when the Gemini reply contains tool calls, then enforces the existing exact tool/argument/cardinality and role constraints. Missing final text, simultaneous text and tool calls, unknown tools and private content remain rejected. Gemini call identifiers admit only bounded opaque alphanumeric/underscore/hyphen strings and exclude known secrets. Private reasoning and unknown fields are stripped.
+
+Live evidence is partial: the first campaign exposed the omitted-content incompatibility, which was reproduced and fixed. Later campaigns and a separate bounded protocol diagnostic observed an empty final provider message after the synthetic tool result. The product withholds that answer; it does not substitute hardcoded text or retry automatically. Reliable Gemini tool completion remains open. Ordinary drafting, revision, Spanish invitation and restarted context recall have observed evidence, with explicit semantic weaknesses. See the [verification record](../development/VERIFICATION.md#gemini-flash-lite-realistic-conversation--19-november-2026).

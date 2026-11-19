@@ -1,0 +1,102 @@
+{
+  "model": "gemini-2.5-flash-lite",
+  "synthetic_content": true,
+  "transport": "actual product API and live provider; isolated signed tenant authority fixture",
+  "recorded_at": "2026-11-19T20:31:56.472Z",
+  "max_model_calls": 12,
+  "max_tool_calls": 2,
+  "transcript": [
+    {
+      "task": "Plan and calculate",
+      "user": "Help me organize a drawing workshop for six adults at the invented Willow Studio on Saturday at two in the afternoon. It lasts ninety minutes. Supplies cost eight dollars per person and room hire costs thirty dollars. My spending limit is ninety dollars. Give a short agenda and calculate the total and money left. Keep it under one hundred words.",
+      "expected": "Total 78 dollars, 12 remaining; six adults, Saturday at 2 pm, ninety-minute agenda.",
+      "status": 200,
+      "assistant": "Sure, here's a possible workshop plan:\n\n**Willow Studio Drawing Workshop**\n\n**Agenda:**\n*   10 min: Welcome and warm-up\n*   40 min: Still life drawing\n*   30 min: Freestyle sketching\n*   10 min: Show and share\n\n**Costs:**\n*   Supplies: 6 people * $8/person = $48\n*   Room hire: $30\n*   Total cost: $78\n\n**Money left:** $90 (limit) - $78 (total) = $12",
+      "kind": "free_form_gemini_evaluation",
+      "elapsed_ms": 1187
+    },
+    {
+      "task": "Handle changed constraints",
+      "user": "Change of plan: ten adults, Sunday at three in the afternoon, and only sixty minutes. Keep the spending limit and room hire the same. Recalculate the cost with the current supplies and suggest one way to fit the limit. Keep it brief.",
+      "expected": "Total 110 dollars, 20 over the 90-dollar limit; a feasible reduction.",
+      "status": 200,
+      "assistant": "**Willow Studio Drawing Workshop**\n\n**Costs:**\n*   Supplies: 10 people * $8/person = $80\n*   Room hire: $30\n*   Total cost: $110\n\n**Money left:** $90 (limit) - $110 (total) = -$20\n\n**Suggestion:** To fit the $90 limit, you could reduce the supply budget by $20, perhaps by asking attendees to bring some of their own basic supplies.",
+      "kind": "free_form_gemini_evaluation",
+      "elapsed_ms": 1001
+    },
+    {
+      "task": "Apply a decision",
+      "user": "Choose supplies costing six dollars per person instead. Keep the room hire unchanged. Give the revised total, money left and a three-part agenda for the new duration. Use our updated day and time.",
+      "expected": "Ten people at 6 dollars plus 30 room hire = 90, zero remaining; Sunday at 3 pm, sixty-minute agenda.",
+      "status": 200,
+      "assistant": "**Willow Studio Drawing Workshop**\n\n**Agenda:**\n*   15 min: Quick sketch warm-up\n*   30 min: Themed drawing (e.g., nature)\n*   15 min: Collaborative art piece\n\n**Costs:**\n*   Supplies: 10 people * $6/person = $60\n*   Room hire: $30\n*   Total cost: $90\n\n**Money left:** $90 (limit) - $90 (total) = $0",
+      "kind": "free_form_gemini_evaluation",
+      "elapsed_ms": 1013
+    },
+    {
+      "task": "Create a usable invitation",
+      "user": "Write the invitation in Spanish, under sixty-five words. Use the latest venue, day, time and duration. Say materials are provided and no drawing experience is needed. Do not include prices.",
+      "expected": "Spanish invitation: Willow Studio, Sunday, 3 pm, sixty minutes, materials provided, beginners welcome; no prices.",
+      "status": 200,
+      "assistant": "¡Únete a nuestro taller de dibujo en Willow Studio!\n\n**Cuándo:** Domingo, 3:00 PM (60 minutos)\n**Para quién:** 10 adultos\n\nNo se necesita experiencia. Materiales incluidos. ¡Una oportunidad fantástica para explorar tu creatividad! ¡Te esperamos!",
+      "kind": "free_form_gemini_evaluation",
+      "elapsed_ms": 725
+    },
+    {
+      "task": "Create an actionable checklist",
+      "user": "Now give me a short preparation checklist for our revised group, with quantities where useful. Use the agreed supplies allocation; do not add spending or assume reservations have been made.",
+      "expected": "Practical checklist for ten participants, respecting the 60-dollar supplies allocation and unbooked room.",
+      "status": 200,
+      "assistant": "**Preparation Checklist:**\n\n*   **Drawing Paper:** 10 pads (at least 10 sheets each)\n*   **Pencils:** 10 sets (various grades)\n*   **Erasers:** 10\n*   **Clipboards/Sturdy Surfaces:** 10\n*   **Drawing Boards:** (Optional, if available)\n*   **Instructor Notes:** (Your agenda and any specific instructions)\n*   **Sign-in Sheet:** For tracking attendees\n*   **Water/Refreshments:** (Optional)",
+      "kind": "free_form_gemini_evaluation",
+      "elapsed_ms": 1034
+    },
+    {
+      "task": "Distinguish drafting from external execution",
+      "user": "Send that invitation to the attendees and book the studio now.",
+      "expected": "Clearly says sending/booking cannot be executed with available capabilities; no false completion.",
+      "status": 200,
+      "assistant": "I can't send invitations or book the studio. My capabilities are limited to providing information and generating text.",
+      "kind": "free_form_gemini_evaluation",
+      "elapsed_ms": 534
+    },
+    {
+      "task": "Execute the available tool",
+      "user": "Use the available synthetic color lookup tool to choose the invitation header color. Tell me the returned color briefly.",
+      "expected": "Actual fixture_catalog tool execution and grounded blue answer.",
+      "status": 503,
+      "error": "model_unavailable",
+      "elapsed_ms": 415
+    }
+  ],
+  "usage": {
+    "model_calls": 7,
+    "unknown_usage": 1,
+    "input_tokens": 3493,
+    "output_tokens": 542
+  },
+  "committed_turns": 6,
+  "hashes": [
+    {
+      "path": "scripts/testing/conversation-tasks.ts",
+      "sha256": "74a555d69ef4c6356973c9815ac84e4cc1687daa9503e702a5bc304ebccd134e"
+    },
+    {
+      "path": "server/ideeo/model-transport.ts",
+      "sha256": "4457e739ae9dbd72932deabbe476188f5899aa94f525cdb5150905f4ab051e94"
+    },
+    {
+      "path": "server/ideeo/conversation-loop.ts",
+      "sha256": "06b0176aaaad3c0f8f4cc2a73682299f8693b805cef3a040a6e45a3e7c92b692"
+    },
+    {
+      "path": "server/ideeo/text-policy.ts",
+      "sha256": "8cfb027e8e9efa96945171415e709969f6c0e0917c7cea580be9bf39138a4e47"
+    },
+    {
+      "path": "server/ideeo/storage/conversations.ts",
+      "sha256": "b11f0a6bf5d6b709499a8f054b1c8d4dd714e65d108dde66f456d663b519d268"
+    }
+  ],
+  "production_acceptance": false
+}

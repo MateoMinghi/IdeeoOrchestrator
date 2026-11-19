@@ -1,0 +1,81 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Ideeo live conversation</title><style>body{font:17px/1.6 system-ui;max-width:900px;margin:40px auto;padding:0 20px;background:#f5f5f2;color:#172b29}article{background:white;padding:24px;margin:20px 0;border-radius:12px}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}details pre{font-size:13px}h1,h2{line-height:1.25}</style><h1>Ideeo live conversation</h1><p>gpt-6-luna · Actual provider responses · Real browser, fake local booking site</p><p>Incomplete run: Plan and calculate, Handle changed constraints, Apply a decision, Create a usable invitation, Create an actionable checklist, Distinguish drafting from external execution, Browser booking criteria. Developer evidence; not production acceptance.</p><article><h2>Plan and calculate</h2><strong>You</strong><pre>Help me organize a drawing workshop for six adults at the invented Willow Studio on Saturday at two in the afternoon. It lasts ninety minutes. Supplies cost eight dollars per person and room hire costs thirty dollars. My spending limit is ninety dollars. Give a short agenda and calculate the total and money left. Keep it under one hundred words.</pre><strong>Ideeo · HTTP 503</strong><pre>storage_unavailable</pre><details><summary>Actual browser actions</summary><pre>[
+  {
+    &quot;name&quot;: &quot;agent_browser_open&quot;,
+    &quot;arguments&quot;: {
+      &quot;url&quot;: &quot;https://workshop.invalid&quot;
+    },
+    &quot;status&quot;: &quot;succeeded&quot;,
+    &quot;text&quot;: &quot;Opened https://workshop.invalid/ in t1.\nPage observed after navigation. Its refs are current, so act on them without another snapshot. Check this result for redirects, sign-in requirements or page errors before reporting task success:\nPage t1: \&quot;Willow Studio\&quot; at https://workshop.invalid/.\n- heading \&quot;Willow Studio workshop reservation\&quot; [level=1]\n- paragraph: Available: Sunday from 3 to 4 pm for ten adults. Room hire thirty dollars.\n- form:\n  - button \&quot;Reserve Sunday workshop\&quot; [ref=e1]&quot;
+  }
+]</pre></details></article><article><h2>Handle changed constraints</h2><strong>You</strong><pre>Change of plan: ten adults, Sunday at three in the afternoon, and only sixty minutes. Keep the spending limit and room hire the same. Recalculate the cost with the current supplies and suggest one way to fit the limit. Keep it brief.</pre><strong>Ideeo · HTTP 503</strong><pre>storage_unavailable</pre></article><article><h2>Apply a decision</h2><strong>You</strong><pre>Choose supplies costing six dollars per person instead. Keep the room hire unchanged. Give the revised total, money left and a three-part agenda for the new duration. Use our updated day and time.</pre><strong>Ideeo · HTTP 503</strong><pre>storage_unavailable</pre></article><article><h2>Create a usable invitation</h2><strong>You</strong><pre>Write the invitation in Spanish, under sixty-five words. Use the latest venue, day, time and duration. Say materials are provided and no drawing experience is needed. Do not include prices.</pre><strong>Ideeo · HTTP 503</strong><pre>storage_unavailable</pre></article><article><h2>Create an actionable checklist</h2><strong>You</strong><pre>Now give me a short preparation checklist for our revised group, with quantities where useful. Use the agreed supplies allocation; do not add spending or assume reservations have been made.</pre><strong>Ideeo · HTTP 503</strong><pre>storage_unavailable</pre><details><summary>Actual browser actions</summary><pre>[
+  {
+    &quot;name&quot;: &quot;agent_browser_open&quot;,
+    &quot;arguments&quot;: {
+      &quot;url&quot;: &quot;https://workshop.invalid&quot;
+    },
+    &quot;status&quot;: &quot;succeeded&quot;,
+    &quot;text&quot;: &quot;Opened https://workshop.invalid/ in t1.\nPage observed after navigation. Its refs are current, so act on them without another snapshot. Check this result for redirects, sign-in requirements or page errors before reporting task success:\nPage t1: \&quot;Willow Studio\&quot; at https://workshop.invalid/.\n- heading \&quot;Willow Studio workshop reservation\&quot; [level=1]\n- paragraph: Available: Sunday from 3 to 4 pm for ten adults. Room hire thirty dollars.\n- form:\n  - button \&quot;Reserve Sunday workshop\&quot; [ref=e2]&quot;
+  }
+]</pre></details></article><article><h2>Distinguish drafting from external execution</h2><strong>You</strong><pre>Send that invitation to the attendees and book the studio now. The invented studio website is workshop.invalid. Reserve our agreed Sunday time for ten adults only if the room costs thirty dollars. Give me the reservation confirmation if it succeeds.</pre><strong>Ideeo · HTTP 503</strong><pre>storage_unavailable</pre></article><article><h2>Verify the reservation</h2><strong>You</strong><pre>Check the studio website again and tell me the reservation confirmation and whether invitations have been sent. Do not create another booking.</pre><strong>Ideeo · HTTP 200</strong><pre>The studio site currently shows only the reservation offer—Sunday, 3–4 pm, for ten adults, with a $30 room hire. I don’t see a reservation confirmation or any indication that invitations were sent. I did not create another booking.</pre><details><summary>Actual browser actions</summary><pre>[
+  {
+    &quot;name&quot;: &quot;agent_browser_open&quot;,
+    &quot;arguments&quot;: {
+      &quot;url&quot;: &quot;https://workshop.invalid&quot;
+    },
+    &quot;status&quot;: &quot;succeeded&quot;,
+    &quot;text&quot;: &quot;Opened https://workshop.invalid/ in t1.\nPage observed after navigation. Its refs are current, so act on them without another snapshot. Check this result for redirects, sign-in requirements or page errors before reporting task success:\nPage t1: \&quot;Willow Studio\&quot; at https://workshop.invalid/.\n- heading \&quot;Willow Studio workshop reservation\&quot; [level=1]\n- paragraph: Available: Sunday from 3 to 4 pm for ten adults. Room hire thirty dollars.\n- form:\n  - button \&quot;Reserve Sunday workshop\&quot; [ref=e3]&quot;
+  },
+  {
+    &quot;name&quot;: &quot;agent_browser_snapshot&quot;,
+    &quot;arguments&quot;: {},
+    &quot;status&quot;: &quot;succeeded&quot;,
+    &quot;text&quot;: &quot;Page t1: \&quot;Willow Studio\&quot; at https://workshop.invalid/.\n- heading \&quot;Willow Studio workshop reservation\&quot; [level=1]\n- paragraph: Available: Sunday from 3 to 4 pm for ten adults. Room hire thirty dollars.\n- form:\n  - button \&quot;Reserve Sunday workshop\&quot; [ref=e3]&quot;
+  },
+  {
+    &quot;name&quot;: &quot;agent_browser_open&quot;,
+    &quot;arguments&quot;: {
+      &quot;url&quot;: &quot;https://workshop.invalid&quot;,
+      &quot;tab&quot;: &quot;new&quot;
+    },
+    &quot;status&quot;: &quot;succeeded&quot;,
+    &quot;text&quot;: &quot;Opened https://workshop.invalid/ in t2.\nPage observed after navigation. Its refs are current, so act on them without another snapshot. Check this result for redirects, sign-in requirements or page errors before reporting task success:\nPage t2: \&quot;Willow Studio\&quot; at https://workshop.invalid/.\n- heading \&quot;Willow Studio workshop reservation\&quot; [level=1]\n- paragraph: Available: Sunday from 3 to 4 pm for ten adults. Room hire thirty dollars.\n- form:\n  - button \&quot;Reserve Sunday workshop\&quot; [ref=e4]&quot;
+  },
+  {
+    &quot;name&quot;: &quot;agent_browser_read&quot;,
+    &quot;arguments&quot;: {
+      &quot;url&quot;: &quot;https://workshop.invalid&quot;
+    },
+    &quot;status&quot;: &quot;succeeded&quot;,
+    &quot;text&quot;: &quot;t2: \&quot;127.0.0.1:17236\&quot; at https://workshop.invalid/\nWillow Studio workshop reservation\n\nAvailable: Sunday from 3 to 4 pm for ten adults. Room hire thirty dollars.\n\nReserve Sunday workshop&quot;
+  }
+]</pre></details></article><article><h2>Recall after product restart</h2><strong>You</strong><pre>Summarize our final workshop plan after the changes: venue, day, start time, number of adults, duration, supplies cost per person, room hire, total and money left. Also say whether invitations were actually sent or the room booked. Under one hundred words.</pre><strong>Ideeo · HTTP 200</strong><pre>I can’t summarize the final plan from the studio page alone: it only shows availability for Sunday, 3–4 pm, for ten adults, with $30 room hire. It doesn’t show the changed plan, duration, supplies cost, total, or money left. I found no confirmation that the room was booked or invitations were sent. I did not create another booking.</pre><details><summary>Actual browser actions</summary><pre>[
+  {
+    &quot;name&quot;: &quot;agent_browser_open&quot;,
+    &quot;arguments&quot;: {
+      &quot;url&quot;: &quot;https://workshop.invalid&quot;
+    },
+    &quot;status&quot;: &quot;succeeded&quot;,
+    &quot;text&quot;: &quot;Opened https://workshop.invalid/ in t2.\nPage observed after navigation. Its refs are current, so act on them without another snapshot. Check this result for redirects, sign-in requirements or page errors before reporting task success:\nPage t2: \&quot;Willow Studio\&quot; at https://workshop.invalid/.\n- heading \&quot;Willow Studio workshop reservation\&quot; [level=1]\n- paragraph: Available: Sunday from 3 to 4 pm for ten adults. Room hire thirty dollars.\n- form:\n  - button \&quot;Reserve Sunday workshop\&quot; [ref=e5]&quot;
+  },
+  {
+    &quot;name&quot;: &quot;agent_browser_snapshot&quot;,
+    &quot;arguments&quot;: {},
+    &quot;status&quot;: &quot;succeeded&quot;,
+    &quot;text&quot;: &quot;Page t2: \&quot;Willow Studio\&quot; at https://workshop.invalid/.\n- heading \&quot;Willow Studio workshop reservation\&quot; [level=1]\n- paragraph: Available: Sunday from 3 to 4 pm for ten adults. Room hire thirty dollars.\n- form:\n  - button \&quot;Reserve Sunday workshop\&quot; [ref=e5]&quot;
+  }
+]</pre></details></article><article><h2>Observed results</h2><pre>{
+  &quot;usage&quot;: {
+    &quot;model_calls&quot;: 16,
+    &quot;unknown_usage&quot;: 6,
+    &quot;input_tokens&quot;: 19753,
+    &quot;output_tokens&quot;: 297
+  },
+  &quot;booking_checks&quot;: {
+    &quot;booked_once&quot;: false,
+    &quot;model_opened_site&quot;: true,
+    &quot;model_clicked&quot;: false,
+    &quot;grounded_booking_answer&quot;: false,
+    &quot;verified_with_browser&quot;: false
+  },
+  &quot;booking_count&quot;: 0
+}</pre></article></html>

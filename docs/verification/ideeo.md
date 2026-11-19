@@ -1,5 +1,7 @@
 # Isolated Ideeo product verification
 
+For the model failure investigation, run `node --experimental-strip-types --test --test-concurrency=1 server/ideeo/free-form.node-test.ts server/ideeo/gemini.node-test.ts server/ideeo/conversation-loop.node-test.ts server/ideeo/restart.node-test.ts`. These use disposable model/product/database fixtures and no live key. They assert provider error classification, preserved authority/storage errors, retained failed-attempt accounting and service recovery after repeated timeouts/restarts. Live browser diagnostics remain a separately authorized campaign; the wire trace records only bounded shape, elapsed time and allowlisted error categories, never headers or content. See [the dated findings](../ideeo/development/VERIFICATION.md#conversation-failure-investigation--19-november-2026).
+
 This profile verifies product-only startup, admission and the optional synthetic conversation store. It does not start the upstream OpenMaus application or qualify model conversation behavior. Other runtime changes continue to use the [standard isolated launcher](README.md).
 
 With the locked dependencies installed:
@@ -114,6 +116,52 @@ Only with explicit live-call authorization:
 node --experimental-strip-types scripts/testing/payme-storage.ts --api-root .worktrees/payme-api-admission --free-form --openai-evaluation --key-file C:/Users/mateo/Desktop/Ideeo-IA-general/.env
 ```
 
-This selects only `OPENAI_API_KEY`, never loads sibling application/environment configuration, and uses fresh synthetic tenant/API/PostgreSQL resources. The existing ledger pre-debit leaves twelve model attempts and two tools, including across restart. The fixed model is `gpt-6-luna`, with 256 output tokens, eight-second physical timeout, 15-second operation deadline, `store:false`, disabled reasoning and no automatic live retries. `--ui` is refused with live evaluation because that harness controls a scripted model.
+This selects only `OPENAI_API_KEY`, never loads sibling application/environment configuration, and uses fresh synthetic tenant/API/PostgreSQL resources. The existing ledger pre-debit leaves twelve model attempts and two tools, including across restart. The fixed model is `gpt-6-luna`, with 256 output tokens, eight-second physical timeout, 15-second operation deadline, `store:false`, disabled reasoning and no automatic live retries. Adding `--ui` selects the separate live browser campaign below.
 
 The runner checks drafting/revision/Spanish continuity/refusal/reloaded recall without providing an answer allowlist, then retains current authorization, replay, ciphertext and quota-denial checks. It prints only safe check summaries, approved synthetic answer text and aggregate measured usage/estimated cost. No key, raw provider reply, private reasoning or real identity is printed. The budget-exhaustion case sets the disposable quota to its ceiling; it does not spend the remaining allowance. Treat this as a small developer campaign, not independent acceptance or broad privacy qualification.
+
+### Hardening and live browser campaign
+
+Use a clean disposable checkout with `pnpm install --frozen-lockfile`; do not rely on sibling dependency junctions. The `Ideeo isolated verification` workflow records the offline CI commands, including full UI/server typechecks and `tsconfig.ideeo-server.json` for product fixture code. Local PostgreSQL must be selected using `IDEEO_TEST_PG_BIN` if it is not at the fixture default. Never point fixtures at an existing application database.
+
+With the existing explicit live-key authorization:
+
+```powershell
+node --experimental-strip-types scripts/testing/payme-storage.ts --api-root .worktrees/payme-api-admission --free-form --ui --openai-evaluation --key-file C:/Users/mateo/Desktop/Ideeo-IA-general/.env
+```
+
+The browser campaign uses the same twelve-model/two-tool maximum, omits the duplicate API-only color call, and runs three multilingual disclosure challenges instead of the original five-case API semantic campaign. It writes four screenshots to `output/ideeo-live-ui/` and prints approved synthetic answers and aggregate usage. Scripted mode still checks injected HTML inertness; live mode does not claim that controlled fault. Run heavy clean-install/browser work separately when investigating startup problems, preserve failures, and inspect the four layouts. See [acceptance gates](../ideeo/development/CONVERSATION_ACCEPTANCE.md).
+
+### Authorized Gemini realistic task campaign
+
+```powershell
+node --experimental-strip-types --test server/ideeo/gemini.node-test.ts
+node --experimental-strip-types scripts/testing/conversation-tasks.ts --gemini --key-file C:/Users/mateo/Desktop/Ideeo-IA-general/.env
+```
+
+The first command uses only a local HTTP stand-in, intercepting the HTTPS primitive inside the isolated test process; production configuration still permits only the exact Google endpoint. The live command requires explicit authorization, reads only `GEMINI_API_KEY`, and launches actual product/PostgreSQL processes with a generated signed tenant authority fixture. It is not a PayMe/browser campaign. Its eight scenarios cover workshop arithmetic and constraints, a Spanish invitation, checklist, honesty about external execution, the harmless tool and recall after restart. It checks committed replay, encryption and stored history separately from semantic review.
+
+Each campaign is pre-debited to at most twelve model calls/two tools. Unknown usage remains unknown. Reports now have unique timestamps under `output/ideeo-realistic-tasks-gemini-*.json` (OpenAI mode also uses timestamped names), so failed attempts are retained. Non-successful turns are recorded, later independent scenarios continue, and any failed task leaves a failing process exit code. This does not enable automatic provider retry or turn an incomplete run into a passing one. The final observed Gemini run remained incomplete because the tool answer was empty; see the exact dated evidence before making capability claims.
+
+## Local workspace capabilities
+
+Production is intended to use isolated customer VMs. Development can run the same authenticated product-to-executor contract locally with disposable PostgreSQL, workspace files, a fresh browser profile and a fake booking site. No VM service, Docker daemon or model API key is needed for these scripted tests.
+
+```powershell
+node --experimental-strip-types --test server/ideeo/capabilities.node-test.ts server/ideeo/openmaus-tools.node-test.ts
+node --experimental-strip-types scripts/testing/capability-mutation.mjs
+```
+
+The browser recipe currently requires Windows and Chrome at `C:/Program Files/Google/Chrome/Application/chrome.exe`; PostgreSQL follows the existing fixture discovery/configuration. It uses the inherited Chrome/CDP engine, not the agent-browser CLI. Tests fail if the browser cannot launch; this is not a silent skip. Temporary homes, receipts and browser processes are owned by the fixture and cleaned up. Run sequentially with other database/browser campaigns to avoid the previously observed fixture contention.
+
+The actual product, signed authority fixture, executor, database, native file tools and browser are exercised. The model is scripted: actual file/booking effects and authorization are evidence, but the generated final sentence is not a natural-language semantic test. The mutation command works only on a temporary source copy, removes tenant matching and durable execution claims separately, requires failures, restores the copy and checks that original source is unchanged.
+
+See [capability contract and limitations](../ideeo/contracts/WORKSPACE_CAPABILITIES.md). Full OpenMaus capability parity, production VM isolation, live-model task semantics and independent acceptance remain open.
+
+For the actual Gemini/browser conversation (only with explicit authorization for the key file):
+
+```powershell
+node --experimental-strip-types scripts/testing/conversation-tasks.ts --gemini --browser --key-file C:/Users/mateo/Desktop/Ideeo-IA-general/.env
+```
+
+This mode provides the actual browser tools to Gemini with automatic selection. It uses the same workshop conversation, a fake local booking site, an executor credential generated per fixture, and a tenant budget pre-debit allowing at most 24 model calls and 20 tool reservations. Each report has timestamped JSON and HTML, observed browser actions and a strict booking criterion. A failed criterion leaves a nonzero exit status. No real email/booking service is connected. The six recorded campaigns did not complete booking; the last demonstrated real model-selected browser open/snapshot but then an empty provider completion. See the [full live evidence](../ideeo/development/VERIFICATION.md#live-browser-conversation--19-november-2026).

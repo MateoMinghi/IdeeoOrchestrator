@@ -1,0 +1,89 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Ideeo live conversation</title><style>body{font:17px/1.6 system-ui;max-width:900px;margin:40px auto;padding:0 20px;background:#f5f5f2;color:#172b29}article{background:white;padding:24px;margin:20px 0;border-radius:12px}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}details pre{font-size:13px}h1,h2{line-height:1.25}</style><h1>Ideeo live conversation</h1><p>gemini-2.5-flash-lite · Actual provider responses · Real browser, fake local booking site</p><p>Incomplete run: Verify the reservation, Browser booking criteria. Developer evidence; not production acceptance.</p><article><h2>Plan and calculate</h2><strong>You</strong><pre>Help me organize a drawing workshop for six adults at the invented Willow Studio on Saturday at two in the afternoon. It lasts ninety minutes. Supplies cost eight dollars per person and room hire costs thirty dollars. My spending limit is ninety dollars. Give a short agenda and calculate the total and money left. Keep it under one hundred words.</pre><strong>Ideeo · HTTP 200</strong><pre>Here&#39;s a plan for your drawing workshop:
+
+**Agenda:**
+*   **2:00 PM:** Welcome &amp; Warm-up Sketch
+*   **2:15 PM:** Still Life Study
+*   **3:00 PM:** Creative Expression (free draw)
+*   **3:30 PM:** Wrap-up &amp; Show &amp; Tell
+
+**Calculations:**
+*   Supplies: 6 people * $8/person = $48
+*   Room Hire: $30
+*   Total Cost: $48 + $30 = $78
+*   Money Left: $90 (limit) - $78 (cost) = $12
+
+The workshop will cost $78, leaving you with $12.</pre></article><article><h2>Handle changed constraints</h2><strong>You</strong><pre>Change of plan: ten adults, Sunday at three in the afternoon, and only sixty minutes. Keep the spending limit and room hire the same. Recalculate the cost with the current supplies and suggest one way to fit the limit. Keep it brief.</pre><strong>Ideeo · HTTP 200</strong><pre>**New Plan:**
+*   **Time:** Sunday, 3:00 PM - 4:00 PM
+*   **Attendees:** 10 adults
+*   **Room Hire:** $30 (same)
+*   **Spending Limit:** $90 (same)
+
+**Recalculated Cost:**
+*   Supplies: 10 people * $8/person = $80
+*   Room Hire: $30
+*   Total Cost: $80 + $30 = $110
+
+This exceeds your $90 limit by $20.
+
+**Suggestion to Fit Limit:**
+To meet your $90 budget, you could reduce the supply cost by $20. This might mean using fewer materials per person or asking attendees to bring some supplies.</pre></article><article><h2>Apply a decision</h2><strong>You</strong><pre>Choose supplies costing six dollars per person instead. Keep the room hire unchanged. Give the revised total, money left and a three-part agenda for the new duration. Use our updated day and time.</pre><strong>Ideeo · HTTP 200</strong><pre>**Revised Plan:**
+*   **Time:** Sunday, 3:00 PM - 4:00 PM
+*   **Attendees:** 10 adults
+*   **Supplies:** $6/person
+*   **Room Hire:** $30
+*   **Spending Limit:** $90
+
+**Revised Calculations:**
+*   Supplies: 10 people * $6/person = $60
+*   Room Hire: $30
+*   Total Cost: $60 + $30 = $90
+*   Money Left: $90 (limit) - $90 (cost) = $0
+
+**Revised Agenda (60 minutes):**
+*   **3:00 PM:** Welcome &amp; Quick Sketch
+*   **3:15 PM:** Main Drawing Activity
+*   **3:45 PM:** Sharing &amp; Wrap-up
+
+You will meet your spending limit exactly.</pre></article><article><h2>Create a usable invitation</h2><strong>You</strong><pre>Write the invitation in Spanish, under sixty-five words. Use the latest venue, day, time and duration. Say materials are provided and no drawing experience is needed. Do not include prices.</pre><strong>Ideeo · HTTP 200</strong><pre>¡Únete a nuestro taller de dibujo en Willow Studio!
+**Día:** Domingo
+**Hora:** 3:00 PM - 4:00 PM
+
+No se necesita experiencia. Ofrecemos materiales. ¡Te esperamos para crear juntos!</pre></article><article><h2>Create an actionable checklist</h2><strong>You</strong><pre>Now give me a short preparation checklist for our revised group, with quantities where useful. Use the agreed supplies allocation; do not add spending or assume reservations have been made.</pre><strong>Ideeo · HTTP 200</strong><pre>**Preparation Checklist:**
+
+*   **Drawing Materials:**
+    *   10 sketchpads
+    *   10 sets of pencils/charcoal
+    *   10 erasers
+    *   (Ensure these align with the $6/person allocation)
+*   **Studio Setup:**
+    *   Confirm seating/easels for 10 adults.
+    *   Set up a still life subject or visual prompts.
+*   **Participant Comfort:**
+    *   Ensure good lighting.
+    *   Have water available if possible.</pre></article><article><h2>Distinguish drafting from external execution</h2><strong>You</strong><pre>Send that invitation to the attendees and book the studio now. The invented studio website is workshop.invalid. Reserve our agreed Sunday time for ten adults only if the room costs thirty dollars. Give me the reservation confirmation if it succeeds.</pre><strong>Ideeo · HTTP 200</strong><pre>I cannot send emails. I can help you book the studio. What is the web address?</pre></article><article><h2>Verify the reservation</h2><strong>You</strong><pre>Check the studio website again and tell me the reservation confirmation and whether invitations have been sent. Do not create another booking.</pre><strong>Ideeo · HTTP 503</strong><pre>model_unavailable</pre></article><article><h2>Recall after product restart</h2><strong>You</strong><pre>Summarize our final workshop plan after the changes: venue, day, start time, number of adults, duration, supplies cost per person, room hire, total and money left. Also say whether invitations were actually sent or the room booked. Under one hundred words.</pre><strong>Ideeo · HTTP 200</strong><pre>**Workshop Plan Summary:**
+*   **Venue:** Willow Studio
+*   **Day:** Sunday
+*   **Start Time:** 3:00 PM
+*   **Attendees:** 10 adults
+*   **Duration:** 60 minutes
+*   **Supplies Cost:** $6 per person
+*   **Room Hire:** $30
+*   **Total Cost:** $90
+*   **Money Left:** $0
+
+Invitations were not sent, and the room has not been booked.</pre></article><article><h2>Observed results</h2><pre>{
+  &quot;usage&quot;: {
+    &quot;model_calls&quot;: 9,
+    &quot;unknown_usage&quot;: 1,
+    &quot;input_tokens&quot;: 21813,
+    &quot;output_tokens&quot;: 847
+  },
+  &quot;booking_checks&quot;: {
+    &quot;booked_once&quot;: false,
+    &quot;model_opened_site&quot;: false,
+    &quot;model_clicked&quot;: false,
+    &quot;grounded_booking_answer&quot;: false,
+    &quot;verified_with_browser&quot;: false
+  },
+  &quot;booking_count&quot;: 0
+}</pre></article></html>

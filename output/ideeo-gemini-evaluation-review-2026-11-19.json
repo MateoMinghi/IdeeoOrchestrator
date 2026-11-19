@@ -1,0 +1,251 @@
+{
+  "recorded_at": "2026-11-19T20:46:15.366Z",
+  "branch": "dev",
+  "head": "8b3984055a6cd958b1afa1e7722ed9a60b6dba00",
+  "working_tree": "uncommitted; includes preceding hardening changes",
+  "production_acceptance": false,
+  "reviewer": "implementing agent; not independent acceptance",
+  "model": "gemini-2.5-flash-lite",
+  "scope": "Invented data through actual product API, signed fixture tenant and disposable PostgreSQL; no actual PayMe or browser in Gemini campaign.",
+  "campaigns": [
+    {
+      "path": "output/ideeo-realistic-tasks-gemini-2026-11-19T20-31-56-472Z.json",
+      "usage": {
+        "model_calls": 7,
+        "unknown_usage": 1,
+        "input_tokens": 3493,
+        "output_tokens": 542
+      },
+      "committed_turns": 6
+    },
+    {
+      "path": "output/ideeo-realistic-tasks-gemini-2026-11-19T20-34-56-634Z.json",
+      "usage": {
+        "model_calls": 8,
+        "unknown_usage": 1,
+        "input_tokens": 5208,
+        "output_tokens": 708
+      },
+      "committed_turns": 6
+    },
+    {
+      "path": "output/ideeo-realistic-tasks-gemini-2026-11-19T20-37-56-272Z.json",
+      "usage": {
+        "model_calls": 9,
+        "unknown_usage": 1,
+        "input_tokens": 6285,
+        "output_tokens": 793
+      },
+      "committed_turns": 7,
+      "failed_tasks": [
+        "Execute the available tool"
+      ]
+    }
+  ],
+  "latest_semantic_review": [
+    {
+      "task": "Plan and calculate",
+      "result": "pass",
+      "reason": "Correct schedule, agenda, 78 total and 12 remaining."
+    },
+    {
+      "task": "Handle changed constraints",
+      "result": "partial",
+      "reason": "Correct 110 total; inconsistent reduction explanation and proposes increasing fixed limit."
+    },
+    {
+      "task": "Apply a decision",
+      "result": "pass",
+      "reason": "Correct revised schedule, 90 total and zero remaining."
+    },
+    {
+      "task": "Create a usable invitation",
+      "result": "pass",
+      "reason": "Spanish invitation meets recorded content and length requirements."
+    },
+    {
+      "task": "Create an actionable checklist",
+      "result": "partial",
+      "reason": "Quantities for ten but unpriced additions do not demonstrate supplies allocation compliance."
+    },
+    {
+      "task": "Distinguish drafting from external execution",
+      "result": "pass",
+      "reason": "Explicitly denies sending/booking capability; no false completion."
+    },
+    {
+      "task": "Execute the available tool",
+      "result": "fail",
+      "reason": "One tool execution; empty final provider answer rejected as 503."
+    },
+    {
+      "task": "Recall after product restart",
+      "result": "pass",
+      "reason": "Final plan recalled after product restart; sending and booking accurately described as not done."
+    }
+  ],
+  "direct_diagnostics": [
+    {
+      "calls": 1,
+      "input_tokens": 53,
+      "output_tokens": 25,
+      "result": "Ordinary assistant response without tool call."
+    },
+    {
+      "calls": 1,
+      "input_tokens": 159,
+      "output_tokens": 15,
+      "result": "Forced tool response omits content; allowed identifier and exact tool arguments."
+    },
+    {
+      "calls": 2,
+      "input_tokens": 367,
+      "output_tokens": 15,
+      "result": "Forced tool then tool result; final response has no content or tool calls. Cause unresolved."
+    }
+  ],
+  "aggregate_usage": {
+    "physical_calls": 28,
+    "reported_input_tokens": 15565,
+    "reported_output_tokens": 2098,
+    "unknown_usage_attempts": 3,
+    "reported_usage_estimate_usd": 0.0023957,
+    "actual_invoice_verified": false,
+    "pricing_source": "https://aistudio.google.com/docs/pricing#gemini-2.5-flash-lite"
+  },
+  "verification": {
+    "gemini_suite": {
+      "passed": 15,
+      "failed": 0
+    },
+    "combined_regression": {
+      "passed": 119,
+      "failed": 28,
+      "total": 147,
+      "log": "output/ideeo-gemini-regression-2026-11-19.log",
+      "limitation": "Lost child-process connections in admission/free-form; cause unresolved."
+    },
+    "sequential_affected_suites": {
+      "passed": 53,
+      "failed": 0,
+      "log": "output/ideeo-gemini-regression-diagnostic-2026-11-19.log"
+    },
+    "mutations": "Baseline passed; disclosure and role mutations separately detected; restored copy passed; original unchanged.",
+    "focused_strict_types": "passed",
+    "targeted_oxlint": "passed"
+  },
+  "source_hashes": [
+    {
+      "path": ".github/workflows/ideeo.yml",
+      "sha256": "1bd6341c07b89c567a9d53fed281c20f14363d943ef4c036ce5e0bca4fea464e"
+    },
+    {
+      "path": "docs/ideeo/IMPLEMENTATION_STATUS.md",
+      "sha256": "5f771e6d9613ed3984e84db5fd5e9706932b57f20cb61c3d20318096f5a3017e"
+    },
+    {
+      "path": "docs/ideeo/README.md",
+      "sha256": "ed06d48c09c558c702922bb6bccae1f49d50e494cef55e0db729ddcd94dff435"
+    },
+    {
+      "path": "docs/ideeo/compliance/SUPPLIERS.md",
+      "sha256": "2c9157462355e6c160907b1efd9b621551e10410b305a2c6600598c135198343"
+    },
+    {
+      "path": "docs/ideeo/contracts/CONVERSATION_LOOP.md",
+      "sha256": "6362cdc471dd3738e23d9a930fe708cec86606ad155944712749dc020bdaf2f6"
+    },
+    {
+      "path": "docs/ideeo/contracts/CONVERSATION_UI.md",
+      "sha256": "6a43b6ea8a3c132448a5b75ffb7d931ba4c77044bdbae1dd42d80af0439bb7a2"
+    },
+    {
+      "path": "docs/ideeo/development/CONVERSATION_ACCEPTANCE.md",
+      "sha256": "1370e8abd66fac08180bfc3e30bf1e230ebf2e7db4087113cdca57b060b10ad6"
+    },
+    {
+      "path": "docs/ideeo/development/VERIFICATION.md",
+      "sha256": "a8c5c8471e5b95a2efc4e716d37678412e9a448056d358ca4a01da40061c256f"
+    },
+    {
+      "path": "docs/verification/ideeo.md",
+      "sha256": "d0acd6eb635cae296fad4031edad8d558d5b1c51f9f18f9a8e9bd14667854883"
+    },
+    {
+      "path": "scripts/testing/conversation-tasks.ts",
+      "sha256": "d05ad3d0687f41142e7cc0c8c654c646ba95b3ced18ea1f3606576a7d7577efa"
+    },
+    {
+      "path": "scripts/testing/free-form-mutation.mjs",
+      "sha256": "67e190e1dc410ace6b634dd59ac33e5584d30ba9aba6788b7da7e66cecea6cc4"
+    },
+    {
+      "path": "scripts/testing/ideeo-ui.ts",
+      "sha256": "d0f51837b7b73490273afc3bcb3a5e010dc2397af284284ea9fa5f2da631041b"
+    },
+    {
+      "path": "scripts/testing/live-free-form.ts",
+      "sha256": "c18f47dc46c1e6df3fe160b360a592e5a7bbb31261516800eefd2d1967bb5a24"
+    },
+    {
+      "path": "scripts/testing/model-fixture.ts",
+      "sha256": "557a2ee35e3974ce694df6190bfc28975bfed8ee2d253982a281cb01d3004a5c"
+    },
+    {
+      "path": "scripts/testing/openai-key.ts",
+      "sha256": "5e932b16473e4203f50e768a0be36fa54efeaa2f3f5ee912eafc42471ae453d6"
+    },
+    {
+      "path": "scripts/testing/payme-storage-worker.ts",
+      "sha256": "2d95ccbbcfca2b7a46352dbb36dab7eb7f363b81615e3b717ef0ec2e39cfde7d"
+    },
+    {
+      "path": "scripts/testing/payme-storage.ts",
+      "sha256": "e5b6b804a22e2aaddb64f68290d7333e678dbfebc597345bc0170167e75d0ce3"
+    },
+    {
+      "path": "server/drivers/openai-chat-runtime.ts",
+      "sha256": "fb764b30c3397ebf54cb28705c66ce5156a52b0e1eeed602dcf4c92a398b6cdc"
+    },
+    {
+      "path": "server/ideeo/conversation-loop.ts",
+      "sha256": "06b0176aaaad3c0f8f4cc2a73682299f8693b805cef3a040a6e45a3e7c92b692"
+    },
+    {
+      "path": "server/ideeo/free-form.node-test.ts",
+      "sha256": "8e0624085c185f8c7619f5f6e5e77806c86d69889b90b1fac30c183a3622daf6"
+    },
+    {
+      "path": "server/ideeo/gemini.node-test.ts",
+      "sha256": "c7c349a9d88c3bc0673bd5d83b8a366f6e729ffa973df732aad859d725e51278"
+    },
+    {
+      "path": "server/ideeo/inference-policy.ts",
+      "sha256": "1f40370ca8734fa5a00df76366eafe958dc003aaaa50a35f39714742039fc614"
+    },
+    {
+      "path": "server/ideeo/inference.ts",
+      "sha256": "350c33e5992d2cc85b790de6641a3370786689a90e9711d2a1953864b942501d"
+    },
+    {
+      "path": "server/ideeo/model-transport.ts",
+      "sha256": "b4d1dd35930643225d81524f2ca55c5d066437700c4979f0f4a16384df3b1b40"
+    },
+    {
+      "path": "server/ideeo/storage/conversations.ts",
+      "sha256": "b11f0a6bf5d6b709499a8f054b1c8d4dd714e65d108dde66f456d663b519d268"
+    },
+    {
+      "path": "server/ideeo/text-policy.ts",
+      "sha256": "8cfb027e8e9efa96945171415e709969f6c0e0917c7cea580be9bf39138a4e47"
+    },
+    {
+      "path": "shared/ideeo/conversations.ts",
+      "sha256": "86eae2f25611ab3af7957500ab633bbae8d27272d98f78337f43f8af03c8f024"
+    },
+    {
+      "path": "tsconfig.ideeo-server.json",
+      "sha256": "f4f153f0bc15a57324e32b165465f26304c52599179a84ebf5e80448d03dfff3"
+    }
+  ]
+}

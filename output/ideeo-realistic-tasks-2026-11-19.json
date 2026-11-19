@@ -1,0 +1,48 @@
+{
+  "model": "gpt-6-luna",
+  "synthetic_content": true,
+  "transport": "actual product API and live provider; isolated signed tenant authority fixture",
+  "recorded_at": "2026-11-19T20:07:24.341Z",
+  "max_model_calls": 12,
+  "max_tool_calls": 2,
+  "transcript": [
+    {
+      "task": "Plan and calculate",
+      "user": "Help me organize a drawing workshop for six adults at the invented Willow Studio on Saturday at two in the afternoon. It lasts ninety minutes. Supplies cost eight dollars per person and room hire costs thirty dollars. My spending limit is ninety dollars. Give a short agenda and calculate the total and money left. Keep it under one hundred words.",
+      "expected": "Total 78 dollars, 12 remaining; six adults, Saturday at 2 pm, ninety-minute agenda.",
+      "status": 503,
+      "error": "model_rate_limited",
+      "elapsed_ms": 813
+    }
+  ],
+  "usage": {
+    "model_calls": 1,
+    "unknown_usage": 1,
+    "input_tokens": 0,
+    "output_tokens": 0
+  },
+  "committed_turns": 0,
+  "hashes": [
+    {
+      "path": "scripts/testing/conversation-tasks.ts",
+      "sha256": "7f1182eae48d50da4380e063e7c72f53d8c97cacbebc2c79a57c60adb2380d61"
+    },
+    {
+      "path": "server/ideeo/model-transport.ts",
+      "sha256": "3e9d506f85884ee067a5deb6f1799abeea2fba702bcf5eee8be2793483393985"
+    },
+    {
+      "path": "server/ideeo/conversation-loop.ts",
+      "sha256": "a64380bd4319777dbe5e5845454993a30388245c6f20474ee60f81e1858ba548"
+    },
+    {
+      "path": "server/ideeo/text-policy.ts",
+      "sha256": "8cfb027e8e9efa96945171415e709969f6c0e0917c7cea580be9bf39138a4e47"
+    },
+    {
+      "path": "server/ideeo/storage/conversations.ts",
+      "sha256": "0a5957ba3feefa7cde2fc5076d3fcb8f1afeba003a218b5ef73468e37f77b858"
+    }
+  ],
+  "production_acceptance": false
+}

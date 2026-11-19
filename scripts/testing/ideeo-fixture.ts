@@ -9,6 +9,7 @@ import { exportSPKI, generateKeyPair, jwtVerify, SignJWT } from 'jose';
 import type { StorageConfiguration } from '../../server/ideeo/storage/config.ts';
 import type { TenantConfiguration } from '../../server/ideeo/config.ts';
 import type { InferenceConfiguration } from '../../server/ideeo/inference-policy.ts';
+import type { CapabilityConfiguration } from '../../server/ideeo/capability-config.ts';
 
 type Status = 'active' | 'inactive' | 'paused' | 'revoked' | 'expired';
 export type TenantFixtureState = {
@@ -128,7 +129,11 @@ async function createTenantFixture(id: string) {
 }
 
 export async function launchIdeeoFixture(options: { storage?: StorageConfiguration; inference?: InferenceConfiguration; secrets?: Record<string, string>;
+  capabilities?: readonly CapabilityConfiguration[];
   guardHostImports?: boolean;
+  traceModelShape?: boolean;
+  traceModelDetails?: boolean;
+  startupTimeoutMs?: 10000 | 30000;
   additionalTenants?: readonly { config: TenantConfiguration; credential: string }[] } = {}) {
   const root = await mkdtemp(join(tmpdir(), 'ideeo-admission-'));
   const tenants: Awaited<ReturnType<typeof createTenantFixture>>[] = [];
@@ -155,7 +160,7 @@ export async function launchIdeeoFixture(options: { storage?: StorageConfigurati
     const configuredTenants = [...tenants, ...options.additionalTenants ?? []];
     const config = { environment: 'development', listen: { host: '127.0.0.1', port: 0 },
       tenants: configuredTenants.map(t => ({ ...t.config, authority: { ...t.config.authority } })), ...(options.storage ? { storage: options.storage } : {}),
-      ...(options.inference ? { inference:options.inference } : {}) };
+      ...(options.inference ? { inference:options.inference } : {}),...(options.capabilities?{capabilities:options.capabilities}:{}) };
     const configPath = join(root, 'config.json');
     const guardPath=join(root,'guard.mjs');
     if(options.guardHostImports) await writeFile(guardPath,`import {registerHooks} from 'node:module';
@@ -165,18 +170,22 @@ registerHooks({resolve(specifier,context,next){const result=next(specifier,conte
     await mkdir(home);
     const environment: NodeJS.ProcessEnv = { SystemRoot: process.env.SystemRoot, WINDIR: process.env.WINDIR,
       TEMP: root, TMP: root, HOME: home, USERPROFILE: home, APPDATA: home, LOCALAPPDATA: home, ...options.secrets };
+    if(options.traceModelDetails)environment.IDEEO_TRACE_MODEL_DETAILS='synthetic-content-only';
     for (const tenant of configuredTenants) environment[tenant.config.authority.credentialEnv] = tenant.credential;
     let logs = '';
+    const lifecycle:Array<{event:string;elapsed_ms:number;code?:number|null;signal?:string|null}>=[];
     const start = async () => {
+      const started=Date.now();lifecycle.push({event:'spawn',elapsed_ms:0});
       await writeFile(configPath, JSON.stringify(config));
-      child = spawn(process.execPath, ['--experimental-strip-types',...(options.guardHostImports?['--import',pathToFileURL(guardPath).href]:[]), fileURLToPath(new URL('../../server/ideeo-main.ts', import.meta.url)), '--config', configPath],
+      child = spawn(process.execPath, ['--experimental-strip-types',...(options.guardHostImports?['--import',pathToFileURL(guardPath).href]:[]),...(options.traceModelShape?['--import',new URL('./model-wire-shape.mjs',import.meta.url).href]:[]), fileURLToPath(new URL('../../server/ideeo-main.ts', import.meta.url)), '--config', configPath],
       { cwd: root, env: environment, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
     const ownedChild = child;
-    child.stderr!.on('data', chunk => { logs = (logs + chunk.toString()).slice(-4096); });
+    child.stderr!.on('data', chunk => { logs = (logs + chunk.toString()).slice(options.traceModelShape?-32768:-4096); });
     return new Promise<string>((resolve, reject) => {
-      const timer = setTimeout(() => reject(new Error('Fixture startup timed out')), 10000);
+      const timer = setTimeout(() => {lifecycle.push({event:'startup_timeout',elapsed_ms:Date.now()-started});reject(new Error('Fixture startup timed out'));}, options.startupTimeoutMs??10000);
       ownedChild.once('error', () => { clearTimeout(timer); reject(new Error('Fixture startup failed')); });
-      ownedChild.once('exit', code => {
+      ownedChild.once('exit', (code,signal) => {
+        lifecycle.push({event:'exit',elapsed_ms:Date.now()-started,code,signal});
         clearTimeout(timer);
         const category = logs.includes('Host composition forbidden') ? 'host-import' : logs.match(/\bERR_[A-Z_]+\b/)?.[0] ?? 'startup';
         reject(new Error(`Fixture exited before readiness (${code}, ${category})`));
@@ -188,7 +197,7 @@ registerHooks({resolve(specifier,context,next){const result=next(specifier,conte
         try {
           const event = JSON.parse(output.split('\n')[0]);
           if (event.event !== 'listening' || !/^http:\/\/127\.0\.0\.1:\d+$/.test(event.url)) throw new Error('Invalid fixture address');
-          clearTimeout(timer); resolve(event.url);
+          lifecycle.push({event:'listening',elapsed_ms:Date.now()-started});clearTimeout(timer); resolve(event.url);
         } catch { clearTimeout(timer); reject(new Error('Invalid fixture readiness')); }
       });
     });
@@ -196,6 +205,8 @@ registerHooks({resolve(specifier,context,next){const result=next(specifier,conte
     let url = await start();
     return { get url() { return url; }, root, tenants, config, environment, stop, kill,
       async restart() { await kill(); url = await start(); },
+      processStatus:()=>({exit_code:child?.exitCode??null,signal_code:child?.signalCode??null}),
+      lifecycle:()=>lifecycle.slice(-100),
       diagnostics: () => logs,
       async configBytes() { return readFile(configPath); },
     };

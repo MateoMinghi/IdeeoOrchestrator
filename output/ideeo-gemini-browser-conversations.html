@@ -1,0 +1,23 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Ideeo browser conversation results</title><style>body{font:18px/1.6 system-ui;max-width:980px;margin:40px auto;padding:0 20px;background:#f5f5f2;color:#172b29}table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:12px;border-bottom:1px solid #bbb}a{color:#006b61}aside{padding:18px;background:#fff;border-left:5px solid #bb7937}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px}</style><h1>Gemini with an isolated browser</h1><aside><strong>Browser execution observed; booking incomplete.</strong><p>Gemini chose browser tools and opened/read the owned local studio website in the last run. No run completed a booking. Empty model completions, refusals and wrong destinations are preserved below. These are actual provider responses, not scripted conversations. All sites, identities and reservations are synthetic.</p></aside><h2>All live attempts</h2><table><thead><tr><th>Attempt</th><th>Model calls</th><th>Browser actions</th><th>Bookings</th><th>Conversation</th></tr></thead><tbody><tr><td>1</td><td>11</td><td>0 successful / 0 attempted</td><td>0</td><td><a href="ideeo-realistic-tasks-gemini-browser-2026-11-19T21-55-20-165Z.html">Read actual conversation</a></td></tr><tr><td>2</td><td>8</td><td>0 successful / 0 attempted</td><td>0</td><td><a href="ideeo-realistic-tasks-gemini-browser-2026-11-19T21-57-57-049Z.html">Read actual conversation</a></td></tr><tr><td>3</td><td>8</td><td>0 successful / 1 attempted</td><td>0</td><td><a href="ideeo-realistic-tasks-gemini-browser-2026-11-19T22-00-36-496Z.html">Read actual conversation</a></td></tr><tr><td>4</td><td>9</td><td>0 successful / 0 attempted</td><td>0</td><td><a href="ideeo-realistic-tasks-gemini-browser-2026-11-19T22-04-55-352Z.html">Read actual conversation</a></td></tr><tr><td>5</td><td>10</td><td>0 successful / 0 attempted</td><td>0</td><td><a href="ideeo-realistic-tasks-gemini-browser-2026-11-19T22-08-05-316Z.html">Read actual conversation</a></td></tr><tr><td>6</td><td>9</td><td>2 successful / 3 attempted</td><td>0</td><td><a href="ideeo-realistic-tasks-gemini-browser-2026-11-19T22-10-30-122Z.html">Read actual conversation</a></td></tr></tbody></table><h2>Usage across all attempts</h2><p>55 physical calls; 106721 reported input tokens; 4045 reported output tokens; 5 attempts with unknown usage. No invoice or total monetary cost verified.</p><h2>Actual browser observations in the last run</h2><pre>[
+  {
+    &quot;name&quot;: &quot;agent_browser_open&quot;,
+    &quot;arguments&quot;: {
+      &quot;url&quot;: &quot;workshop.invalid&quot;
+    },
+    &quot;status&quot;: &quot;succeeded&quot;,
+    &quot;text&quot;: &quot;Opened https://workshop.invalid/ in t1.\nPage observed after navigation. Its refs are current, so act on them without another snapshot. Check this result for redirects, sign-in requirements or page errors before reporting task success:\nPage t1: \&quot;Willow Studio\&quot; at https://workshop.invalid/.\n- heading \&quot;Willow Studio workshop reservation\&quot; [level=1]\n- paragraph: Available: Sunday from 3 to 4 pm for ten adults. Room hire thirty dollars.\n- form:\n  - button \&quot;Reserve Sunday workshop\&quot; [ref=e1]&quot;
+  },
+  {
+    &quot;name&quot;: &quot;agent_browser_snapshot&quot;,
+    &quot;arguments&quot;: {},
+    &quot;status&quot;: &quot;succeeded&quot;,
+    &quot;text&quot;: &quot;Page t1: \&quot;Willow Studio\&quot; at https://workshop.invalid/.\n- heading \&quot;Willow Studio workshop reservation\&quot; [level=1]\n- paragraph: Available: Sunday from 3 to 4 pm for ten adults. Room hire thirty dollars.\n- form:\n  - button \&quot;Reserve Sunday workshop\&quot; [ref=e1]&quot;
+  },
+  {
+    &quot;name&quot;: &quot;agent_browser_open&quot;,
+    &quot;arguments&quot;: {
+      &quot;url&quot;: &quot;studio.invalid&quot;
+    },
+    &quot;status&quot;: &quot;failed&quot;
+  }
+]</pre><p>No real email was sent and no real venue was booked. Independent acceptance and production VM qualification remain pending.</p></html>

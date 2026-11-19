@@ -1,0 +1,83 @@
+{
+  "recorded_at": "2026-11-19T23:06:53.932Z",
+  "node": "v24.15.0",
+  "branch": "dev",
+  "head": "8b3984055a6cd958b1afa1e7722ed9a60b6dba00",
+  "tests": {
+    "passed": 97,
+    "failed": 0,
+    "skipped": 0
+  },
+  "live": {
+    "reported_turns": 7,
+    "timeouts": 7,
+    "post_restart_reset_unresolved": true,
+    "bookings": 0,
+    "usage": {
+      "model_calls": 9,
+      "unknown_usage": 6,
+      "input_tokens": 5454,
+      "output_tokens": 58
+    }
+  },
+  "credential_absent_from_evidence": true,
+  "production_acceptance": false,
+  "hashes": [
+    {
+      "path": "server/ideeo/model-transport.ts",
+      "sha256": "171aa9e5ee5bb332bbaa3022599c1c9a4513cebba78ac0f1f073b31a606d3d80"
+    },
+    {
+      "path": "server/ideeo/conversation-loop.node-test.ts",
+      "sha256": "6d0fc733f2bafc80d5e4813444a4c93f5095aa791e23fa10298a40238954d923"
+    },
+    {
+      "path": "server/ideeo/free-form.node-test.ts",
+      "sha256": "8d5dc9892f13801cb9296c975e43546c071bef524420188266aec27a3b948e62"
+    },
+    {
+      "path": "server/ideeo/restart.node-test.ts",
+      "sha256": "862aa2f3215b8acf2c0cb8b989fc308ccff076dfa3787f29b749a6ea5da6cec5"
+    },
+    {
+      "path": "scripts/testing/model-fixture.ts",
+      "sha256": "14466e7100fdf0bce9835c9f6323d2273854c9652b40da8f84723be7d1e201ac"
+    },
+    {
+      "path": "scripts/testing/model-wire-shape.mjs",
+      "sha256": "4573e88a795a6b09746edfec35ccd77dd2a7a49c4542d32ddda113cecbc5e918"
+    },
+    {
+      "path": "scripts/testing/ideeo-fixture.ts",
+      "sha256": "bf2b81fd3b36d91464fa19970cdd9cda8cd2cb2cfd66a8d6c6ec7b43abbcdc37"
+    },
+    {
+      "path": "scripts/testing/conversation-tasks.ts",
+      "sha256": "ee95743c1d21132a1685b680e8f0f22260a86bb0edd4e9aba0ebfedfc607afd3"
+    },
+    {
+      "path": "output/ideeo-realistic-tasks-browser-2026-11-19T23-01-54-927Z.json",
+      "sha256": "50b81f4eff561fd5b085c3de59014d1a59328ac47204d77a6d01adf779b84f85"
+    },
+    {
+      "path": "output/ideeo-realistic-tasks-browser-2026-11-19T23-01-54-927Z.html",
+      "sha256": "680473127a5e07df5cea00f363d7baa54f915c37726263d4bc10e16b4284b1ca"
+    },
+    {
+      "path": "output/ideeo-openai-failure-diagnostics-run.log",
+      "sha256": "fbf5b4efc85d75333990d8ae24cbf1bd4a948f906da14483b3e7c5afc9f1a794"
+    },
+    {
+      "path": "output/ideeo-failure-investigation-before.log",
+      "sha256": "bc43d6fccb1949f7cc7c0a875f530d18a74f7493e6934b50c1859f45a4f770e3"
+    },
+    {
+      "path": "output/ideeo-failure-investigation-after.log",
+      "sha256": "730ded9c86006fb0ed5712bc82e4631f24426a1c389612177556abec9cec4562"
+    },
+    {
+      "path": "output/ideeo-failure-investigation-regression.log",
+      "sha256": "b29e645d4c4922ec51669a77cebf1796d7baeef63050b1029f4aafaf2d8287b7"
+    }
+  ]
+}

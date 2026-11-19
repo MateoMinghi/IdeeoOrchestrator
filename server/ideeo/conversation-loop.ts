@@ -1,18 +1,20 @@
 import { randomUUID } from 'node:crypto';
 import { createOpenAIChatRuntime } from '../drivers/openai-chat-runtime.ts';
 import { ChatToolSessionError, type ChatToolSession } from '../drivers/chat-tool-session.ts';
-import { fixtureAnswers, fixturePrompts, type InferenceConfiguration } from './inference-policy.ts';
+import { fixtureAnswers, fixturePrompts, inferenceAnswerKind, type InferenceConfiguration } from './inference-policy.ts';
 import { controlledModelTransport, evaluationSystem, fixtureSystem, fixtureTool } from './model-transport.ts';
 import type { ConversationGenerator } from './inference.ts';
 import { ConversationError } from './storage/conversations.ts';
 import { freeFormSystem, isFreeFormMessage, permittedText, permittedProjection, secretValues } from './text-policy.ts';
+import type { createCapabilities } from './capabilities.ts';
 
-export function createConversationGenerator(config: InferenceConfiguration, secrets: Readonly<Record<string,string|undefined>>): ConversationGenerator {
-  const evaluation=config.mode==='openai-evaluation';
-  if (evaluation && secrets.IDEEO_OPENAI_EVALUATION !== 'synthetic-content-only') throw new Error('OpenAI evaluation requires explicit activation');
+export function createConversationGenerator(config: InferenceConfiguration, secrets: Readonly<Record<string,string|undefined>>, capabilities?: ReturnType<typeof createCapabilities>): ConversationGenerator {
+  const evaluation=config.mode!=='synthetic';
+  if (config.mode==='openai-evaluation' && secrets.IDEEO_OPENAI_EVALUATION !== 'synthetic-content-only') throw new Error('OpenAI evaluation requires explicit activation');
+  if (config.mode==='gemini-evaluation' && secrets.IDEEO_GEMINI_EVALUATION !== 'synthetic-content-only') throw new Error('Gemini evaluation requires explicit activation');
   const freeForm = config.textMode === 'free-form';
   if (freeForm && secrets.IDEEO_FREE_FORM_EVALUATION !== 'synthetic-content-only') throw new Error('Free-form evaluation requires explicit activation');
-  const answerKind=freeForm ? evaluation ? 'free_form_openai_evaluation' : 'free_form_fixture' : evaluation ? 'openmaus_openai_evaluation' : 'openmaus_fixture';
+  const answerKind=inferenceAnswerKind(config);
   const credential=secrets[config.credentialEnv];
   if (!credential || credential.length<16 || credential.length>1024 || /[\r\n]/.test(credential)) throw new Error('Missing model credential');
   return async context => {
@@ -26,8 +28,9 @@ export function createConversationGenerator(config: InferenceConfiguration, secr
       try { if(!running) throw new ConversationError(503,'model_unavailable'); return await work(); }
       catch(error){boundaryFailure=error;throw error;}
     };
-    const send=controlledModelTransport(config,credential,context);
-    const tools:ChatToolSession={
+    const mounted=capabilities?.session(context);
+    const send=controlledModelTransport(config,credential,context,mounted?.policy);
+    const fixtureTools:ChatToolSession={
       definitions:[structuredClone(fixtureTool)],skipped:[],trimmed:[],merged:[],budget:{limit:1,listed:1,servers:[]},
       refit:async()=>{},join:async()=>undefined,close:async()=>{},
       validate(name,args){
@@ -38,7 +41,7 @@ export function createConversationGenerator(config: InferenceConfiguration, secr
       execute:async(name,args,signal)=> {
         try {
           return await guarded(async()=>{
-            tools.validate(name,args); signal.throwIfAborted(); await context.checkpoint(); await context.authorize('tool');
+            fixtureTools.validate(name,args); signal.throwIfAborted(); await context.checkpoint(); await context.authorize('tool');
             const attempt=await context.reserve('tool');
             if(attempt.deadline.getTime()<=Date.now()) throw new ConversationError(409,'inference_expired');
             signal.throwIfAborted(); await context.authorize('tool'); await context.finish(attempt.id);
@@ -47,11 +50,12 @@ export function createConversationGenerator(config: InferenceConfiguration, secr
         } catch {throw new ChatToolSessionError('Fixture tool unavailable');}
       },
     };
+    const tools=mounted?.session??fixtureTools;
     const runtime=createOpenAIChatRuntime({
       input:{instanceId:'ideeo-fixture',displayName:'Ideeo fixture',enabled:true,environment:{},config:{}},driverKind:'openai-compat',
       apiKey:credential,apiUrl:config.url,models:()=>({default:config.model,options:[{id:config.model,label:'Synthetic fixture'}]}),
       requestBody:(model,messages,stream)=>({model,messages,stream,max_tokens:256}),httpErrorLabel:'fixture',missingKeyError:'Model unavailable',unavailableReason:'Model unavailable',
-      timeoutMs:evaluation ? 9000 : 1200,retryScale:evaluation ? undefined : 0,reasoning:false,computerUse:false,nativeLog:{source:'fixture',outgoing:()=>({}),incoming:()=>({})},
+      timeoutMs:evaluation ? 9000 : 1200,retryScale:evaluation ? undefined : 0,reasoning:false,computerUse:Boolean(capabilities),nativeLog:{source:'fixture',outgoing:()=>({}),incoming:()=>({})},
       ports:{send:(url,init)=>guarded(()=>send(url,init)),mount:async()=>tools,join:async()=>undefined,refit:async()=>undefined,notices:()=>[],
         native:()=>{},handoff:()=>null,warning:()=>{},floor:()=>null,allowAskUser:false},
     });
@@ -78,13 +82,13 @@ export function createConversationGenerator(config: InferenceConfiguration, secr
       for (const pair of pairs) { contextBytes += Buffer.byteLength(JSON.stringify(pair)); if (contextBytes > 7000) break; selected.push(pair); }
       const transcript=selected.reverse().flat();
       const prompt=isFreeFormMessage(context.message) ? context.message.text : fixturePrompts[context.message];
-      await runtime.adapter.sendTurn({threadId:thread,text:prompt,system:freeForm ? freeFormSystem : evaluation ? evaluationSystem : fixtureSystem,transcript,guestConfined:true});
+      await runtime.adapter.sendTurn({threadId:thread,text:prompt,system:mounted?.policy.system??(freeForm ? freeFormSystem : evaluation ? evaluationSystem : fixtureSystem),transcript,guestConfined:true});
       if(!await done) throw boundaryFailure ?? new ConversationError(503,'model_unavailable');
       context.signal.throwIfAborted();
       if(freeForm ? !permittedText(answer,2000,forbidden) : !fixtureAnswers.has(answer)) throw new ConversationError(503,'model_unavailable');
       return {kind:answerKind,text:answer};
     } finally {
-      running=false; context.signal.removeEventListener('abort',abort); await runtime.dispose();
+      running=false; context.signal.removeEventListener('abort',abort); try{await runtime.dispose();}finally{await tools.close();}
     }
   };
 }

@@ -4,7 +4,7 @@ import { fixtureAnswers, fixturePrompts } from '../../server/ideeo/inference-pol
 
 export async function launchModelFixture() {
   const credential=randomBytes(32).toString('base64url');
-  const observed: {messages:unknown[];tools:unknown;authorization:string|undefined}[]=[];
+  const observed: {messages:unknown[];tools:unknown;authorization:string|undefined;body:Record<string,unknown>}[]=[];
   let fault='none', calls=0, redirects=0;
   let beforeReply:((call:number)=>Promise<void>)|undefined;
   let answerText: ((messages: readonly {role:string;content:string}[]) => string) | undefined;
@@ -16,12 +16,15 @@ export async function launchModelFixture() {
       if(req.url!=='/v1/chat/completions' || req.method!=='POST' || req.headers.authorization!==`Bearer ${credential}`){reply(401,{});return;}
       const chunks:Buffer[]=[];for await(const chunk of req)chunks.push(chunk);
       const body=JSON.parse(Buffer.concat(chunks).toString('utf8'));
-      observed.push({messages:body.messages,tools:body.tools,authorization:req.headers.authorization});
+      observed.push({messages:body.messages,tools:body.tools,authorization:req.headers.authorization,body});
       await beforeReply?.(call);
       if(fault==='timeout')return;
+      if(fault==='connection-reset'){req.socket.destroy();return;}
       if(fault==='redirect'){res.writeHead(307,{location:'/redirect-target'});res.end();return;}
       if(fault==='outage' || fault==='transient' && call===1){reply(503,{secret:'synthetic-private-provider-error'});return;}
       if(fault==='oversized'){reply(200,{content:'x'.repeat(20000)});return;}
+      if(fault==='malformed-json'){res.writeHead(200,{'content-type':'application/json'});res.end('{');return;}
+      if(fault==='wrong-content-type'){res.writeHead(200,{'content-type':'text/plain'});res.end('{}');return;}
       const messages=body.messages as {role:string;content:string}[];
       const prompt=messages.findLast(message=>message.role==='user')?.content;
       const text = prompt===fixturePrompts['synthetic.draft'] ? 'You are invited to our synthetic picnic on Saturday.'
@@ -31,9 +34,9 @@ export async function launchModelFixture() {
       const toolRound=prompt===fixturePrompts['synthetic.follow-up'] && messages.at(-1)?.role!=='tool';
       const tool=toolRound || fault==='unknown-tool' || fault==='repeat-tool';
       const content=fault==='credential' ? credential : fault==='banking' ? 'Your balance is $123.45.' : fault==='secret' ? 'synthetic-private-output-canary' : fault==='empty' ? '' : tool ? null : answerText?.(messages) ?? text;
-      reply(200,{choices:[{message:{role:'assistant',content,reasoning_content:'synthetic-private-reasoning',reasoning_details:[{text:'synthetic-private-reasoning'}],
+      reply(200,{choices:[{message:{role:fault==='wrong-role'?'user':'assistant',...(fault==='missing-content'||fault==='omitted-tool-content'&&tool?{}:{content}),reasoning_content:'synthetic-private-reasoning',reasoning_details:[{text:'synthetic-private-reasoning'}],
         ...(tool ? {tool_calls:[{id:'fixture-call-1',type:'function',function:{name:fault==='unknown-tool'?'host_shell':'fixture_catalog',arguments:JSON.stringify({item:'color'})}}]} : {})},
-        finish_reason:fault==='length'?'length':tool?'tool_calls':'stop'}],...(fault==='unknown-usage'?{}:{usage:{prompt_tokens:15,completion_tokens:10}})});
+        finish_reason:fault==='length'?'length':fault==='finish-mismatch'?'tool_calls':tool?'tool_calls':'stop'}],...(fault==='unknown-usage'?{}:{usage:{prompt_tokens:15,completion_tokens:10}})});
     } catch{reply(500,{});}
   });
   await new Promise<void>(resolve=>server.listen(0,'127.0.0.1',resolve));

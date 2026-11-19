@@ -1,7 +1,14 @@
 import type { SyntheticMessage } from '../../shared/ideeo/conversations.ts';
+import type { TurnView } from '../../shared/ideeo/conversations.ts';
 
 export type InferenceConfiguration = Readonly<({ mode: 'synthetic'; url: string; credentialEnv: string; model: 'ideeo-fixture' }
-  | { mode: 'openai-evaluation'; url: 'https://api.openai.com/v1'; credentialEnv: string; model: 'gpt-6-luna' }) & { textMode?: 'free-form' }>;
+  | { mode: 'openai-evaluation'; url: 'https://api.openai.com/v1'; credentialEnv: string; model: 'gpt-6-luna' }
+  | { mode: 'gemini-evaluation'; url: 'https://generativelanguage.googleapis.com/v1beta/openai'; credentialEnv: string; model: 'gemini-2.5-flash-lite'; textMode: 'free-form' }) & { textMode?: 'free-form' }>;
+export function inferenceAnswerKind(config: InferenceConfiguration): TurnView['answer']['kind'] {
+  if(config.mode==='gemini-evaluation')return 'free_form_gemini_evaluation';
+  if(config.textMode==='free-form')return config.mode==='openai-evaluation'?'free_form_openai_evaluation':'free_form_fixture';
+  return config.mode==='openai-evaluation'?'openmaus_openai_evaluation':'openmaus_fixture';
+}
 export const fixturePrompts: Record<SyntheticMessage,string> = {
   'synthetic.hello': 'Say hello for this synthetic conversation.',
   'synthetic.follow-up': 'Look up the synthetic color using fixture_catalog, then say the color.',
@@ -19,6 +26,8 @@ export function parseInferenceConfiguration(value: unknown): InferenceConfigurat
     || Object.hasOwn(v,'textMode') && v.textMode !== 'free-form'
     || typeof v.credentialEnv !== 'string' || !/^[A-Z][A-Z0-9_]{0,99}$/.test(v.credentialEnv) || typeof v.url !== 'string') throw new Error('Invalid inference configuration');
   if (v.mode === 'openai-evaluation' && v.url === 'https://api.openai.com/v1' && v.model === 'gpt-6-luna') return Object.freeze(v as InferenceConfiguration);
+  if (v.mode === 'gemini-evaluation' && v.url === 'https://generativelanguage.googleapis.com/v1beta/openai'
+    && v.model === 'gemini-2.5-flash-lite' && v.textMode === 'free-form') return Object.freeze(v as InferenceConfiguration);
   if (v.mode !== 'synthetic' || v.model !== 'ideeo-fixture') throw new Error('Unqualified model profile');
   const url = new URL(v.url);
   if (url.protocol !== 'http:' || url.hostname !== '127.0.0.1' || !url.port || url.pathname !== '/v1' || url.username || url.password || url.search || url.hash) throw new Error('Unqualified model destination');

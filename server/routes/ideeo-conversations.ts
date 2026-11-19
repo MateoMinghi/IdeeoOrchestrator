@@ -25,7 +25,7 @@ async function json(req: IncomingMessage): Promise<Record<string, unknown>> {
     return value as Record<string, unknown>;
   } catch { throw invalid(); }
 }
-export function createIdeeoConversationRoutes(service: ReturnType<typeof createConversationService>) {
+export function createIdeeoConversationRoutes(service: ReturnType<typeof createConversationService>, workspace = false) {
   return async (req: IncomingMessage, res: ServerResponse): Promise<boolean> => {
     if (!req.url?.startsWith('/v2/conversations')) return false;
     const requestId = randomUUID();
@@ -39,16 +39,20 @@ export function createIdeeoConversationRoutes(service: ReturnType<typeof createC
     const controller = new AbortController();
     const abort = () => { if (!res.writableEnded) controller.abort(); };
     res.on('close', abort);
-    const timer = setTimeout(() => { controller.abort(); send(503, { error: { code: 'storage_unavailable' }, request_id: requestId }); }, 20000);
+    const timer = setTimeout(() => { controller.abort(); send(503, { error: { code: 'storage_unavailable' }, request_id: requestId }); }, workspace ? 65000 : 20000);
     try {
       if (req.headersDistinct.authorization?.length !== 1 || !req.headers.authorization) throw new InvalidTenantSession();
       const url = new URL(req.url, 'http://127.0.0.1');
       const create = url.pathname === '/v2/conversations';
+      const capabilities=url.pathname==='/v2/conversations/capabilities';
       const match = /^\/v2\/conversations\/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})\/turns$/.exec(url.pathname);
-      if (!create && !match) throw new ConversationError(404, 'not_found');
-      if (req.method !== 'POST' && !(req.method === 'GET' && match)) throw new ConversationError(405, 'method_not_allowed');
+      if (!create && !match && !capabilities) throw new ConversationError(404, 'not_found');
+      if (capabilities?req.method!=='GET':req.method !== 'POST' && !(req.method === 'GET' && match)) throw new ConversationError(405, 'method_not_allowed');
       let result: unknown;
-      if (req.method === 'POST') {
+      if(capabilities){
+        if(url.search||req.headers['transfer-encoding']||Number(req.headers['content-length']??0)!==0) throw invalid();
+        result=await service.capabilities(req.headers.authorization,controller.signal);
+      } else if (req.method === 'POST') {
         if (url.search || req.headersDistinct['idempotency-key']?.length !== 1) throw invalid();
         const key = req.headers['idempotency-key'];
         if (typeof key !== 'string' || !/^[A-Za-z0-9._:-]{1,100}$/.test(key)) throw invalid();

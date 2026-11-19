@@ -8,7 +8,7 @@ import react from '@vitejs/plugin-react';
 import tailwind from '@tailwindcss/vite';
 import { fixtureFetch } from './fixture-http.ts';
 
-export async function verifyIdeeoUi(options: {apiUrl:string;productUrl:string;apiOrigin:string;cookie:string;otherToken:string; answer(text:string):void;
+export async function verifyIdeeoUi(options: {live?:boolean;apiUrl:string;productUrl:string;apiOrigin:string;cookie:string;otherToken:string; answer(text:string):void;
   revoke():Promise<void>;restore():Promise<void>;attempts():Promise<number>}) {
   const root=await mkdtemp(join(tmpdir(),'ideeo-ui-'));
   const cleanup=async()=>{
@@ -19,7 +19,7 @@ export async function verifyIdeeoUi(options: {apiUrl:string;productUrl:string;ap
   let foreign=false, drop=false, hold=false;
   let releaseHeld: (()=>void) | undefined, reachedHeld: (()=>void) | undefined;
   const repository=fileURLToPath(new URL('../../',import.meta.url));
-  const server=await createServer({configFile:false,root:repository,envFile:false,logLevel:'silent',
+  const server=await createServer({configFile:false,root:repository,envFile:false,logLevel:'error',optimizeDeps:{entries:['ideeo.html']},
     plugins:[react(),tailwind(),{name:'isolated-tenant-exchange',configureServer(vite){
       vite.middlewares.use(async(req,res,next)=>{
         if(req.url==='/api/nico/token') {
@@ -68,25 +68,32 @@ export async function verifyIdeeoUi(options: {apiUrl:string;productUrl:string;ap
       await page!.until(`!document.querySelector('button[aria-label="Send message"]').disabled`);
       await page!.evaluate(`document.querySelector('button[aria-label="Send message"]').click()`);
     };
-    await send('Write a friendly invitation to an invented garden.');
-    await page.until(`document.querySelector('[role="log"]').textContent.includes('Join us in the invented moon garden.')`);
+    await send('Write a friendly invitation under thirty words to the invented moon garden. Mention moon garden. Do not use tools.');
+    await page.until(`document.querySelector('[role="log"]').children.length===1 && !document.querySelector('textarea').disabled`);
+    const firstAnswer=await page.evaluate(`document.querySelector('[role="log"]').firstElementChild.lastElementChild.textContent`);
+    assert.match(firstAnswer,/moon garden/i);
+    assert.ok(firstAnswer.trim().split(/\s+/).length<30);
+    const firstTranscript=await page.evaluate(`document.querySelector('[role="log"]').textContent`);
     const conversation=await page.evaluate('location.hash');assert.match(conversation,/^#[a-f0-9-]{36}$/);
     const first=await options.attempts();
     console.log('UI fixture: committed first answer');
-    await page.send('Page.reload');await page.until(`document.querySelector('[role="log"]')?.textContent.includes('Join us in the invented moon garden.')`);
+    await page.send('Page.reload');await page.until(`document.querySelector('[role="log"]')?.textContent===${JSON.stringify(firstTranscript)}`);
     assert.equal(await options.attempts(),first);
-    drop=true;await send('Make the invented invitation shorter.');
+    drop=true;await send('Make the invented invitation shorter, under twelve words. Keep moon garden. Do not use tools.');
     await page.until(`document.querySelector('[role="status"]').textContent.includes('could not be confirmed')`);
     const afterDrop=await options.attempts();assert.equal(afterDrop,first+1);
     await page.evaluate(`document.querySelector('button[aria-label="Send message"]').click()`);
-    await page.until(`document.querySelector('[role="log"]').textContent.includes('Make the invented invitation shorter.')`);
+    await page.until(`document.querySelector('[role="log"]').children.length===2 && !document.querySelector('textarea').disabled`);
+    const revisedAnswer=await page.evaluate(`document.querySelector('[role="log"]').lastElementChild.lastElementChild.textContent`);
+    assert.match(revisedAnswer,/moon garden/i);assert.ok(revisedAnswer.trim().split(/\s+/).length<12);
     assert.equal(await options.attempts(),afterDrop);
     await send('Look up the synthetic color using fixture_catalog, then say the color.');
-    await page.until(`document.querySelector('[role="log"]').textContent.includes('Look up the synthetic color')`);
+    await page.until(`document.querySelector('[role="log"]').children.length===3 && !document.querySelector('textarea').disabled`);
+    if(options.live)assert.match(await page.evaluate(`document.querySelector('[role="log"]').lastElementChild.lastElementChild.textContent`),/blue/i);
     assert.equal(await options.attempts(),afterDrop+2);
     const local=await page.evaluate(`JSON.stringify({local:{...localStorage},session:{...sessionStorage}})`);
     for(const secret of [options.cookie,options.otherToken,'invented garden','moon garden'])assert.ok(!local.includes(secret));
-    const evidence=join(repository,'output','ideeo-free-form-ui');await mkdir(evidence,{recursive:true});
+    const evidence=join(repository,'output',options.live?'ideeo-live-ui':'ideeo-free-form-ui');await mkdir(evidence,{recursive:true});
     for(const skin of ['daylight','midnight'])for(const width of [1440,390]){
       await page.send('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:false});
       await page.evaluate(`document.documentElement.setAttribute('data-skin',${JSON.stringify(skin)});document.documentElement.setAttribute('omb-skin',${JSON.stringify(skin)})`);
@@ -102,10 +109,12 @@ export async function verifyIdeeoUi(options: {apiUrl:string;productUrl:string;ap
     assert.equal(await options.attempts(),afterDrop+2);
     foreign=false;await page.send('Page.reload');
     await page.until(`document.querySelector('[role="log"]')?.textContent.includes('moon garden')`);
-    options.answer('An invented <img src="/not-an-image" onerror="alert(1)"> example.');
-    await send('Show an invented HTML example as text.');
-    await page.until(`document.querySelector('[role="log"]').textContent.includes('<img src=')`);
-    assert.equal(await page.evaluate(`document.querySelectorAll('[role="log"] img').length`),0);
+    if(!options.live) {
+      options.answer('An invented <img src="/not-an-image" onerror="alert(1)"> example.');
+      await send('Show an invented HTML example as text.');
+      await page.until(`document.querySelector('[role="log"]').textContent.includes('<img src=')`);
+      assert.equal(await page.evaluate(`document.querySelectorAll('[role="log"] img').length`),0);
+    }
     hold=true;const reached=new Promise<void>(resolve=>{reachedHeld=resolve;});
     await page.evaluate(`window.dispatchEvent(new Event('focus'))`);
     await Promise.race([reached,new Promise((_,reject)=>setTimeout(()=>reject(new Error('History delay gate missed')),10000))]);
@@ -114,7 +123,8 @@ export async function verifyIdeeoUi(options: {apiUrl:string;productUrl:string;ap
     releaseHeld?.();
     await page.until(`!document.querySelector('textarea').disabled`);
     assert.equal(await page.evaluate(`document.querySelector('[role="log"]').textContent`),'Start a conversation below.');
-    console.log(JSON.stringify({ui:'actual React / tenant API / product / PostgreSQL',checks:['cookie exchange','committed chat','reload without inference','lost response same-key replay','authorized tool','no token or transcript web storage','four layouts','revocation clears history','other tenant denied','inert assistant HTML','stale history suppressed']}));
+    console.log(JSON.stringify({ui:'actual React / tenant API / product / PostgreSQL',provider:options.live?'OpenAI Luna':'scripted fixture',firstAnswer,revisedAnswer,
+      checks:['cookie exchange','committed chat','reload without inference','lost response same-key replay','authorized tool','no token or transcript web storage','four layouts','revocation clears history','other tenant denied',...(!options.live?['inert assistant HTML']:[]),'stale history suppressed']}));
   } finally {
     releaseHeld?.();page?.close();await server.close();await options.restore();
     await cleanup();

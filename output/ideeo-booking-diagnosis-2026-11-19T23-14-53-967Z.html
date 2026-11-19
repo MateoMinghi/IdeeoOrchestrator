@@ -1,0 +1,57 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Ideeo: successful isolated booking</title><style>body{font:17px/1.6 system-ui;max-width:900px;margin:40px auto;padding:0 20px;background:#f5f5f2;color:#172b29}article{background:white;padding:24px;margin:20px 0;border-radius:12px}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}details pre{font-size:13px}</style><h1>Successful isolated booking</h1><p>Actual OpenAI Luna calls and OpenMaus Chrome browser. Invented participants and a local fake studio. Existing model, prompts, eight-second call limit and operation budgets were unchanged.</p><p>Exactly one reservation: <strong>WILLOW-BLLLXXMI</strong>. The model booked, replay returned the same result without another effect, and a new browser read verified the confirmation. The later product restart timed out; the whole campaign is not a clean pass.</p><article><h2>create booking conversation</h2><p>HTTP 200 ? 107 ms</p><p>Conversation created.</p></article><article><h2>self-contained booking</h2><p>HTTP 200 ? 17365 ms</p><strong>You</strong><pre>Book the invented Willow Studio at workshop.invalid for ten adults this Sunday from three to four in the afternoon. I authorize the reservation only if the room hire is thirty dollars. Inspect the website, complete the reservation if it matches, and tell me its confirmation. Do not send invitations.</pre><strong>Ideeo</strong><pre>The reservation is confirmed: WILLOW-BLLLXXMI for Sunday, 3–4 pm, for ten adults. The room hire is $30, and no invitations were sent.</pre></article><article><h2>replay committed booking</h2><p>HTTP 200 ? 27 ms</p><strong>You</strong><pre>Book the invented Willow Studio at workshop.invalid for ten adults this Sunday from three to four in the afternoon. I authorize the reservation only if the room hire is thirty dollars. Inspect the website, complete the reservation if it matches, and tell me its confirmation. Do not send invitations.</pre><strong>Ideeo</strong><pre>The reservation is confirmed: WILLOW-BLLLXXMI for Sunday, 3–4 pm, for ten adults. The room hire is $30, and no invitations were sent.</pre></article><article><h2>verify booking</h2><p>HTTP 200 ? 8820 ms</p><strong>You</strong><pre>Read the studio website again and report my reservation confirmation. Do not make another reservation.</pre><strong>Ideeo</strong><pre>Your reservation confirmation is WILLOW-BLLLXXMI. The website lists it for Sunday, 3–4 pm, for ten adults, with a $30 room hire. No invitations have been sent.</pre></article><article><h2>create independent planning conversation</h2><p>HTTP 200 ? 140 ms</p><p>Conversation created.</p></article><article><h2>self-contained arithmetic</h2><p>HTTP 200 ? 5270 ms</p><strong>You</strong><pre>For an invented workshop, ten adults need supplies costing six dollars each. Room hire is thirty dollars and the total budget is ninety dollars. Calculate the total and remaining budget. No research or booking is needed.</pre><strong>Ideeo</strong><pre>Supplies: 10 × $6 = $60  
+Room hire: $30  
+Total cost: $90  
+Remaining budget: $0</pre></article><article><h2>Actual browser actions</h2><pre>[
+  {
+    &quot;name&quot;: &quot;agent_browser_open&quot;,
+    &quot;arguments&quot;: {
+      &quot;url&quot;: &quot;https://workshop.invalid&quot;
+    },
+    &quot;status&quot;: &quot;succeeded&quot;,
+    &quot;text&quot;: &quot;Opened https://workshop.invalid/ in t1.\nPage observed after navigation. Its refs are current, so act on them without another snapshot. Check this result for redirects, sign-in requirements or page errors before reporting task success:\nPage t1: \&quot;Willow Studio\&quot; at https://workshop.invalid/.\n- heading \&quot;Willow Studio workshop reservation\&quot; [level=1]\n- paragraph: Available: Sunday from 3 to 4 pm for ten adults. Room hire thirty dollars.\n- form:\n  - button \&quot;Reserve Sunday workshop\&quot; [ref=e1]&quot;
+  },
+  {
+    &quot;name&quot;: &quot;agent_browser_click&quot;,
+    &quot;arguments&quot;: {
+      &quot;ref&quot;: &quot;e1&quot;
+    },
+    &quot;status&quot;: &quot;succeeded&quot;,
+    &quot;text&quot;: &quot;Clicked e1.\nThe page is now https://workshop.invalid/book (\&quot;Willow Studio\&quot;). Refs from earlier snapshots do not apply to it; take a snapshot before acting on refs.&quot;
+  },
+  {
+    &quot;name&quot;: &quot;agent_browser_snapshot&quot;,
+    &quot;arguments&quot;: {},
+    &quot;status&quot;: &quot;succeeded&quot;,
+    &quot;text&quot;: &quot;Page t1: \&quot;Willow Studio\&quot; at https://workshop.invalid/book.\n- heading \&quot;Willow Studio workshop reservation\&quot; [level=1]\n- paragraph: Confirmed reservation WILLOW-BLLLXXMI. Sunday from 3 to 4 pm. Ten adults. Room hire thirty dollars. Invitations have not been sent.&quot;
+  },
+  {
+    &quot;name&quot;: &quot;agent_browser_open&quot;,
+    &quot;arguments&quot;: {
+      &quot;url&quot;: &quot;https://workshop.invalid&quot;,
+      &quot;tab&quot;: &quot;new&quot;
+    },
+    &quot;status&quot;: &quot;succeeded&quot;,
+    &quot;text&quot;: &quot;Opened https://workshop.invalid/ in t2.\nPage observed after navigation. Its refs are current, so act on them without another snapshot. Check this result for redirects, sign-in requirements or page errors before reporting task success:\nPage t2: \&quot;Willow Studio\&quot; at https://workshop.invalid/.\n- heading \&quot;Willow Studio workshop reservation\&quot; [level=1]\n- paragraph: Confirmed reservation WILLOW-BLLLXXMI. Sunday from 3 to 4 pm. Ten adults. Room hire thirty dollars. Invitations have not been sent.&quot;
+  }
+]</pre></article><article><h2>Remaining failure and usage</h2><pre>{
+  &quot;failure&quot;: {
+    &quot;phase&quot;: &quot;restart 1&quot;,
+    &quot;code&quot;: &quot;other&quot;,
+    &quot;process&quot;: {
+      &quot;exit_code&quot;: null,
+      &quot;signal_code&quot;: null
+    },
+    &quot;frames&quot;: [
+      &quot;    at Timeout._onTimeout (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/scripts/testing/ideeo-fixture.ts:180:45)&quot;,
+      &quot;    at listOnTimeout (node:internal/timers:605:17)&quot;,
+      &quot;    at process.processTimers (node:internal/timers:541:7)&quot;
+    ]
+  },
+  &quot;usage&quot;: {
+    &quot;calls&quot;: 7,
+    &quot;unknown_usage&quot;: 0,
+    &quot;input_tokens&quot;: 13524,
+    &quot;output_tokens&quot;: 201
+  },
+  &quot;database_idle_timeouts&quot;: 0
+}</pre></article></html>

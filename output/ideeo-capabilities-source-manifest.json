@@ -1,0 +1,255 @@
+{
+  "recorded_at": "2026-11-19T21:46:08.309Z",
+  "head": "8b3984055a6cd958b1afa1e7722ed9a60b6dba00",
+  "branch": "dev",
+  "state": "uncommitted; includes prior hardening and Gemini changes",
+  "scope": "Local scripted-provider capability integration; full capability parity and production VM isolation incomplete",
+  "results": {
+    "capabilities": 14,
+    "regressions": 147,
+    "mutations": "baseline and restored pass; caller matching and durable claim removals detected",
+    "typecheck": "strict focused product config passed with clean dependencies",
+    "lint": "targeted Oxlint passed"
+  },
+  "live_provider_calls": 0,
+  "independent_review": false,
+  "human_acceptance": false,
+  "pushed": false,
+  "deployed": false,
+  "sources": [
+    {
+      "path": ".github/workflows/ideeo.yml",
+      "sha256": "1bd6341c07b89c567a9d53fed281c20f14363d943ef4c036ce5e0bca4fea464e"
+    },
+    {
+      "path": ".pnpm-store/v11/.pnpm-needs-build-marker",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".pnpm-store/v11/index.db",
+      "sha256": "2b793a22a3b541c9de91dabd286be285edd8669b612b35b730870745aea5d1a9"
+    },
+    {
+      "path": "docs/ideeo/contracts/WORKSPACE_CAPABILITIES.md",
+      "sha256": "388d85369d70eb66a3dd2e4793d092b5c29757c5a77beec95c288d099cd45e0e"
+    },
+    {
+      "path": "docs/ideeo/development/CONVERSATION_ACCEPTANCE.md",
+      "sha256": "1370e8abd66fac08180bfc3e30bf1e230ebf2e7db4087113cdca57b060b10ad6"
+    },
+    {
+      "path": "migrations/ideeo/003_capability_execution.sql",
+      "sha256": "fe3d79528316b3a76f1df64a662adc63cba36f55260f7ee1ea5b5059909d21a0"
+    },
+    {
+      "path": "scripts/testing/capability-mutation.mjs",
+      "sha256": "c74935d1c0547099b7ff08d3d4632e57f499c74d69ede8a478c0d15e99c91208"
+    },
+    {
+      "path": "scripts/testing/conversation-tasks.ts",
+      "sha256": "d05ad3d0687f41142e7cc0c8c654c646ba95b3ced18ea1f3606576a7d7577efa"
+    },
+    {
+      "path": "scripts/testing/ideeo-browser-fixture.ts",
+      "sha256": "51715929effd04259930830cdcd8e27d777f23fdb0ecc2de45918e833218fffc"
+    },
+    {
+      "path": "server/ideeo/capabilities.node-test.ts",
+      "sha256": "7d0300151b33853a91cdd0b29851ff04d4fdc205104fe0cc98f44d53ab4b8eeb"
+    },
+    {
+      "path": "server/ideeo/capabilities.ts",
+      "sha256": "63e3d3b8ec0bab4a3598914ccacd52f27cb60ce7169baf7782861d7cde7f228a"
+    },
+    {
+      "path": "server/ideeo/capability-config.ts",
+      "sha256": "bd1e4394cb2cd85fdede650b1de30908cec39c20c8d96a9a3f71de18ef369b7e"
+    },
+    {
+      "path": "server/ideeo/capability-executor.ts",
+      "sha256": "6d340ace9164dfeac5218d4600539c0b19650e1950cf1921b38dd661d9d6c71a"
+    },
+    {
+      "path": "server/ideeo/capability-output.ts",
+      "sha256": "c8764d48d911e1048cfdc74a163a4374c9d9caa76cfd994f111ea938fe17552a"
+    },
+    {
+      "path": "server/ideeo/capability-transport.ts",
+      "sha256": "53badd687f0e50b3352eea4f975aec23e076b348fb750cd2b2404268a7c7f955"
+    },
+    {
+      "path": "server/ideeo/gemini.node-test.ts",
+      "sha256": "c7c349a9d88c3bc0673bd5d83b8a366f6e729ffa973df732aad859d725e51278"
+    },
+    {
+      "path": "server/ideeo/openmaus-tools.node-test.ts",
+      "sha256": "9549012a4bd10005bbba24c804b9031c685bdc058bc65f087019a2d0ac2332aa"
+    },
+    {
+      "path": "server/ideeo/openmaus-tools.ts",
+      "sha256": "118c1c6b4bb15127788bcac92e1b5243bc4ef52b726810625e81790c1063a207"
+    },
+    {
+      "path": "server/ideeo/workspace-files.ts",
+      "sha256": "1952b5d47fbac6729cc670a83f307cc123337f299820fbeb4ccdd6a4fbfd4003"
+    },
+    {
+      "path": "shared/ideeo/capabilities.ts",
+      "sha256": "42db1a7c1935c4333fa4be4e6be0d2160bbeef0059214fd7411bdbc8c10fb310"
+    },
+    {
+      "path": "tsconfig.ideeo-server.json",
+      "sha256": "f4f153f0bc15a57324e32b165465f26304c52599179a84ebf5e80448d03dfff3"
+    },
+    {
+      "path": "docs/ideeo/IMPLEMENTATION_STATUS.md",
+      "sha256": "62fa8ae2b277be55fbbb1a31cd9c6b43602ff2d3c61f2a61f7ef4e0d44e5c0dc"
+    },
+    {
+      "path": "docs/ideeo/README.md",
+      "sha256": "739e924984a5fd579cec6ecfd38bed1bb2e71c32e240735127cc2b6de951ed61"
+    },
+    {
+      "path": "docs/ideeo/compliance/SUPPLIERS.md",
+      "sha256": "2c9157462355e6c160907b1efd9b621551e10410b305a2c6600598c135198343"
+    },
+    {
+      "path": "docs/ideeo/contracts/CONVERSATION_LOOP.md",
+      "sha256": "4268af241386f552ee92eb9e359a1f78f15185f20837b5dca7dd4855f3ca02cf"
+    },
+    {
+      "path": "docs/ideeo/contracts/CONVERSATION_UI.md",
+      "sha256": "6a43b6ea8a3c132448a5b75ffb7d931ba4c77044bdbae1dd42d80af0439bb7a2"
+    },
+    {
+      "path": "docs/ideeo/development/VERIFICATION.md",
+      "sha256": "fa95c8fcf482453eef2199ed97995f7a83258418ae7a67039a47b93602871ad3"
+    },
+    {
+      "path": "docs/verification/ideeo.md",
+      "sha256": "d9506b4574885025d7d691d83efb608d581a3dc2775c043e30fc1d8aea0f9dcc"
+    },
+    {
+      "path": "scripts/testing/free-form-mutation.mjs",
+      "sha256": "67e190e1dc410ace6b634dd59ac33e5584d30ba9aba6788b7da7e66cecea6cc4"
+    },
+    {
+      "path": "scripts/testing/ideeo-fixture.ts",
+      "sha256": "e29ab90099895de94751b106b7b2a902ed830c0a85c73e35bafdd202d6cc927d"
+    },
+    {
+      "path": "scripts/testing/ideeo-ui.ts",
+      "sha256": "d0f51837b7b73490273afc3bcb3a5e010dc2397af284284ea9fa5f2da631041b"
+    },
+    {
+      "path": "scripts/testing/live-free-form.ts",
+      "sha256": "c18f47dc46c1e6df3fe160b360a592e5a7bbb31261516800eefd2d1967bb5a24"
+    },
+    {
+      "path": "scripts/testing/model-fixture.ts",
+      "sha256": "557a2ee35e3974ce694df6190bfc28975bfed8ee2d253982a281cb01d3004a5c"
+    },
+    {
+      "path": "scripts/testing/openai-key.ts",
+      "sha256": "5e932b16473e4203f50e768a0be36fa54efeaa2f3f5ee912eafc42471ae453d6"
+    },
+    {
+      "path": "scripts/testing/payme-storage-worker.ts",
+      "sha256": "2d95ccbbcfca2b7a46352dbb36dab7eb7f363b81615e3b717ef0ec2e39cfde7d"
+    },
+    {
+      "path": "scripts/testing/payme-storage.ts",
+      "sha256": "e5b6b804a22e2aaddb64f68290d7333e678dbfebc597345bc0170167e75d0ce3"
+    },
+    {
+      "path": "server/host/ideeo.ts",
+      "sha256": "ab809d1ae9d12c92f327823f87459cad1b479050eb172a3624c27ec942d68c3d"
+    },
+    {
+      "path": "server/ideeo/config.ts",
+      "sha256": "4ce474a70c72f906e2d145140a2ee671c903c9f66216882a1f2f9577943afb7c"
+    },
+    {
+      "path": "server/ideeo/conversation-loop.node-test.ts",
+      "sha256": "0e2ef6cb4757cb33ebff27d3325c0e567533cd980f27476f8acf7044954eb8b8"
+    },
+    {
+      "path": "server/ideeo/conversation-loop.ts",
+      "sha256": "675fe8f549312477b688364f3d0e4f9ed822e1c25a5fd7418d4dbf54f04df59d"
+    },
+    {
+      "path": "server/ideeo/conversations.ts",
+      "sha256": "7146734c8c93788c43a587bfcfaa790f8479a99e0ef5be5fcddbaaf55f4fa91e"
+    },
+    {
+      "path": "server/ideeo/free-form.node-test.ts",
+      "sha256": "8e0624085c185f8c7619f5f6e5e77806c86d69889b90b1fac30c183a3622daf6"
+    },
+    {
+      "path": "server/ideeo/inference-policy.ts",
+      "sha256": "1f40370ca8734fa5a00df76366eafe958dc003aaaa50a35f39714742039fc614"
+    },
+    {
+      "path": "server/ideeo/inference.ts",
+      "sha256": "7c23894705c2b6e9a0ae99e7e473ed20050479e03ef389eb1ffec08ee7247bde"
+    },
+    {
+      "path": "server/ideeo/model-transport.ts",
+      "sha256": "8a13d2afb7719ec6c97e881e01d971aef4d068f24e8448e043eabf974d8cf418"
+    },
+    {
+      "path": "server/ideeo/storage/conversations.ts",
+      "sha256": "60bb7f65548a02e64a099f6b7a9eebf965708a4e3589b603ae085963f6d77b99"
+    },
+    {
+      "path": "server/ideeo/storage/database.ts",
+      "sha256": "c4da51f7c85a5bc82791094b1f04b5b6d65121a89a5d40e21463f91f970e44a2"
+    },
+    {
+      "path": "server/ideeo/storage/migrate.ts",
+      "sha256": "05b9a04d8ce00fe17a01f0cb00fb81ac67d0601b22241b841a8ebcf56972b8fc"
+    },
+    {
+      "path": "server/ideeo/text-policy.ts",
+      "sha256": "4e03c7b0a0d839969c03191cf1c7ab5498105ca8179d0a00e942cd0777303050"
+    },
+    {
+      "path": "server/routes/ideeo-conversations.ts",
+      "sha256": "e3eb20eca1ead90bac934332782f483920e137236837f64955f30f13044eaf10"
+    },
+    {
+      "path": "shared/ideeo/conversations.ts",
+      "sha256": "86eae2f25611ab3af7957500ab633bbae8d27272d98f78337f43f8af03c8f024"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "output/ideeo-capabilities-native-files.log",
+      "sha256": "a7c06e134e6e238a05a9de759ceb492c3e1e1a0d4f34c0e70f25e5fb5b6c905c"
+    },
+    {
+      "path": "output/ideeo-capabilities-mutation.log",
+      "sha256": "315e0298296febf821bd530aa69fbec9716e61920f37efc8e6c701018e4c0a52"
+    },
+    {
+      "path": "output/ideeo-capabilities-regression.log",
+      "sha256": "0fcec5f7bd6658c036abeb51e25e5f52f4f3249b9c3279e2ec6ed459a74decf0"
+    },
+    {
+      "path": "output/ideeo-capabilities-browser.log",
+      "sha256": "78c38afd9a13058bd18d300a40e67c3a728068bfd2f7155f7e2ba6e0b36729a2"
+    },
+    {
+      "path": "output/ideeo-capabilities-browser-cleanup.log",
+      "sha256": "3c4b81e65b04e9f19fdef33f36917d3afa487feffc7e8e825e8ef8eb8b9eee98"
+    },
+    {
+      "path": "output/ideeo-capabilities-images.log",
+      "sha256": "6c13253f23f06759a073a38271d578be723e07079ef14608c3f6565a4e492bc8"
+    },
+    {
+      "path": "output/ideeo-openmaus-capability-inventory.json",
+      "sha256": "b8e855841151ccc9509f9dc8f4ff980d80e9936a89a3101c2054c29379263f16"
+    }
+  ]
+}

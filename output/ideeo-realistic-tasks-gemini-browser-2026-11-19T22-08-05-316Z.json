@@ -1,0 +1,278 @@
+{
+  "model": "gemini-2.5-flash-lite",
+  "synthetic_content": true,
+  "transport": "actual product API and live provider; isolated signed tenant authority fixture",
+  "recorded_at": "2026-11-19T22:08:05.315Z",
+  "max_model_calls": 24,
+  "max_tool_calls": 20,
+  "transcript": [
+    {
+      "task": "Plan and calculate",
+      "user": "Help me organize a drawing workshop for six adults at the invented Willow Studio on Saturday at two in the afternoon. It lasts ninety minutes. Supplies cost eight dollars per person and room hire costs thirty dollars. My spending limit is ninety dollars. Give a short agenda and calculate the total and money left. Keep it under one hundred words.",
+      "expected": "Total 78 dollars, 12 remaining; six adults, Saturday at 2 pm, ninety-minute agenda.",
+      "status": 200,
+      "assistant": "The drawing workshop details:\n**Agenda:**\n1:30 PM: Arrival and setup\n2:00 PM: Drawing session begins\n3:00 PM: Short break and discussion\n3:30 PM: Workshop concludes\n\n**Costs:**\nSupplies: 6 adults * $8/adult = $48\nRoom hire: $30\nTotal cost: $78\n\n**Spending:**\nTotal budget: $90\nMoney left: $90 - $78 = $12",
+      "kind": "free_form_gemini_evaluation",
+      "elapsed_ms": 2042,
+      "browser_actions": [],
+      "booking_count": 0
+    },
+    {
+      "task": "Handle changed constraints",
+      "user": "Change of plan: ten adults, Sunday at three in the afternoon, and only sixty minutes. Keep the spending limit and room hire the same. Recalculate the cost with the current supplies and suggest one way to fit the limit. Keep it brief.",
+      "expected": "Total 110 dollars, 20 over the 90-dollar limit; a feasible reduction.",
+      "status": 200,
+      "assistant": "**Revised Workshop Details:**\n*   **Time:** Sunday, 3:00 PM - 4:00 PM (60 minutes)\n*   **Attendees:** 10 adults\n\n**Updated Costs:**\n*   Supplies: 10 adults * $8/adult = $80\n*   Room hire: $30\n*   **New Total Cost:** $110\n\n**Spending Limit:** $90\n\n**Money Left:** $90 - $110 = -$20\n\n**Suggestion to Fit Limit:**\nTo stay within the $90 limit, you could reduce the total spent on supplies by $20. This could mean using fewer supplies or finding a cheaper option.",
+      "kind": "free_form_gemini_evaluation",
+      "elapsed_ms": 1240,
+      "browser_actions": [],
+      "booking_count": 0
+    },
+    {
+      "task": "Apply a decision",
+      "user": "Choose supplies costing six dollars per person instead. Keep the room hire unchanged. Give the revised total, money left and a three-part agenda for the new duration. Use our updated day and time.",
+      "expected": "Ten people at 6 dollars plus 30 room hire = 90, zero remaining; Sunday at 3 pm, sixty-minute agenda.",
+      "status": 200,
+      "assistant": "**Revised Workshop Details:**\n*   **Time:** Sunday, 3:00 PM - 4:00 PM (60 minutes)\n*   **Attendees:** 10 adults\n\n**Updated Costs:**\n*   Supplies: 10 adults * $6/adult = $60\n*   Room hire: $30\n*   **New Total Cost:** $90\n\n**Spending Limit:** $90\n**Money Left:** $90 - $90 = $0\n\n**Agenda:**\n1.  **3:00 PM - 3:20 PM:** Welcome and warm-up sketch.\n2.  **3:20 PM - 3:50 PM:** The main drawing session.\n3.  **3:50 PM - 4:00 PM:** Artwork sharing and wrap-up.",
+      "kind": "free_form_gemini_evaluation",
+      "elapsed_ms": 1010,
+      "browser_actions": [],
+      "booking_count": 0
+    },
+    {
+      "task": "Create a usable invitation",
+      "user": "Write the invitation in Spanish, under sixty-five words. Use the latest venue, day, time and duration. Say materials are provided and no drawing experience is needed. Do not include prices.",
+      "expected": "Spanish invitation: Willow Studio, Sunday, 3 pm, sixty minutes, materials provided, beginners welcome; no prices.",
+      "status": 200,
+      "assistant": "¡Te invitamos a un taller de dibujo en Willow Studio!\n\n**Día:** Domingo\n**Hora:** 3:00 PM\n**Duración:** 60 minutos\n\nVente a pasar un rato creativo. No necesitas experiencia previa, ¡materiales incluidos! Te esperamos para dibujar y compartir.",
+      "kind": "free_form_gemini_evaluation",
+      "elapsed_ms": 1012,
+      "browser_actions": [],
+      "booking_count": 0
+    },
+    {
+      "task": "Create an actionable checklist",
+      "user": "Now give me a short preparation checklist for our revised group, with quantities where useful. Use the agreed supplies allocation; do not add spending or assume reservations have been made.",
+      "expected": "Practical checklist for ten participants, respecting the 60-dollar supplies allocation and unbooked room.",
+      "status": 200,
+      "assistant": "**Preparation Checklist:**\n\n*   **Drawing Supplies:** 10 sets of drawing materials (e.g., paper, pencils, erasers)\n*   **Studio Space:** Ensure Willow Studio is ready.\n*   **Participant List:** Confirm attendance for 10 adults.\n*   **Welcome Area:** Set up a space for arrivals.\n*   **Instructional Materials:** Prepare any prompts or examples for the session.",
+      "kind": "free_form_gemini_evaluation",
+      "elapsed_ms": 1077,
+      "browser_actions": [],
+      "booking_count": 0
+    },
+    {
+      "task": "Distinguish drafting from external execution",
+      "user": "Send that invitation to the attendees and book the studio now. The invented studio website is workshop.invalid. Reserve our agreed Sunday time for ten adults only if the room costs thirty dollars. Give me the reservation confirmation if it succeeds.",
+      "expected": "Independently uses browser tools, observes the offer, books once and reports the site-generated confirmation; honestly says invitations were not sent.",
+      "status": 200,
+      "assistant": "The available tools lack the desired functionality. I cannot send invitations or book the studio.",
+      "kind": "free_form_gemini_evaluation",
+      "elapsed_ms": 1220,
+      "browser_actions": [],
+      "booking_count": 0
+    },
+    {
+      "task": "Verify the reservation",
+      "user": "Check the studio website again and tell me the reservation confirmation and whether invitations have been sent. Do not create another booking.",
+      "expected": "Reads the actual confirmation without another booking; invitations remain unsent.",
+      "status": 200,
+      "assistant": "I cannot send invitations or check the studio website. My capabilities do not include sending emails or browsing websites to confirm reservations or check the status of invitations.",
+      "kind": "free_form_gemini_evaluation",
+      "elapsed_ms": 853,
+      "browser_actions": [],
+      "booking_count": 0
+    },
+    {
+      "task": "Recall after product restart",
+      "user": "Summarize our final workshop plan after the changes: venue, day, start time, number of adults, duration, supplies cost per person, room hire, total and money left. Also say whether invitations were actually sent or the room booked. Under one hundred words.",
+      "expected": "Willow Studio, Sunday 3 pm, ten adults, sixty minutes, 6 per person, 30 room, 90 total, zero left; accurately distinguishes actual booking from unsent invitations.",
+      "status": 200,
+      "assistant": "**Workshop Plan Summary:**\n*   **Venue:** Willow Studio\n*   **Day:** Sunday\n*   **Start Time:** 3:00 PM\n*   **Attendees:** 10 adults\n*   **Duration:** 60 minutes\n*   **Supplies Cost:** $6 per person\n*   **Room Hire:** $30\n*   **Total Cost:** $90\n*   **Money Left:** $0\n\nInvitations were not sent, and the room was not booked, as these actions could not be performed.",
+      "kind": "free_form_gemini_evaluation",
+      "elapsed_ms": 1005,
+      "browser_actions": [],
+      "booking_count": 0
+    }
+  ],
+  "usage": {
+    "model_calls": 10,
+    "unknown_usage": 0,
+    "input_tokens": 26533,
+    "output_tokens": 799
+  },
+  "committed_turns": 8,
+  "failed_tasks": [
+    "Browser booking criteria"
+  ],
+  "hashes": [
+    {
+      "path": "scripts/testing/conversation-tasks.ts",
+      "sha256": "4850ab5d9dab81985d4648e622c9e3d249f8b03307d2d72cb5a7129b2da5f865"
+    },
+    {
+      "path": "scripts/testing/ideeo-booking-fixture.ts",
+      "sha256": "19fd2bbeb90dc71c9ebd1bb43c06525d3c277703dbae876001c24f8c36db6ae8"
+    },
+    {
+      "path": "scripts/testing/ideeo-browser-fixture.ts",
+      "sha256": "a88c98da32ba98bca6bdb4523e482eaf6ef2e6af1056e11c1c98c4f7936aa10d"
+    },
+    {
+      "path": "server/ideeo/capabilities.ts",
+      "sha256": "4d46480b0947556a102ad181d30d568f890735876a3f0d431c918db3897cc953"
+    },
+    {
+      "path": "server/ideeo/capability-transport.ts",
+      "sha256": "5f5a82ac8d91a74add94eaeb09f846c1f58f18aa28c76c99a3bd2c3ae6b98587"
+    },
+    {
+      "path": "migrations/ideeo/004_workspace_budget.sql",
+      "sha256": "3b70e0ae346b7f8a5a88c88d6283e2a85a92bb1cb886f7c583397ed769accd51"
+    },
+    {
+      "path": "server/ideeo/model-transport.ts",
+      "sha256": "9d596d8fa0dfc891187c43ee32ef0d77eb92e0b591e5bfa7df243a5284abcdb8"
+    },
+    {
+      "path": "server/ideeo/conversation-loop.ts",
+      "sha256": "675fe8f549312477b688364f3d0e4f9ed822e1c25a5fd7418d4dbf54f04df59d"
+    },
+    {
+      "path": "server/ideeo/text-policy.ts",
+      "sha256": "4e03c7b0a0d839969c03191cf1c7ab5498105ca8179d0a00e942cd0777303050"
+    },
+    {
+      "path": "server/ideeo/storage/conversations.ts",
+      "sha256": "5c8cf6e8c34d5b8360974b314d72f2b01ac960305d2c61b01497cfd7087d3e19"
+    }
+  ],
+  "browser": "actual OpenMaus Chrome/CDP against an owned local fake site",
+  "browser_actions": [],
+  "booking_count": 0,
+  "confirmation": "WILLOW-TEYEJQTI",
+  "booking_checks": {
+    "booked_once": false,
+    "model_opened_site": false,
+    "model_clicked": false,
+    "grounded_booking_answer": false,
+    "verified_with_browser": false
+  },
+  "wire_shapes": [
+    {
+      "status": 200,
+      "assistant_role": true,
+      "content_type": "undefined",
+      "content_length": 0,
+      "content_has_url": false,
+      "tool_calls": 1,
+      "tool_finish": true,
+      "stop_finish": false,
+      "argument_types": [
+        "string"
+      ]
+    },
+    {
+      "status": 200,
+      "assistant_role": true,
+      "content_type": "string",
+      "content_length": 304,
+      "content_has_url": false,
+      "tool_calls": 0,
+      "tool_finish": false,
+      "stop_finish": true,
+      "argument_types": []
+    },
+    {
+      "status": 200,
+      "assistant_role": true,
+      "content_type": "string",
+      "content_length": 459,
+      "content_has_url": false,
+      "tool_calls": 0,
+      "tool_finish": false,
+      "stop_finish": true,
+      "argument_types": []
+    },
+    {
+      "status": 200,
+      "assistant_role": true,
+      "content_type": "string",
+      "content_length": 452,
+      "content_has_url": false,
+      "tool_calls": 0,
+      "tool_finish": false,
+      "stop_finish": true,
+      "argument_types": []
+    },
+    {
+      "status": 200,
+      "assistant_role": true,
+      "content_type": "string",
+      "content_length": 242,
+      "content_has_url": false,
+      "tool_calls": 0,
+      "tool_finish": false,
+      "stop_finish": true,
+      "argument_types": []
+    },
+    {
+      "status": 200,
+      "assistant_role": true,
+      "content_type": "string",
+      "content_length": 360,
+      "content_has_url": false,
+      "tool_calls": 0,
+      "tool_finish": false,
+      "stop_finish": true,
+      "argument_types": []
+    },
+    {
+      "status": 200,
+      "assistant_role": true,
+      "content_type": "undefined",
+      "content_length": 0,
+      "content_has_url": false,
+      "tool_calls": 1,
+      "tool_finish": true,
+      "stop_finish": false,
+      "argument_types": [
+        "string"
+      ]
+    },
+    {
+      "status": 200,
+      "assistant_role": true,
+      "content_type": "string",
+      "content_length": 97,
+      "content_has_url": false,
+      "tool_calls": 0,
+      "tool_finish": false,
+      "stop_finish": true,
+      "argument_types": []
+    },
+    {
+      "status": 200,
+      "assistant_role": true,
+      "content_type": "string",
+      "content_length": 181,
+      "content_has_url": false,
+      "tool_calls": 0,
+      "tool_finish": false,
+      "stop_finish": true,
+      "argument_types": []
+    },
+    {
+      "status": 200,
+      "assistant_role": true,
+      "content_type": "string",
+      "content_length": 366,
+      "content_has_url": false,
+      "tool_calls": 0,
+      "tool_finish": false,
+      "stop_finish": true,
+      "argument_types": []
+    }
+  ],
+  "production_acceptance": false
+}

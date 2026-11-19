@@ -1,0 +1,36 @@
+{
+  "recorded_at": "2026-11-19T22:52:20.618Z",
+  "model": "gpt-6-luna",
+  "source_hashes_match": true,
+  "actual_openai_key_found": false,
+  "report_inspected": true,
+  "outcome": "incomplete",
+  "browser_actions": 8,
+  "bookings": 0,
+  "committed_turns": 2,
+  "usage": {
+    "model_calls": 16,
+    "unknown_usage": 6,
+    "input_tokens": 19753,
+    "output_tokens": 297
+  },
+  "transport_failure_cause": "Unconfirmed; timings consistent with eight-second model timeout; generic storage_unavailable masks transport exceptions.",
+  "product_code_changed": false,
+  "pushed": false,
+  "deployed": false,
+  "independent_acceptance": false,
+  "artifacts": [
+    {
+      "path": "output/ideeo-realistic-tasks-browser-2026-11-19T22-50-27-231Z.json",
+      "sha256": "a46f2df4754340680900fca7af317e3e989976acd66dd0bfd177ff0a34daa34c"
+    },
+    {
+      "path": "output/ideeo-realistic-tasks-browser-2026-11-19T22-50-27-231Z.html",
+      "sha256": "4ef395c178b56f46a1a16d6ecd39ad80dd9684cc4857070faa0c7553a30970bf"
+    },
+    {
+      "path": "output/ideeo-openai-browser-retry.log",
+      "sha256": "076967d033ebd9de48fb0fe924c0a241c680425f775c0cbb26b7520589123823"
+    }
+  ]
+}

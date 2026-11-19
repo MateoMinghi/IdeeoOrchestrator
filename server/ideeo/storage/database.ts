@@ -14,7 +14,7 @@ export async function verifyRuntimeRole(sql: postgres.Sql) {
   if (!role || role.name !== 'ideeo_runtime' || role.rolsuper || role.rolcreaterole || role.rolcreatedb
     || role.rolreplication || role.rolbypassrls || role.memberships) throw new Error('Unsafe storage runtime role');
   const versions = await sql`select version from ideeo.schema_version`;
-  if (versions.length !== 1 || versions[0].version !== 2) throw new Error('Unsupported storage schema');
+  if (versions.length !== 1 || versions[0].version !== 4) throw new Error('Unsupported storage schema');
   const tables = await sql`select c.relname, c.relrowsecurity, c.relforcerowsecurity, r.rolname as owner,
       has_table_privilege(current_user, c.oid, 'TRUNCATE') as can_truncate,
       has_table_privilege(current_user, c.oid, 'DELETE,UPDATE,TRIGGER,REFERENCES') as can_mutate,

@@ -1,0 +1,213 @@
+{
+  "model": "gpt-6-luna",
+  "synthetic": true,
+  "restart_only": true,
+  "booked": false,
+  "usage": {
+    "calls": 0,
+    "unknown_usage": 0,
+    "input_tokens": 0,
+    "output_tokens": 0
+  },
+  "observations": [
+    {
+      "phase": "create booking conversation",
+      "status": 200,
+      "elapsed_ms": 83,
+      "input": {},
+      "response": {
+        "api_version": "ideeo-conversation-storage-3",
+        "request_id": "eb388219-8e33-4832-929b-713747f29399",
+        "conversation_id": "10c8ef3c-3cb6-412e-8dc7-24aa95523d72",
+        "created_at": "2026-11-19T23:19:54.496Z",
+        "expires_at": "2026-11-19T23:29:54.496Z"
+      }
+    },
+    {
+      "phase": "history after restart 1",
+      "status": 200,
+      "elapsed_ms": 59,
+      "response": {
+        "api_version": "ideeo-conversation-storage-3",
+        "request_id": "d1b0e116-ff1c-4f02-8f9f-c6b0bf94d935",
+        "conversation_id": "10c8ef3c-3cb6-412e-8dc7-24aa95523d72",
+        "created_at": "2026-11-19T23:19:54.496Z",
+        "expires_at": "2026-11-19T23:29:54.496Z",
+        "turns": [],
+        "next_after": null
+      }
+    },
+    {
+      "phase": "history after restart 2",
+      "status": 200,
+      "elapsed_ms": 68,
+      "response": {
+        "api_version": "ideeo-conversation-storage-3",
+        "request_id": "dc0ffb29-5020-49ae-bdfb-8a509dda2ac5",
+        "conversation_id": "10c8ef3c-3cb6-412e-8dc7-24aa95523d72",
+        "created_at": "2026-11-19T23:19:54.496Z",
+        "expires_at": "2026-11-19T23:29:54.496Z",
+        "turns": [],
+        "next_after": null
+      }
+    },
+    {
+      "phase": "history after restart 3",
+      "status": 200,
+      "elapsed_ms": 75,
+      "response": {
+        "api_version": "ideeo-conversation-storage-3",
+        "request_id": "e5b1c0cc-e64e-4ad8-a94d-fa914ec99ffb",
+        "conversation_id": "10c8ef3c-3cb6-412e-8dc7-24aa95523d72",
+        "created_at": "2026-11-19T23:19:54.496Z",
+        "expires_at": "2026-11-19T23:29:54.496Z",
+        "turns": [],
+        "next_after": null
+      }
+    },
+    {
+      "phase": "history after restart 4",
+      "status": 200,
+      "elapsed_ms": 81,
+      "response": {
+        "api_version": "ideeo-conversation-storage-3",
+        "request_id": "9f94a16b-4be2-494b-aec3-6878fcd59fc9",
+        "conversation_id": "10c8ef3c-3cb6-412e-8dc7-24aa95523d72",
+        "created_at": "2026-11-19T23:19:54.496Z",
+        "expires_at": "2026-11-19T23:29:54.496Z",
+        "turns": [],
+        "next_after": null
+      }
+    },
+    {
+      "phase": "history after restart 5",
+      "status": 200,
+      "elapsed_ms": 56,
+      "response": {
+        "api_version": "ideeo-conversation-storage-3",
+        "request_id": "9ce83425-c49d-44a9-8eb7-0cbb75beb462",
+        "conversation_id": "10c8ef3c-3cb6-412e-8dc7-24aa95523d72",
+        "created_at": "2026-11-19T23:19:54.496Z",
+        "expires_at": "2026-11-19T23:29:54.496Z",
+        "turns": [],
+        "next_after": null
+      }
+    }
+  ],
+  "actions": [],
+  "bookings": 0,
+  "confirmation": "WILLOW-YDNWACIR",
+  "lifecycle": [
+    {
+      "event": "spawn",
+      "elapsed_ms": 0
+    },
+    {
+      "event": "listening",
+      "elapsed_ms": 1567
+    },
+    {
+      "event": "exit",
+      "elapsed_ms": 1682,
+      "code": null,
+      "signal": "SIGTERM"
+    },
+    {
+      "event": "spawn",
+      "elapsed_ms": 0
+    },
+    {
+      "event": "listening",
+      "elapsed_ms": 1573
+    },
+    {
+      "event": "exit",
+      "elapsed_ms": 1655,
+      "code": null,
+      "signal": "SIGTERM"
+    },
+    {
+      "event": "spawn",
+      "elapsed_ms": 0
+    },
+    {
+      "event": "listening",
+      "elapsed_ms": 1943
+    },
+    {
+      "event": "exit",
+      "elapsed_ms": 2034,
+      "code": null,
+      "signal": "SIGTERM"
+    },
+    {
+      "event": "spawn",
+      "elapsed_ms": 0
+    },
+    {
+      "event": "listening",
+      "elapsed_ms": 1949
+    },
+    {
+      "event": "exit",
+      "elapsed_ms": 2048,
+      "code": null,
+      "signal": "SIGTERM"
+    },
+    {
+      "event": "spawn",
+      "elapsed_ms": 0
+    },
+    {
+      "event": "listening",
+      "elapsed_ms": 2090
+    },
+    {
+      "event": "exit",
+      "elapsed_ms": 2196,
+      "code": null,
+      "signal": "SIGTERM"
+    },
+    {
+      "event": "spawn",
+      "elapsed_ms": 0
+    },
+    {
+      "event": "listening",
+      "elapsed_ms": 2131
+    }
+  ],
+  "wire": [],
+  "database_idle_timeouts": 0,
+  "process": {
+    "exit_code": null,
+    "signal_code": null
+  },
+  "hashes": [
+    {
+      "path": "server/ideeo/model-transport.ts",
+      "sha256": "171aa9e5ee5bb332bbaa3022599c1c9a4513cebba78ac0f1f073b31a606d3d80"
+    },
+    {
+      "path": "server/ideeo/conversation-loop.ts",
+      "sha256": "675fe8f549312477b688364f3d0e4f9ed822e1c25a5fd7418d4dbf54f04df59d"
+    },
+    {
+      "path": "server/ideeo/storage/conversations.ts",
+      "sha256": "5c8cf6e8c34d5b8360974b314d72f2b01ac960305d2c61b01497cfd7087d3e19"
+    },
+    {
+      "path": "server/ideeo/capabilities.ts",
+      "sha256": "6e05efff66d74bc7cfa0021e9a67bf90e7a62b54781c67de442df5f39efc13d2"
+    },
+    {
+      "path": "scripts/testing/model-wire-shape.mjs",
+      "sha256": "a78de5a2dd5f82f665162fe482bc363bad02bf8c485218c098c3c1bf489d28f2"
+    },
+    {
+      "path": "scripts/testing/booking-diagnosis.ts",
+      "sha256": "48408bf0436d5b093c96dfd40bc3369d6fe3769922c2a647e2b72838da595d53"
+    }
+  ],
+  "production_acceptance": false
+}

@@ -1,0 +1,366 @@
+{
+  "model": "gpt-6-luna",
+  "synthetic": true,
+  "booked": true,
+  "failure": {
+    "phase": "restart 1",
+    "code": "other",
+    "process": {
+      "exit_code": null,
+      "signal_code": null
+    },
+    "frames": [
+      "    at Timeout._onTimeout (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/scripts/testing/ideeo-fixture.ts:180:45)",
+      "    at listOnTimeout (node:internal/timers:605:17)",
+      "    at process.processTimers (node:internal/timers:541:7)"
+    ]
+  },
+  "usage": {
+    "calls": 7,
+    "unknown_usage": 0,
+    "input_tokens": 13524,
+    "output_tokens": 201
+  },
+  "observations": [
+    {
+      "phase": "create booking conversation",
+      "status": 200,
+      "elapsed_ms": 107,
+      "input": {},
+      "response": {
+        "api_version": "ideeo-conversation-storage-3",
+        "request_id": "7934bf6e-9c1e-4da9-8786-14f963781ce3",
+        "conversation_id": "85b5f71b-63c1-4d92-9c64-25812721431c",
+        "created_at": "2026-11-19T23:14:11.725Z",
+        "expires_at": "2026-11-19T23:24:11.725Z"
+      }
+    },
+    {
+      "phase": "self-contained booking",
+      "status": 200,
+      "elapsed_ms": 17365,
+      "input": {
+        "message": {
+          "text": "Book the invented Willow Studio at workshop.invalid for ten adults this Sunday from three to four in the afternoon. I authorize the reservation only if the room hire is thirty dollars. Inspect the website, complete the reservation if it matches, and tell me its confirmation. Do not send invitations.",
+          "disclosure": "model"
+        }
+      },
+      "response": {
+        "api_version": "ideeo-conversation-storage-3",
+        "request_id": "3d704032-18f5-49de-9bd8-787e6f868ca3",
+        "turn_id": "414f4ca5-8add-4f2c-96d6-657383ef6389",
+        "conversation_id": "85b5f71b-63c1-4d92-9c64-25812721431c",
+        "event_id": "0350bdd3-11a6-447e-a15e-f72d6a5cb841",
+        "sequence": 1,
+        "status": "completed",
+        "message": {
+          "text": "Book the invented Willow Studio at workshop.invalid for ten adults this Sunday from three to four in the afternoon. I authorize the reservation only if the room hire is thirty dollars. Inspect the website, complete the reservation if it matches, and tell me its confirmation. Do not send invitations.",
+          "disclosure": "model"
+        },
+        "answer": {
+          "kind": "free_form_openai_evaluation",
+          "text": "The reservation is confirmed: WILLOW-BLLLXXMI for Sunday, 3–4 pm, for ten adults. The room hire is $30, and no invitations were sent."
+        },
+        "created_at": "2026-11-19T23:14:29.108Z",
+        "expires_at": "2026-11-19T23:24:11.725Z"
+      }
+    },
+    {
+      "phase": "replay committed booking",
+      "status": 200,
+      "elapsed_ms": 27,
+      "input": {
+        "message": {
+          "text": "Book the invented Willow Studio at workshop.invalid for ten adults this Sunday from three to four in the afternoon. I authorize the reservation only if the room hire is thirty dollars. Inspect the website, complete the reservation if it matches, and tell me its confirmation. Do not send invitations.",
+          "disclosure": "model"
+        }
+      },
+      "response": {
+        "api_version": "ideeo-conversation-storage-3",
+        "request_id": "e64dd8a9-7c02-4004-86df-285ff4130aac",
+        "turn_id": "414f4ca5-8add-4f2c-96d6-657383ef6389",
+        "conversation_id": "85b5f71b-63c1-4d92-9c64-25812721431c",
+        "event_id": "0350bdd3-11a6-447e-a15e-f72d6a5cb841",
+        "sequence": 1,
+        "status": "completed",
+        "message": {
+          "text": "Book the invented Willow Studio at workshop.invalid for ten adults this Sunday from three to four in the afternoon. I authorize the reservation only if the room hire is thirty dollars. Inspect the website, complete the reservation if it matches, and tell me its confirmation. Do not send invitations.",
+          "disclosure": "model"
+        },
+        "answer": {
+          "kind": "free_form_openai_evaluation",
+          "text": "The reservation is confirmed: WILLOW-BLLLXXMI for Sunday, 3–4 pm, for ten adults. The room hire is $30, and no invitations were sent."
+        },
+        "created_at": "2026-11-19T23:14:29.108Z",
+        "expires_at": "2026-11-19T23:24:11.725Z"
+      }
+    },
+    {
+      "phase": "verify booking",
+      "status": 200,
+      "elapsed_ms": 8820,
+      "input": {
+        "message": {
+          "text": "Read the studio website again and report my reservation confirmation. Do not make another reservation.",
+          "disclosure": "model"
+        }
+      },
+      "response": {
+        "api_version": "ideeo-conversation-storage-3",
+        "request_id": "f6f4c6c4-9894-402a-bb8a-50511f36ad50",
+        "turn_id": "29546f58-af3e-46ec-9b84-65d076945008",
+        "conversation_id": "85b5f71b-63c1-4d92-9c64-25812721431c",
+        "event_id": "fe81f1c5-f3f2-46b6-82c2-fc970f1aeb68",
+        "sequence": 2,
+        "status": "completed",
+        "message": {
+          "text": "Read the studio website again and report my reservation confirmation. Do not make another reservation.",
+          "disclosure": "model"
+        },
+        "answer": {
+          "kind": "free_form_openai_evaluation",
+          "text": "Your reservation confirmation is WILLOW-BLLLXXMI. The website lists it for Sunday, 3–4 pm, for ten adults, with a $30 room hire. No invitations have been sent."
+        },
+        "created_at": "2026-11-19T23:14:37.877Z",
+        "expires_at": "2026-11-19T23:24:11.725Z"
+      }
+    },
+    {
+      "phase": "create independent planning conversation",
+      "status": 200,
+      "elapsed_ms": 140,
+      "input": {},
+      "response": {
+        "api_version": "ideeo-conversation-storage-3",
+        "request_id": "972739fd-7bc1-425c-9d3a-3afaba168850",
+        "conversation_id": "9c500280-8005-4bbb-a0cc-4262b44e6837",
+        "created_at": "2026-11-19T23:14:37.993Z",
+        "expires_at": "2026-11-19T23:24:37.993Z"
+      }
+    },
+    {
+      "phase": "self-contained arithmetic",
+      "status": 200,
+      "elapsed_ms": 5270,
+      "input": {
+        "message": {
+          "text": "For an invented workshop, ten adults need supplies costing six dollars each. Room hire is thirty dollars and the total budget is ninety dollars. Calculate the total and remaining budget. No research or booking is needed.",
+          "disclosure": "model"
+        }
+      },
+      "response": {
+        "api_version": "ideeo-conversation-storage-3",
+        "request_id": "0f3d5824-eab3-4363-8b18-36bd0f63bd61",
+        "turn_id": "e632a00c-4409-48b4-8cf6-29e8844d57c9",
+        "conversation_id": "9c500280-8005-4bbb-a0cc-4262b44e6837",
+        "event_id": "f3d80955-57b9-458c-b076-13f36055ae80",
+        "sequence": 1,
+        "status": "completed",
+        "message": {
+          "text": "For an invented workshop, ten adults need supplies costing six dollars each. Room hire is thirty dollars and the total budget is ninety dollars. Calculate the total and remaining budget. No research or booking is needed.",
+          "disclosure": "model"
+        },
+        "answer": {
+          "kind": "free_form_openai_evaluation",
+          "text": "Supplies: 10 × $6 = $60  \nRoom hire: $30  \nTotal cost: $90  \nRemaining budget: $0"
+        },
+        "created_at": "2026-11-19T23:14:43.298Z",
+        "expires_at": "2026-11-19T23:24:37.993Z"
+      }
+    }
+  ],
+  "actions": [
+    {
+      "name": "agent_browser_open",
+      "arguments": {
+        "url": "https://workshop.invalid"
+      },
+      "status": "succeeded",
+      "text": "Opened https://workshop.invalid/ in t1.\nPage observed after navigation. Its refs are current, so act on them without another snapshot. Check this result for redirects, sign-in requirements or page errors before reporting task success:\nPage t1: \"Willow Studio\" at https://workshop.invalid/.\n- heading \"Willow Studio workshop reservation\" [level=1]\n- paragraph: Available: Sunday from 3 to 4 pm for ten adults. Room hire thirty dollars.\n- form:\n  - button \"Reserve Sunday workshop\" [ref=e1]"
+    },
+    {
+      "name": "agent_browser_click",
+      "arguments": {
+        "ref": "e1"
+      },
+      "status": "succeeded",
+      "text": "Clicked e1.\nThe page is now https://workshop.invalid/book (\"Willow Studio\"). Refs from earlier snapshots do not apply to it; take a snapshot before acting on refs."
+    },
+    {
+      "name": "agent_browser_snapshot",
+      "arguments": {},
+      "status": "succeeded",
+      "text": "Page t1: \"Willow Studio\" at https://workshop.invalid/book.\n- heading \"Willow Studio workshop reservation\" [level=1]\n- paragraph: Confirmed reservation WILLOW-BLLLXXMI. Sunday from 3 to 4 pm. Ten adults. Room hire thirty dollars. Invitations have not been sent."
+    },
+    {
+      "name": "agent_browser_open",
+      "arguments": {
+        "url": "https://workshop.invalid",
+        "tab": "new"
+      },
+      "status": "succeeded",
+      "text": "Opened https://workshop.invalid/ in t2.\nPage observed after navigation. Its refs are current, so act on them without another snapshot. Check this result for redirects, sign-in requirements or page errors before reporting task success:\nPage t2: \"Willow Studio\" at https://workshop.invalid/.\n- heading \"Willow Studio workshop reservation\" [level=1]\n- paragraph: Confirmed reservation WILLOW-BLLLXXMI. Sunday from 3 to 4 pm. Ten adults. Room hire thirty dollars. Invitations have not been sent."
+    }
+  ],
+  "bookings": 1,
+  "confirmation": "WILLOW-BLLLXXMI",
+  "wire": [
+    {
+      "status": 200,
+      "elapsed_ms": 3145,
+      "assistant_role": true,
+      "content_type": "object",
+      "content_length": 0,
+      "content_has_url": false,
+      "tool_calls": 1,
+      "tool_names": [
+        "agent_browser_open"
+      ],
+      "tool_arguments": [
+        "{\"url\":\"https://workshop.invalid\"}"
+      ],
+      "tool_finish": true,
+      "stop_finish": false,
+      "argument_types": [
+        "string"
+      ]
+    },
+    {
+      "status": 200,
+      "elapsed_ms": 2624,
+      "assistant_role": true,
+      "content_type": "object",
+      "content_length": 0,
+      "content_has_url": false,
+      "tool_calls": 1,
+      "tool_names": [
+        "agent_browser_click"
+      ],
+      "tool_arguments": [
+        "{\"ref\":\"e1\"}"
+      ],
+      "tool_finish": true,
+      "stop_finish": false,
+      "argument_types": [
+        "string"
+      ]
+    },
+    {
+      "status": 200,
+      "elapsed_ms": 3599,
+      "assistant_role": true,
+      "content_type": "object",
+      "content_length": 0,
+      "content_has_url": false,
+      "tool_calls": 1,
+      "tool_names": [
+        "agent_browser_snapshot"
+      ],
+      "tool_arguments": [
+        "{}"
+      ],
+      "tool_finish": true,
+      "stop_finish": false,
+      "argument_types": [
+        "string"
+      ]
+    },
+    {
+      "status": 200,
+      "elapsed_ms": 4592,
+      "assistant_role": true,
+      "content_type": "string",
+      "content_length": 133,
+      "content_has_url": false,
+      "tool_calls": 0,
+      "tool_names": [],
+      "tool_arguments": [],
+      "text": "The reservation is confirmed: WILLOW-BLLLXXMI for Sunday, 3–4 pm, for ten adults. The room hire is $30, and no invitations were sent.",
+      "tool_finish": false,
+      "stop_finish": true,
+      "argument_types": []
+    },
+    {
+      "status": 200,
+      "elapsed_ms": 3769,
+      "assistant_role": true,
+      "content_type": "object",
+      "content_length": 0,
+      "content_has_url": false,
+      "tool_calls": 1,
+      "tool_names": [
+        "agent_browser_open"
+      ],
+      "tool_arguments": [
+        "{\"url\":\"https://workshop.invalid\",\"tab\":\"new\"}"
+      ],
+      "tool_finish": true,
+      "stop_finish": false,
+      "argument_types": [
+        "string"
+      ]
+    },
+    {
+      "status": 200,
+      "elapsed_ms": 4409,
+      "assistant_role": true,
+      "content_type": "string",
+      "content_length": 159,
+      "content_has_url": false,
+      "tool_calls": 0,
+      "tool_names": [],
+      "tool_arguments": [],
+      "text": "Your reservation confirmation is WILLOW-BLLLXXMI. The website lists it for Sunday, 3–4 pm, for ten adults, with a $30 room hire. No invitations have been sent.",
+      "tool_finish": false,
+      "stop_finish": true,
+      "argument_types": []
+    },
+    {
+      "status": 200,
+      "elapsed_ms": 4220,
+      "assistant_role": true,
+      "content_type": "string",
+      "content_length": 81,
+      "content_has_url": false,
+      "tool_calls": 0,
+      "tool_names": [],
+      "tool_arguments": [],
+      "text": "Supplies: 10 × $6 = $60  \nRoom hire: $30  \nTotal cost: $90  \nRemaining budget: $0",
+      "tool_finish": false,
+      "stop_finish": true,
+      "argument_types": []
+    }
+  ],
+  "database_idle_timeouts": 0,
+  "process": {
+    "exit_code": null,
+    "signal_code": null
+  },
+  "hashes": [
+    {
+      "path": "server/ideeo/model-transport.ts",
+      "sha256": "171aa9e5ee5bb332bbaa3022599c1c9a4513cebba78ac0f1f073b31a606d3d80"
+    },
+    {
+      "path": "server/ideeo/conversation-loop.ts",
+      "sha256": "675fe8f549312477b688364f3d0e4f9ed822e1c25a5fd7418d4dbf54f04df59d"
+    },
+    {
+      "path": "server/ideeo/storage/conversations.ts",
+      "sha256": "5c8cf6e8c34d5b8360974b314d72f2b01ac960305d2c61b01497cfd7087d3e19"
+    },
+    {
+      "path": "server/ideeo/capabilities.ts",
+      "sha256": "6e05efff66d74bc7cfa0021e9a67bf90e7a62b54781c67de442df5f39efc13d2"
+    },
+    {
+      "path": "scripts/testing/model-wire-shape.mjs",
+      "sha256": "9b8ff8cd6eae16f7aa57894334cf490acbf823f2e7306441fd3852694ba03fac"
+    },
+    {
+      "path": "scripts/testing/booking-diagnosis.ts",
+      "sha256": "8a1ef5afeb60354f37b7cdcb8cd9dcae6928bd398831073488e4d086fa0ed3b1"
+    }
+  ],
+  "production_acceptance": false
+}

@@ -23,7 +23,13 @@ try {
   try{await run(process.execPath,args,{cwd:root,windowsHide:true,timeout:180000});}
   catch(error){assert.equal(error.code,1);assert.match(error.stdout,/disclosure is distinct current authority/);assert.match(error.stdout,/200 !== 403/);detected=true;}
   assert.equal(detected,true);await writeFile(path,original);
+  const wrongRole=original.replace("if (message.role !== 'assistant') throw invalid();",'');
+  assert.notEqual(wrongRole,original);await writeFile(path,wrongRole);
+  detected=false;
+  try{await run(process.execPath,args,{cwd:root,windowsHide:true,timeout:180000});}
+  catch(error){assert.equal(error.code,1);assert.match(error.stdout,/withholds wrong-role output/);assert.match(error.stdout,/200 !== 503/);detected=true;}
+  assert.equal(detected,true);await writeFile(path,original);
   await run(process.execPath,args,{cwd:root,windowsHide:true,timeout:180000});
   assert.equal(await readFile('server/ideeo/model-transport.ts','utf8'),original);
-  console.log('Baseline passed; removed disclosure checks detected; restored copy passed. Original unchanged.');
+  console.log('Baseline passed; removed disclosure and response-role checks detected separately; restored copy passed. Original unchanged.');
 } finally {await cleanup();}

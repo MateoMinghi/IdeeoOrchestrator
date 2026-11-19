@@ -1,0 +1,63 @@
+{
+  "recorded_at": "2026-11-19T23:24:45.538Z",
+  "node": "v24.15.0",
+  "head": "8b3984055a6cd958b1afa1e7722ed9a60b6dba00",
+  "bookings": 1,
+  "live_model_calls": 7,
+  "no_model_restart_checks": 5,
+  "diagnostic_privacy_tests": 1,
+  "production_sources_unchanged": true,
+  "credentials_absent": true,
+  "unresolved": [
+    "full conversation reliability",
+    "intermittent startup/reset",
+    "Gemini empty completion"
+  ],
+  "hashes": [
+    {
+      "path": "output/ideeo-booking-diagnosis-2026-11-19T23-14-53-967Z.json",
+      "sha256": "1c0ceaabe3fd3e85f2fef3e5db88706fed8ab6318ba57d7080ece9d718ee9a69"
+    },
+    {
+      "path": "output/ideeo-booking-diagnosis-2026-11-19T23-14-53-967Z.html",
+      "sha256": "06f3e431c9c8b8ce9169ac6415d081848fd0f4e7b5c1384a9304b24729ca0f75"
+    },
+    {
+      "path": "output/ideeo-booking-diagnosis-2026-11-19T23-20-04-683Z.json",
+      "sha256": "fc376a88c189a4fb34b6151f910d88d101cd5e989c62e198415a0b8b5e0c07c7"
+    },
+    {
+      "path": "output/ideeo-booking-diagnosis-baseline-retry.log",
+      "sha256": "21e91176ce155e1e634b3b3cd9dc7fcd398362e4e60cc633d347487d6fb44fc2"
+    },
+    {
+      "path": "output/ideeo-booking-diagnosis-restart.log",
+      "sha256": "f4b56849e3dab69efdfa17cde99fbeebdb50b14d7669ab41022618338f82587b"
+    },
+    {
+      "path": "output/ideeo-wire-diagnostics-test.log",
+      "sha256": "4b9a8595fa68f25b0ca5870e2445aec4ee08377286eb015dceabb5cea42f46dd"
+    },
+    {
+      "path": "scripts/testing/booking-diagnosis.ts",
+      "sha256": "68c94be9ee20dde0aae37ca53a841094f25a79bb1cb9f26cc2f8b101a6441183"
+    },
+    {
+      "path": "scripts/testing/ideeo-fixture.ts",
+      "sha256": "6fff53dd6059f380e757470d6c5007bc5152aac3c833da9042e0fc21a5fad937"
+    },
+    {
+      "path": "scripts/testing/model-wire-shape.mjs",
+      "sha256": "a78de5a2dd5f82f665162fe482bc363bad02bf8c485218c098c3c1bf489d28f2"
+    },
+    {
+      "path": "server/ideeo/wire-diagnostics.node-test.ts",
+      "sha256": "dd8daf7d09cd1caffebcb9b7a0aeb8e1d75d0bb4690a1ccbe480977287746af9"
+    },
+    {
+      "path": "tsconfig.ideeo-server.json",
+      "sha256": "68cd7820ab89c4b1516ed1f0503cc72628ec6c8b47e6c4e138b6928fd21498af"
+    }
+  ],
+  "production_acceptance": false
+}

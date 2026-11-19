@@ -102,3 +102,7 @@ Vendor-stated facts (ElevenLabs, Meta) were read from vendor documentation on a 
 | Version | Date | Change |
 | --- | --- | --- |
 | Draft | 2026-10-23 | Initial draft prepared with AI assistance from repository evidence; pending human review |
+
+## IdeeoOrchestrator Gemini evaluation — 19 November 2026
+
+The user explicitly authorized the Gemini key in the named sibling `.env` for inexpensive isolated testing. This candidate adds a synthetic-content-only `gemini-evaluation` profile for `gemini-2.5-flash-lite` at the fixed Google Gemini Developer API OpenAI-compatible endpoint. No real customer data, alternative provider route, bank access or deployment is authorized. Google documents different training/data-use terms for free and paid tiers; the account tier, contract, region and retention have not been qualified. No zero-retention or no-training claim is made. Existing real-data processing gates remain closed. See the candidate conversation contract and verification record for code and observed evidence; imported source-candidate authorizations above are unchanged.

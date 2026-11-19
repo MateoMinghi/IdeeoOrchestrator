@@ -1,0 +1,414 @@
+{
+  "scope": "Source inventory, not functional acceptance. External MCP catalogs and device/provider-specific tools remain dynamic.",
+  "groups": [
+    {
+      "name": "Agents and application tools",
+      "source": "server/drivers/agents-catalog.ts",
+      "tools": [
+        {
+          "name": "create_options_card",
+          "full_schema": true
+        },
+        {
+          "name": "tool_result_read",
+          "full_schema": true
+        },
+        {
+          "name": "list_shared_computers",
+          "full_schema": true
+        },
+        {
+          "name": "shared_computer",
+          "full_schema": true
+        },
+        {
+          "name": "list_room_targets",
+          "full_schema": true
+        },
+        {
+          "name": "coordinate_bots",
+          "full_schema": true
+        },
+        {
+          "name": "assignment_status",
+          "full_schema": true
+        },
+        {
+          "name": "list_bots",
+          "full_schema": true
+        },
+        {
+          "name": "usage_limits",
+          "full_schema": true
+        },
+        {
+          "name": "list_rooms",
+          "full_schema": true
+        },
+        {
+          "name": "select_computer",
+          "full_schema": true
+        },
+        {
+          "name": "reset_cloud_computer",
+          "full_schema": true
+        },
+        {
+          "name": "list_threads",
+          "full_schema": true
+        },
+        {
+          "name": "close_thread",
+          "full_schema": true
+        },
+        {
+          "name": "rename_thread",
+          "full_schema": true
+        },
+        {
+          "name": "start_thread",
+          "full_schema": true
+        },
+        {
+          "name": "burst",
+          "full_schema": true
+        },
+        {
+          "name": "list_models",
+          "full_schema": true
+        },
+        {
+          "name": "vm_exec",
+          "full_schema": true
+        },
+        {
+          "name": "attach_file",
+          "full_schema": true
+        },
+        {
+          "name": "show_widget",
+          "full_schema": true
+        },
+        {
+          "name": "show_html",
+          "full_schema": true
+        },
+        {
+          "name": "publish_page",
+          "full_schema": true
+        },
+        {
+          "name": "unpublish_page",
+          "full_schema": true
+        },
+        {
+          "name": "post_to_room",
+          "full_schema": true
+        },
+        {
+          "name": "post_to_thread",
+          "full_schema": true
+        },
+        {
+          "name": "create_bot",
+          "full_schema": true
+        },
+        {
+          "name": "list_team_setup",
+          "full_schema": true
+        },
+        {
+          "name": "list_team_library",
+          "full_schema": true
+        },
+        {
+          "name": "propose_team_setup",
+          "full_schema": true
+        },
+        {
+          "name": "propose_bot_deletion",
+          "full_schema": true
+        },
+        {
+          "name": "manage_room",
+          "full_schema": true
+        },
+        {
+          "name": "request_credential",
+          "full_schema": true
+        },
+        {
+          "name": "request_sign_in",
+          "full_schema": true
+        },
+        {
+          "name": "fill_login",
+          "full_schema": true
+        },
+        {
+          "name": "send_voice_note",
+          "full_schema": true
+        },
+        {
+          "name": "x_search",
+          "full_schema": true
+        },
+        {
+          "name": "research_search",
+          "full_schema": true
+        },
+        {
+          "name": "research_endpoint",
+          "full_schema": true
+        },
+        {
+          "name": "research_call",
+          "full_schema": true
+        },
+        {
+          "name": "decide",
+          "full_schema": true
+        },
+        {
+          "name": "extract",
+          "full_schema": true
+        },
+        {
+          "name": "edit_image",
+          "full_schema": true
+        },
+        {
+          "name": "generate_image",
+          "full_schema": true
+        },
+        {
+          "name": "join_meeting",
+          "full_schema": true
+        },
+        {
+          "name": "meeting_status",
+          "full_schema": true
+        },
+        {
+          "name": "post_in_meeting_chat",
+          "full_schema": true
+        },
+        {
+          "name": "leave_meeting",
+          "full_schema": true
+        },
+        {
+          "name": "post_meeting_notes",
+          "full_schema": true
+        },
+        {
+          "name": "message_person",
+          "full_schema": true
+        },
+        {
+          "name": "report_bug",
+          "full_schema": true
+        },
+        {
+          "name": "publish_app",
+          "full_schema": true
+        },
+        {
+          "name": "check_app_hosting",
+          "full_schema": true
+        },
+        {
+          "name": "share",
+          "full_schema": true
+        },
+        {
+          "name": "memory_update",
+          "full_schema": true
+        },
+        {
+          "name": "retry_thread",
+          "full_schema": true
+        },
+        {
+          "name": "memory_log",
+          "full_schema": true
+        },
+        {
+          "name": "session_search",
+          "full_schema": true
+        },
+        {
+          "name": "trigger_info",
+          "full_schema": true
+        },
+        {
+          "name": "trigger",
+          "full_schema": true
+        },
+        {
+          "name": "delete_trigger",
+          "full_schema": true
+        },
+        {
+          "name": "wait_until",
+          "full_schema": true
+        },
+        {
+          "name": "list_waits",
+          "full_schema": true
+        },
+        {
+          "name": "cancel_wait",
+          "full_schema": true
+        },
+        {
+          "name": "propose_profile",
+          "full_schema": true
+        },
+        {
+          "name": "propose_model",
+          "full_schema": true
+        },
+        {
+          "name": "propose_team_memory",
+          "full_schema": true
+        },
+        {
+          "name": "skills_list",
+          "full_schema": true
+        },
+        {
+          "name": "skill_manage",
+          "full_schema": true
+        },
+        {
+          "name": "mcp_server",
+          "full_schema": true
+        },
+        {
+          "name": "app_settings",
+          "full_schema": true
+        },
+        {
+          "name": "list_unread_notifications",
+          "full_schema": true
+        },
+        {
+          "name": "mark_notifications_read",
+          "full_schema": true
+        }
+      ]
+    },
+    {
+      "name": "Browser tools",
+      "source": "server/browser/tools.ts",
+      "tools": [
+        {
+          "name": "agent_browser_status"
+        },
+        {
+          "name": "agent_browser_open"
+        },
+        {
+          "name": "agent_browser_navigate"
+        },
+        {
+          "name": "agent_browser_snapshot"
+        },
+        {
+          "name": "agent_browser_read"
+        },
+        {
+          "name": "agent_browser_screenshot"
+        },
+        {
+          "name": "agent_browser_click"
+        },
+        {
+          "name": "agent_browser_fill"
+        },
+        {
+          "name": "agent_browser_type"
+        },
+        {
+          "name": "agent_browser_press"
+        },
+        {
+          "name": "agent_browser_select"
+        },
+        {
+          "name": "agent_browser_check"
+        },
+        {
+          "name": "agent_browser_hover"
+        },
+        {
+          "name": "agent_browser_drag"
+        },
+        {
+          "name": "agent_browser_scroll"
+        },
+        {
+          "name": "agent_browser_upload"
+        },
+        {
+          "name": "agent_browser_wait"
+        },
+        {
+          "name": "agent_browser_eval"
+        },
+        {
+          "name": "agent_browser_dialog"
+        },
+        {
+          "name": "agent_browser_tabs"
+        },
+        {
+          "name": "agent_browser_close"
+        },
+        {
+          "name": "restart_browser"
+        }
+      ]
+    },
+    {
+      "name": "File tools",
+      "source": "server/host-file-tools.ts",
+      "tools": [
+        {
+          "name": "list_files"
+        },
+        {
+          "name": "read_file"
+        },
+        {
+          "name": "write_file"
+        },
+        {
+          "name": "make_folder"
+        }
+      ]
+    },
+    {
+      "name": "Email tools",
+      "source": "server/email/tools.ts",
+      "tools": [
+        {
+          "name": "EMAIL_LIST_MAILBOXES"
+        },
+        {
+          "name": "EMAIL_LIST_MESSAGES"
+        },
+        {
+          "name": "EMAIL_SEARCH_MESSAGES"
+        },
+        {
+          "name": "EMAIL_READ_MESSAGE"
+        },
+        {
+          "name": "EMAIL_SEND_MESSAGE"
+        }
+      ]
+    }
+  ]
+}

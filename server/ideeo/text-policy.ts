@@ -26,6 +26,14 @@ export function permittedProjection(value: unknown): value is ModelProjection {
     && permittedText(v.user, 1500) && permittedText(v.assistant, 2000);
 }
 
+export function permittedCapabilityText(value: unknown, limit: number, forbidden: readonly string[] = []): value is string {
+  if(typeof value!=='string'||Buffer.byteLength(value)>limit||forbidden.some(secret=>secret.length>=6&&value.normalize('NFKC').includes(secret.normalize('NFKC')))) return false;
+  const synthetic=value.replace(/https?:\/\/[^\s"'<>\\]+/g,url=>{
+    try{const parsed=new URL(url);return parsed.hostname.endsWith('.invalid')&&!parsed.username&&!parsed.password&&!parsed.search&&!parsed.hash?'invented-site':url;}catch{return url;}
+  }).replace(/\b[\w.+-]+@[\w.-]+\.[a-z]{2,}\b/gi,email=>email.toLowerCase().endsWith('.invalid')?'invented-recipient':email);
+  return permittedText(synthetic,limit,forbidden);
+}
+
 export function secretValues(secrets: Readonly<Record<string, string | undefined>>): string[] {
   const collect = (value: unknown): string[] => typeof value === 'string' ? [value]
     : value && typeof value === 'object' ? Object.values(value).flatMap(collect) : [];

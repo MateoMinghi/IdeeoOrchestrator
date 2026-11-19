@@ -1,0 +1,38 @@
+{
+  "model": "gpt-6-luna",
+  "synthetic": true,
+  "booked": false,
+  "failure": {
+    "phase": "startup",
+    "code": "other"
+  },
+  "observations": [],
+  "database_idle_timeouts": 0,
+  "hashes": [
+    {
+      "path": "server/ideeo/model-transport.ts",
+      "sha256": "171aa9e5ee5bb332bbaa3022599c1c9a4513cebba78ac0f1f073b31a606d3d80"
+    },
+    {
+      "path": "server/ideeo/conversation-loop.ts",
+      "sha256": "675fe8f549312477b688364f3d0e4f9ed822e1c25a5fd7418d4dbf54f04df59d"
+    },
+    {
+      "path": "server/ideeo/storage/conversations.ts",
+      "sha256": "5c8cf6e8c34d5b8360974b314d72f2b01ac960305d2c61b01497cfd7087d3e19"
+    },
+    {
+      "path": "server/ideeo/capabilities.ts",
+      "sha256": "6e05efff66d74bc7cfa0021e9a67bf90e7a62b54781c67de442df5f39efc13d2"
+    },
+    {
+      "path": "scripts/testing/model-wire-shape.mjs",
+      "sha256": "9b8ff8cd6eae16f7aa57894334cf490acbf823f2e7306441fd3852694ba03fac"
+    },
+    {
+      "path": "scripts/testing/booking-diagnosis.ts",
+      "sha256": "dc5756f55f98e2244ff5e67ea31846513205dd90595071022bf131c4d631370d"
+    }
+  ],
+  "production_acceptance": false
+}

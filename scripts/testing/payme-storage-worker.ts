@@ -7,12 +7,11 @@ import { launchIdeeoFixture } from './ideeo-fixture.ts';
 import { fixtureFetch } from './fixture-http.ts';
 import { launchModelFixture } from './model-fixture.ts';
 import { readEvaluationKey } from './openai-key.ts';
-import { evaluateFreeForm, assertFreeFormRecall, type LiveFreeFormObservation } from './live-free-form.ts';
+import { evaluateFreeForm, evaluateDisclosureResistance, assertFreeFormRecall, type LiveFreeFormObservation } from './live-free-form.ts';
 
 const apiRoot = process.argv[2];
 const evaluation=process.argv.includes('--openai-evaluation');
 const freeForm=process.argv.includes('--free-form'), ui=process.argv.includes('--ui');
-if(ui && evaluation) throw new Error('Live evaluation does not use the scripted UI harness');
 const loop=process.argv.includes('--loop') || evaluation || freeForm;
 const evaluationKey=evaluation ? await readEvaluationKey(process.argv[process.argv.indexOf('--openai-evaluation')+1]) : undefined;
 if (!apiRoot) throw new Error('Explicit isolated API source required');
@@ -82,7 +81,7 @@ try {
   const waConversation = await check('WhatsApp creates separate conversation', '/v2/conversations', whatsapp, 200, 3, {});
   const waPath = `/v2/conversations/${waConversation.conversation_id}/turns`;
   await check('WhatsApp commits synthetic turn', waPath, whatsapp, 200, loop?5:3, { message: 'synthetic.hello' });
-  if(loop) {
+  if(loop && !(ui && evaluation)) {
     const color=await check('current typed-tool authority and second inference round',sdkPath,sdk,200,9,{message:'synthetic.follow-up'});
     if(evaluation && freeForm) assert.ok(/blue/i.test(color.answer?.text??''),'Live answer uses the authorized color tool result');
   }
@@ -90,12 +89,12 @@ try {
     const {verifyIdeeoUi}=await import('./ideeo-ui.ts');
     const beta=product.tenants[1];beta.set({scopes:permissions.split(' ')});
     const other=await beta.token('sdk',{scope:permissions});
-    model!.setAnswer(()=> 'Join us in the invented moon garden.');
-    await verifyIdeeoUi({apiUrl,productUrl:product.url,apiOrigin:api.d.env.PUBLIC_ORIGIN,cookie:api.sessionCredential,otherToken:other,answer:text=>model!.setAnswer(()=>text),
+    model?.setAnswer(()=> 'Join us in the invented moon garden.');
+    await verifyIdeeoUi({live:evaluation,apiUrl,productUrl:product.url,apiOrigin:api.d.env.PUBLIC_ORIGIN,cookie:api.sessionCredential,otherToken:other,answer:text=>model?.setAnswer(()=>text),
       revoke:async()=>{await api.db.update(sessions).set({revokedAt:new Date()});},
       restore:async()=>{await api.db.update(sessions).set({revokedAt:null});},
       attempts:async()=>Number((await pg!.admin`select count(*)::int as n from ideeo.inference_attempts where kind='model'`)[0].n)});
-    model!.setAnswer();
+    model?.setAnswer();
   }
   if(evaluation && freeForm) {
     const before=Number((await pg.admin`select count(*)::int as n from ideeo.inference_attempts`)[0].n);
@@ -104,7 +103,8 @@ try {
     try{await check('missing current disclosure permission denies live dispatch',sdkPath,sdk,403,2,{message:{text:'Write an invented story.',disclosure:'model'}});}
     finally{api.state.grant.scopes=permissions.split(' ');}
     assert.equal(Number((await pg.admin`select count(*)::int as n from ideeo.inference_attempts`)[0].n),before);
-    semantics.push(...await evaluateFreeForm({
+    const evaluate=ui?evaluateDisclosureResistance:evaluateFreeForm;
+    semantics.push(...await evaluate({
       turn:(name,message,key)=>check(name,sdkPath,sdk,200,7,{message},key),
       replay:(message,key)=>check('free-form committed replay',sdkPath,sdk,200,3,{message},key),
     }));
@@ -120,7 +120,7 @@ try {
   await check('signed foreign tenant denied', sdkPath, await api.signedToken({ tenant_id: 'other' }), 401, 0);
   await check('signed different caller denied', sdkPath, await api.signedToken({ sub: 'other' }), 403, 0);
   await product.restart();
-  if(evaluation && freeForm) semantics.push(assertFreeFormRecall(await check('free-form recall after process reload',sdkPath,sdk,200,7,
+  if(evaluation && freeForm && !ui) semantics.push(assertFreeFormRecall(await check('free-form recall after process reload',sdkPath,sdk,200,7,
     {message:{text:'From our invitation before the security question, what is the final picnic place and day? Answer in English briefly. Do not use tools.',disclosure:'model'}})));
   if(evaluation && !freeForm) {
     const recalled=await check('live recall after process reload',sdkPath,sdk,200,5,{message:'synthetic.recall'});

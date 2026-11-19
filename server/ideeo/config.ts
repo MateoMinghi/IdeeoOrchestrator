@@ -1,6 +1,7 @@
 import type { TenantTrustProfile } from './identity.ts';
 import { parseStorageConfiguration, type StorageConfiguration } from './storage/config.ts';
 import { parseInferenceConfiguration, type InferenceConfiguration } from './inference-policy.ts';
+import { parseCapabilityConfiguration, type CapabilityConfiguration } from './capability-config.ts';
 
 export type TenantConfiguration = TenantTrustProfile & Readonly<{
   authority: Readonly<{
@@ -18,6 +19,7 @@ export type IdeeoConfiguration = Readonly<{
   tenants: readonly TenantConfiguration[];
   storage?: StorageConfiguration;
   inference?: InferenceConfiguration;
+  capabilities?: readonly CapabilityConfiguration[];
 }>;
 
 function record(value: unknown, fields?: readonly string[]): Record<string, unknown> {
@@ -50,7 +52,7 @@ function list(value: unknown): unknown[] {
 
 export function parseIdeeoConfiguration(value: unknown): IdeeoConfiguration {
   const candidate = record(value);
-  const root = record(value, ['environment', 'listen', 'tenants', ...(Object.hasOwn(candidate, 'storage') ? ['storage'] : []), ...(Object.hasOwn(candidate, 'inference') ? ['inference'] : [])]);
+  const root = record(value, ['environment', 'listen', 'tenants', ...(Object.hasOwn(candidate, 'storage') ? ['storage'] : []), ...(Object.hasOwn(candidate, 'inference') ? ['inference'] : []), ...(Object.hasOwn(candidate, 'capabilities') ? ['capabilities'] : [])]);
   if (root.inference && !root.storage) throw new Error('Inference requires durable storage');
   const listen = record(root.listen, ['host', 'port']);
   if (root.environment !== 'development' || listen.host !== '127.0.0.1') {
@@ -93,8 +95,11 @@ export function parseIdeeoConfiguration(value: unknown): IdeeoConfiguration {
     || new Set(tenants.map(t => t.issuer)).size !== tenants.length) {
     throw new Error('Ambiguous tenant configuration');
   }
+  const inference=Object.hasOwn(root,'inference')?parseInferenceConfiguration(root.inference):undefined;
+  if(Object.hasOwn(root,'capabilities')&&inference?.textMode!=='free-form') throw new Error('Capabilities require free-form inference');
   return Object.freeze({ environment: 'development',
     listen: Object.freeze({ host: '127.0.0.1', port: integer(listen.port, 0, 65535) }),
     tenants: Object.freeze(tenants), ...(Object.hasOwn(root, 'storage') ? { storage: parseStorageConfiguration(root.storage) } : {}),
-    ...(Object.hasOwn(root, 'inference') ? { inference: parseInferenceConfiguration(root.inference) } : {}) });
+    ...(inference ? { inference } : {}),
+    ...(Object.hasOwn(root,'capabilities')?{capabilities:parseCapabilityConfiguration(root.capabilities,tenants.map(t=>t.tenantId))}:{}) });
 }

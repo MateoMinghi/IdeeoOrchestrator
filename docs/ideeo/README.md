@@ -1,5 +1,19 @@
 # IdeeoOrchestrator product documentation
 
+Isolated booking diagnosis: a fully specified OpenAI request completed one real browser booking on the local fake site, returned its generated confirmation, replayed without another effect and verified it through a new browser read. The model, prompts, eight-second request limit and operation budgets were unchanged. The subsequent product restart timed out, so this is successful booking evidence rather than a clean complete campaign. See [the conversation](../../output/ideeo-booking-diagnosis-2026-11-19T23-14-53-967Z.html) and [causal findings](development/VERIFICATION.md#isolating-booking-from-conversation-and-restart-failures--19-november-2026).
+
+Failure investigation: a diagnostic Luna campaign confirmed the eight-second model cutoff and misleading storage error classification. The classification is fixed locally; timeout tuning and reliable booking remain open. Seven turns timed out, and a separate connection reset interrupted the post-restart request. See [diagnosis and regression evidence](development/VERIFICATION.md#conversation-failure-investigation--19-november-2026).
+
+Latest OpenAI retry: Luna performed real browser actions on the fake site but did not book. Six turns failed and two answers were saved; see [the retained conversation and evidence](development/VERIFICATION.md#openai-browser-retry--19-november-2026). The same runtime and controls were used without code changes.
+
+Real-model browser test: [six retained Gemini conversations](../../output/ideeo-gemini-browser-conversations.html) now exercise the authenticated workspace path. Gemini independently opened/read the fake site, but no campaign completed booking. Empty provider completions and task-selection failures remain open; see the [dated evidence](development/VERIFICATION.md#live-browser-conversation--19-november-2026).
+
+Workspace continuation: the user selected isolated production VMs and disposable local workspaces for testing. The [capability boundary](contracts/WORKSPACE_CAPABILITIES.md) connects scoped tool execution to the existing authenticated loop, with local native browser/file evidence. Full OpenMaus capability parity and production VM isolation remain incomplete.
+
+Gemini continuation: an explicitly authorized synthetic-only `gemini-evaluation` profile now uses Gemini 2.5 Flash-Lite through the shared loop. The realistic workshop conversation produced useful writing/calculation and restart-recall evidence, but the live tool-answer path remains unqualified after empty provider replies, and answer-quality limitations are recorded. See [Gemini verification](development/VERIFICATION.md#gemini-flash-lite-realistic-conversation--19-november-2026). No real-data permission, deployment or acceptance is implied.
+
+Latest continuation: [conversation hardening and live browser evidence](development/VERIFICATION.md#conversation-hardening-and-live-browser--19-november-2026), with separate [acceptance and staging gates](development/CONVERSATION_ACCEPTANCE.md). This local increment adds a provider-role fix, expanded isolated regressions, clean dependency verification, and bounded live React/Luna evidence. Independent review, human acceptance and remote CI remain open.
+
 This repository is the OpenMaus-based candidate for Ideeo's shared multi-tenant product. Adopt OpenMaus's conversation, browser and React foundations; adapt trust, disclosure, persistence and execution to the shared product requirements. The separate Ideeo-native candidate is research and compatibility context, not this candidate's runtime.
 
 ## Read first

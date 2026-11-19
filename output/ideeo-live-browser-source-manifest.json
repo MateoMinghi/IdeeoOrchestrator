@@ -1,0 +1,448 @@
+{
+  "recorded_at": "2026-11-19T22:20:52.111Z",
+  "head": "8b3984055a6cd958b1afa1e7722ed9a60b6dba00",
+  "branch": "dev",
+  "state": "uncommitted; includes preceding hardening, Gemini and capability changes",
+  "scope": "Final developer candidate; individual live reports retain their own tested-source hashes. Post-live error classification, empty catalog handling and report accounting have deterministic evidence only.",
+  "live_result": "Six campaigns; no booking completed. Final campaign independently opened and inspected owned local fake site, then provider returned empty completion.",
+  "live_runs": [
+    {
+      "path": "output/ideeo-realistic-tasks-gemini-browser-2026-11-19T21-55-20-165Z.json",
+      "usage": {
+        "model_calls": 11,
+        "unknown_usage": 0,
+        "input_tokens": 8682,
+        "output_tokens": 321
+      },
+      "booking_count": 0,
+      "browser_actions": [],
+      "failed_tasks": [
+        "Browser booking criteria"
+      ]
+    },
+    {
+      "path": "output/ideeo-realistic-tasks-gemini-browser-2026-11-19T21-57-57-049Z.json",
+      "usage": {
+        "model_calls": 8,
+        "unknown_usage": 0,
+        "input_tokens": 20562,
+        "output_tokens": 877
+      },
+      "booking_count": 0,
+      "browser_actions": [],
+      "failed_tasks": [
+        "Browser booking criteria"
+      ]
+    },
+    {
+      "path": "output/ideeo-realistic-tasks-gemini-browser-2026-11-19T22-00-36-496Z.json",
+      "usage": {
+        "model_calls": 8,
+        "unknown_usage": 1,
+        "input_tokens": 18202,
+        "output_tokens": 881
+      },
+      "booking_count": 0,
+      "browser_actions": [
+        {
+          "name": "agent_browser_open",
+          "status": "failed"
+        }
+      ],
+      "failed_tasks": [
+        "Distinguish drafting from external execution",
+        "Verify the reservation",
+        "Browser booking criteria"
+      ]
+    },
+    {
+      "path": "output/ideeo-realistic-tasks-gemini-browser-2026-11-19T22-04-55-352Z.json",
+      "usage": {
+        "model_calls": 9,
+        "unknown_usage": 1,
+        "input_tokens": 21813,
+        "output_tokens": 847
+      },
+      "booking_count": 0,
+      "browser_actions": [],
+      "failed_tasks": [
+        "Verify the reservation",
+        "Browser booking criteria"
+      ]
+    },
+    {
+      "path": "output/ideeo-realistic-tasks-gemini-browser-2026-11-19T22-08-05-316Z.json",
+      "usage": {
+        "model_calls": 10,
+        "unknown_usage": 0,
+        "input_tokens": 26533,
+        "output_tokens": 799
+      },
+      "booking_count": 0,
+      "browser_actions": [],
+      "failed_tasks": [
+        "Browser booking criteria"
+      ]
+    },
+    {
+      "path": "output/ideeo-realistic-tasks-gemini-browser-2026-11-19T22-10-30-122Z.json",
+      "usage": {
+        "model_calls": 9,
+        "unknown_usage": 3,
+        "input_tokens": 10929,
+        "output_tokens": 320
+      },
+      "booking_count": 0,
+      "browser_actions": [
+        {
+          "name": "agent_browser_open",
+          "status": "succeeded"
+        },
+        {
+          "name": "agent_browser_snapshot",
+          "status": "succeeded"
+        },
+        {
+          "name": "agent_browser_open",
+          "status": "failed"
+        }
+      ],
+      "failed_tasks": [
+        "Plan and calculate",
+        "Handle changed constraints",
+        "Distinguish drafting from external execution",
+        "Verify the reservation",
+        "Browser booking criteria"
+      ]
+    }
+  ],
+  "checks": {
+    "regressions": {
+      "passed": 169,
+      "failed": 0,
+      "skipped": 0
+    },
+    "mutations": [
+      "caller scope removal detected",
+      "execution claim removal detected",
+      "workspace model ceiling increase detected"
+    ],
+    "strict_server_typecheck": true,
+    "strict_ui_typecheck": true,
+    "targeted_lint": true,
+    "whitespace": true,
+    "report_rendered_and_inspected": true,
+    "actual_gemini_key_exclusion": {
+      "files": 104,
+      "found": false
+    }
+  },
+  "independent_review": false,
+  "human_acceptance": false,
+  "pushed": false,
+  "deployed": false,
+  "sources": [
+    {
+      "path": ".github/workflows/ideeo.yml",
+      "sha256": "3d5638329fe0c45eadba3cde05233784b17784385948f9cb5a5b96d0384a1a4c"
+    },
+    {
+      "path": "docs/ideeo/contracts/WORKSPACE_CAPABILITIES.md",
+      "sha256": "0850fa068d7441524f5d28830845616de2ec9c9e5e7a829f3bc364c625eef12f"
+    },
+    {
+      "path": "docs/ideeo/development/CONVERSATION_ACCEPTANCE.md",
+      "sha256": "1370e8abd66fac08180bfc3e30bf1e230ebf2e7db4087113cdca57b060b10ad6"
+    },
+    {
+      "path": "migrations/ideeo/003_capability_execution.sql",
+      "sha256": "fe3d79528316b3a76f1df64a662adc63cba36f55260f7ee1ea5b5059909d21a0"
+    },
+    {
+      "path": "migrations/ideeo/004_workspace_budget.sql",
+      "sha256": "3b70e0ae346b7f8a5a88c88d6283e2a85a92bb1cb886f7c583397ed769accd51"
+    },
+    {
+      "path": "scripts/testing/capability-mutation.mjs",
+      "sha256": "0767dd55431248d4f867a1b0a45c52b09781335375d43b88f370a8a596d81096"
+    },
+    {
+      "path": "scripts/testing/conversation-tasks.ts",
+      "sha256": "7d700c2936d67522a52fae1429cf9631b9cf2c92e4bd38260a2fdf7f2f01b1b9"
+    },
+    {
+      "path": "scripts/testing/ideeo-booking-fixture.ts",
+      "sha256": "19fd2bbeb90dc71c9ebd1bb43c06525d3c277703dbae876001c24f8c36db6ae8"
+    },
+    {
+      "path": "scripts/testing/ideeo-browser-fixture.ts",
+      "sha256": "a88c98da32ba98bca6bdb4523e482eaf6ef2e6af1056e11c1c98c4f7936aa10d"
+    },
+    {
+      "path": "scripts/testing/model-wire-shape.mjs",
+      "sha256": "5e82597ff5debd50a82308ac745344daeab491ed05222c785e1de4a8d2c772cd"
+    },
+    {
+      "path": "server/ideeo/capabilities.node-test.ts",
+      "sha256": "0328ae94c5ab1278222fa62994b05b9603582d8d954aea9280aa36033db29e45"
+    },
+    {
+      "path": "server/ideeo/capabilities.ts",
+      "sha256": "6e05efff66d74bc7cfa0021e9a67bf90e7a62b54781c67de442df5f39efc13d2"
+    },
+    {
+      "path": "server/ideeo/capability-config.ts",
+      "sha256": "bd1e4394cb2cd85fdede650b1de30908cec39c20c8d96a9a3f71de18ef369b7e"
+    },
+    {
+      "path": "server/ideeo/capability-executor.ts",
+      "sha256": "6d340ace9164dfeac5218d4600539c0b19650e1950cf1921b38dd661d9d6c71a"
+    },
+    {
+      "path": "server/ideeo/capability-output.ts",
+      "sha256": "c8764d48d911e1048cfdc74a163a4374c9d9caa76cfd994f111ea938fe17552a"
+    },
+    {
+      "path": "server/ideeo/capability-transport.ts",
+      "sha256": "5f5a82ac8d91a74add94eaeb09f846c1f58f18aa28c76c99a3bd2c3ae6b98587"
+    },
+    {
+      "path": "server/ideeo/gemini.node-test.ts",
+      "sha256": "a5577611d8b0f615f1e4a044970119c4f8e5ae4a3eabe9cb1fe01bd27b9f5e9e"
+    },
+    {
+      "path": "server/ideeo/openmaus-tools.node-test.ts",
+      "sha256": "9549012a4bd10005bbba24c804b9031c685bdc058bc65f087019a2d0ac2332aa"
+    },
+    {
+      "path": "server/ideeo/openmaus-tools.ts",
+      "sha256": "118c1c6b4bb15127788bcac92e1b5243bc4ef52b726810625e81790c1063a207"
+    },
+    {
+      "path": "server/ideeo/workspace-budget.node-test.ts",
+      "sha256": "4db76b19f61fd90a72e4f19fd48a8c7dd25f4bbbcda8d40bbf1b861a5c8ed896"
+    },
+    {
+      "path": "server/ideeo/workspace-files.ts",
+      "sha256": "1952b5d47fbac6729cc670a83f307cc123337f299820fbeb4ccdd6a4fbfd4003"
+    },
+    {
+      "path": "shared/ideeo/capabilities.ts",
+      "sha256": "42db1a7c1935c4333fa4be4e6be0d2160bbeef0059214fd7411bdbc8c10fb310"
+    },
+    {
+      "path": "tsconfig.ideeo-server.json",
+      "sha256": "f4f153f0bc15a57324e32b165465f26304c52599179a84ebf5e80448d03dfff3"
+    },
+    {
+      "path": "docs/ideeo/IMPLEMENTATION_STATUS.md",
+      "sha256": "c6b0083a32c9c10e635b1ece702c9af5d5cd39d9cbd6ccdfd293cd2d9f42ac9c"
+    },
+    {
+      "path": "docs/ideeo/README.md",
+      "sha256": "048e3139289055d0a023ec47c4863236ea23e89a4940b84bc9d7cc3d5a626541"
+    },
+    {
+      "path": "docs/ideeo/compliance/SUPPLIERS.md",
+      "sha256": "2c9157462355e6c160907b1efd9b621551e10410b305a2c6600598c135198343"
+    },
+    {
+      "path": "docs/ideeo/contracts/CONVERSATION_LOOP.md",
+      "sha256": "271a77ac7e3f96a1ace79d05adec19d533d75c5310b9cf1f2b6655b3a5776dc7"
+    },
+    {
+      "path": "docs/ideeo/contracts/CONVERSATION_UI.md",
+      "sha256": "2c5a917495ef3e44a3d6c88803add15e4986b208c031c7d6909fde7ed42d8515"
+    },
+    {
+      "path": "docs/ideeo/development/VERIFICATION.md",
+      "sha256": "f6bd64d1cb65b41119c682010862e34120324802b7a4271efb3c241a80288f67"
+    },
+    {
+      "path": "docs/verification/ideeo.md",
+      "sha256": "3cbbda53e61f266139b06ef4af23f9ed6846e662c0cc6e8dfbf10e02ca7fe2b5"
+    },
+    {
+      "path": "scripts/testing/fixture-http.ts",
+      "sha256": "0a9be8a1e6feb82ed4dc861a0512e256fe90a7183580c05cf49df776e5c104b4"
+    },
+    {
+      "path": "scripts/testing/free-form-mutation.mjs",
+      "sha256": "67e190e1dc410ace6b634dd59ac33e5584d30ba9aba6788b7da7e66cecea6cc4"
+    },
+    {
+      "path": "scripts/testing/ideeo-fixture.ts",
+      "sha256": "19211592be96012458cf89c30d9c8f531df6a0b6732cd84a9d358c20a2d6420c"
+    },
+    {
+      "path": "scripts/testing/ideeo-ui.ts",
+      "sha256": "d0f51837b7b73490273afc3bcb3a5e010dc2397af284284ea9fa5f2da631041b"
+    },
+    {
+      "path": "scripts/testing/live-free-form.ts",
+      "sha256": "c18f47dc46c1e6df3fe160b360a592e5a7bbb31261516800eefd2d1967bb5a24"
+    },
+    {
+      "path": "scripts/testing/model-fixture.ts",
+      "sha256": "557a2ee35e3974ce694df6190bfc28975bfed8ee2d253982a281cb01d3004a5c"
+    },
+    {
+      "path": "scripts/testing/openai-key.ts",
+      "sha256": "5e932b16473e4203f50e768a0be36fa54efeaa2f3f5ee912eafc42471ae453d6"
+    },
+    {
+      "path": "scripts/testing/payme-storage-worker.ts",
+      "sha256": "2d95ccbbcfca2b7a46352dbb36dab7eb7f363b81615e3b717ef0ec2e39cfde7d"
+    },
+    {
+      "path": "scripts/testing/payme-storage.ts",
+      "sha256": "e5b6b804a22e2aaddb64f68290d7333e678dbfebc597345bc0170167e75d0ce3"
+    },
+    {
+      "path": "server/host/ideeo.ts",
+      "sha256": "a92a5a9b0b6662a0a4dad20d7b08cf32fa3498ac42acf4c9cfc46c0d71f5b25b"
+    },
+    {
+      "path": "server/ideeo/config.ts",
+      "sha256": "4ce474a70c72f906e2d145140a2ee671c903c9f66216882a1f2f9577943afb7c"
+    },
+    {
+      "path": "server/ideeo/conversation-loop.node-test.ts",
+      "sha256": "836a14e5c67f93847c90450d1e852af4c3e0f09dde935757a5f28b0bd0573af2"
+    },
+    {
+      "path": "server/ideeo/conversation-loop.ts",
+      "sha256": "675fe8f549312477b688364f3d0e4f9ed822e1c25a5fd7418d4dbf54f04df59d"
+    },
+    {
+      "path": "server/ideeo/conversations.ts",
+      "sha256": "54f3cfd64c362e7e3d5791d357156f8546c0cd81652832308efe1eaa3ff9269b"
+    },
+    {
+      "path": "server/ideeo/free-form.node-test.ts",
+      "sha256": "8e0624085c185f8c7619f5f6e5e77806c86d69889b90b1fac30c183a3622daf6"
+    },
+    {
+      "path": "server/ideeo/inference-policy.ts",
+      "sha256": "1f40370ca8734fa5a00df76366eafe958dc003aaaa50a35f39714742039fc614"
+    },
+    {
+      "path": "server/ideeo/inference.ts",
+      "sha256": "7c23894705c2b6e9a0ae99e7e473ed20050479e03ef389eb1ffec08ee7247bde"
+    },
+    {
+      "path": "server/ideeo/model-transport.ts",
+      "sha256": "af9db45e78a3e7e64095db0cab6e6434fa979a8ba16503fa38d761cb97b0be7e"
+    },
+    {
+      "path": "server/ideeo/storage/conversations.ts",
+      "sha256": "5c8cf6e8c34d5b8360974b314d72f2b01ac960305d2c61b01497cfd7087d3e19"
+    },
+    {
+      "path": "server/ideeo/storage/database.ts",
+      "sha256": "a8ed4f0a2b473c2ff2b120b57e5a4c1ff36b786437e6e1f8ba8a8340fd57ab6b"
+    },
+    {
+      "path": "server/ideeo/storage/migrate.ts",
+      "sha256": "834d1c1b28bae336e060b637673c5fa9c6feec5feb470e421b4c4c8f3da34b74"
+    },
+    {
+      "path": "server/ideeo/text-policy.ts",
+      "sha256": "4e03c7b0a0d839969c03191cf1c7ab5498105ca8179d0a00e942cd0777303050"
+    },
+    {
+      "path": "server/routes/ideeo-conversations.ts",
+      "sha256": "360d8383a59b82ba397ec723f047d985c24c0d932c23d9e775828cacf215cda2"
+    },
+    {
+      "path": "shared/ideeo/conversations.ts",
+      "sha256": "86eae2f25611ab3af7957500ab633bbae8d27272d98f78337f43f8af03c8f024"
+    },
+    {
+      "path": "src/ideeo/client.ts",
+      "sha256": "483f1b46840c241878f7e6a867369e52866886043358063bc31c39a96ee90e90"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "output/ideeo-live-browser-regression.log",
+      "sha256": "ffd367af511417af365ffcb28a510548fa7d5bfba76d6f23a2001cf064f29d4d"
+    },
+    {
+      "path": "output/ideeo-live-browser-mutations.log",
+      "sha256": "129f48baf20139b953c5e4cba12d8114943d75e405459504f76e9e7a0369ffa9"
+    },
+    {
+      "path": "output/ideeo-gemini-browser-conversations.html",
+      "sha256": "600ed23a4c13e129a1deb338bf803f9bfaf905bc79636d8057875f93fb2bccf5"
+    },
+    {
+      "path": "output/ideeo-gemini-browser-report.png",
+      "sha256": "db8f4debce62c018ce17001bf976508810f7a44f159b753c2f51370c03820c01"
+    },
+    {
+      "path": "output/ideeo-workspace-budget-tests.log",
+      "sha256": "d611144168efee7e6bc26a263b0f0c125f1981e48ec013070c3cba7a426692f1"
+    },
+    {
+      "path": "output/ideeo-workspace-budget-recheck.log",
+      "sha256": "b027f8f7a31e5ab839f234e679a3f64622574ce9a634f56c2fd4bf1e74b20691"
+    },
+    {
+      "path": "output/ideeo-capabilities-tool-preface.log",
+      "sha256": "cea4af8511cd9669c1211097330e0d97b06217523fc17935cc220a8ec6263950"
+    },
+    {
+      "path": "output/ideeo-capabilities-tool-preface-recheck.log",
+      "sha256": "e2530604ac7a82310bed06948f8e18e9f391efa893bb7464342945d9983b2fc5"
+    },
+    {
+      "path": "output/ideeo-realistic-tasks-gemini-browser-2026-11-19T21-55-20-165Z.json",
+      "sha256": "0dd3cee9761bc2c5f0a6fcf90219cf1ed8b207fe6f7750ad879fe1c2bb3467be"
+    },
+    {
+      "path": "output/ideeo-realistic-tasks-gemini-browser-2026-11-19T21-55-20-165Z.html",
+      "sha256": "1f48e41765c78e0b342620473e1b5ab74d356d35e39dd1b8fa84705042e521d7"
+    },
+    {
+      "path": "output/ideeo-realistic-tasks-gemini-browser-2026-11-19T21-57-57-049Z.json",
+      "sha256": "85eea38c09e72fa5658c3313dd23f1679ff0a4373e925f8d26b69295202b67a8"
+    },
+    {
+      "path": "output/ideeo-realistic-tasks-gemini-browser-2026-11-19T21-57-57-049Z.html",
+      "sha256": "97d4e33659d8b055d22808db0748f94f082f3cfdc0c8864a43768db4432a33b7"
+    },
+    {
+      "path": "output/ideeo-realistic-tasks-gemini-browser-2026-11-19T22-00-36-496Z.json",
+      "sha256": "5b6db3b4f8fa2799af70bdc8234c13aac3970f0a0ebc3454afb8bc7263bbc627"
+    },
+    {
+      "path": "output/ideeo-realistic-tasks-gemini-browser-2026-11-19T22-00-36-496Z.html",
+      "sha256": "031cbb04e18c686b1c8062292a4ad69bcd69f8bfb98b13a103bd792d6b2916c6"
+    },
+    {
+      "path": "output/ideeo-realistic-tasks-gemini-browser-2026-11-19T22-04-55-352Z.json",
+      "sha256": "d391beaf0015833f975c71ee894eeef878213f50fb28fe5d33bfdc5aca2f19df"
+    },
+    {
+      "path": "output/ideeo-realistic-tasks-gemini-browser-2026-11-19T22-04-55-352Z.html",
+      "sha256": "651c06b5fe5dd2dcb699363c9c77a83b9f83ff355dd2254b8d63c4240731a8c4"
+    },
+    {
+      "path": "output/ideeo-realistic-tasks-gemini-browser-2026-11-19T22-08-05-316Z.json",
+      "sha256": "2af1fb9afc28e398f658743e8ad3fec598458c737fcc356bd191ba7a2e8ee8c8"
+    },
+    {
+      "path": "output/ideeo-realistic-tasks-gemini-browser-2026-11-19T22-08-05-316Z.html",
+      "sha256": "63669c5fe5e784f95a9884e40599bfe774fdbe0c531776366d9c74d8b74cb023"
+    },
+    {
+      "path": "output/ideeo-realistic-tasks-gemini-browser-2026-11-19T22-10-30-122Z.json",
+      "sha256": "e919aab795683b0e8706ec169e51341a9310ba33679f7d5e6d739f9537f4b8be"
+    },
+    {
+      "path": "output/ideeo-realistic-tasks-gemini-browser-2026-11-19T22-10-30-122Z.html",
+      "sha256": "2e13ef58390a06a835ad486f2007c2990c48fb68648a3861249f532431918012"
+    }
+  ]
+}
