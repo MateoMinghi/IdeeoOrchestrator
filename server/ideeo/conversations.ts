@@ -7,6 +7,7 @@ import { isFreeFormMessage, permittedText } from './text-policy.ts';
 import { ConversationError } from './storage/conversations.ts';
 import type { ConversationGenerator, InferenceKind } from './inference.ts';
 import type { createCapabilities } from './capabilities.ts';
+import { calendarPermissions, workshopCalendarRequest } from './workshop-calendar.ts';
 import { CAPABILITY_FAMILIES } from '../../shared/ideeo/capabilities.ts';
 
 export function createConversationService(admission: Awaited<ReturnType<typeof createAdmission>>, store: Awaited<ReturnType<typeof createConversationStore>>, generator?: ConversationGenerator, capabilities?: ReturnType<typeof createCapabilities>) {
@@ -44,8 +45,13 @@ export function createConversationService(admission: Awaited<ReturnType<typeof c
       if (isFreeFormMessage(message) && !permittedText(message.text,1500,[proof,proof.replace(/^Bearer /,'')])) throw new ConversationError(422,'content_not_permitted');
       const scopedGenerator: ConversationGenerator|undefined=generator?context=>generator({...context,toolPermissions}):undefined;
       const workspace = capabilities?.availability(scope,toolPermissions).some(item=>item.available>0) ?? false;
-      const result = await store.append(scope, id, key, message, reauthorize, signal, scopedGenerator, reauthorize, workspace);
-      await reauthorize();
+      const request=isFreeFormMessage(message) && workshopCalendarRequest(message.text);
+      const dispatch=request && capabilities?.calendar(scope,toolPermissions);
+      if(request && !dispatch) throw new AdmissionError(403);
+      const authorize=request?()=>reauthorize(undefined,undefined,calendarPermissions):reauthorize;
+      const result = await store.append(scope, id, key, message, authorize, signal, scopedGenerator, reauthorize, workspace,
+        request && dispatch ? {...request,dispatch} : undefined);
+      await authorize();
       assertContentLive(result.expires_at);
       return result;
     },
@@ -70,6 +76,7 @@ export function createConversationService(admission: Awaited<ReturnType<typeof c
       const { scope, reauthorize, toolPermissions } = await access(proof, false, signal);
       const includeBookings=Boolean(capabilities?.bookingVerifier(scope,toolPermissions));
       const result = await store.history(scope, id, after, limit, signal,includeBookings);
+      if(result.turns.some(t=>t.answer.kind==='workspace_calendar')) await reauthorize(undefined,undefined,calendarPermissions);
       if(result.booking_checks?.length) await reauthorize(undefined,undefined,bookingPermissions);
       await reauthorize();
       assertContentLive(result.expires_at);

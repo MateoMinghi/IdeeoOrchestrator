@@ -1,0 +1,11 @@
+{"phase":"booking append","http":503,"error":"storage_unavailable","events":[{"name":"agent_browser_open","status":"succeeded","hasForm":true,"hasConfirmation":false},{"name":"agent_browser_click","status":"succeeded","hasForm":false,"hasConfirmation":false},{"name":"agent_browser_snapshot","status":"succeeded","hasForm":false,"hasConfirmation":true}],"modelCalls":4,"bookings":1}
+{"phase":"inspection append","http":503,"error":"storage_unavailable","events":[{"name":"agent_browser_open","status":"succeeded","hasForm":true,"hasConfirmation":false},{"name":"agent_browser_click","status":"succeeded","hasForm":false,"hasConfirmation":false},{"name":"agent_browser_snapshot","status":"succeeded","hasForm":false,"hasConfirmation":true},{"name":"agent_browser_open","status":"succeeded","hasForm":true,"hasConfirmation":false},{"name":"agent_browser_click","status":"succeeded","hasForm":false,"hasConfirmation":false}],"modelCalls":7,"bookings":1}
+{"phase":"verified receipt and cached replay","before":{"tools":5,"models":7,"calls":7,"actions":5,"bookings":1,"reads":0},"after":{"tools":6,"models":7,"calls":7,"actions":5,"bookings":1,"reads":1}}
+{"phase":"unmatched reference and cached replay","counters":{"tools":7,"models":7,"calls":7,"actions":5,"bookings":1,"reads":2}}
+{"phase":"calendar replay after lost reply","calendar":{"writes":1,"reads":1,"events":1},"before":{"tools":7,"models":7,"calls":7,"actions":5,"bookings":1,"reads":2},"after":{"tools":9,"models":7,"calls":7,"actions":5,"bookings":1,"reads":2}}
+{"phase":"shutdown","fixture":"React browser","elapsed_ms":3,"outcome":"stopped"}
+{"phase":"shutdown","fixture":"React preview","elapsed_ms":2,"outcome":"stopped"}
+{"phase":"shutdown","fixture":"product","elapsed_ms":26,"outcome":"stopped"}
+{"phase":"shutdown","fixture":"model","elapsed_ms":1,"outcome":"stopped"}
+{"phase":"shutdown","fixture":"browser workspace","elapsed_ms":12,"outcome":"stopped"}
+{"phase":"shutdown","fixture":"PostgreSQL","elapsed_ms":2232,"outcome":"stopped"}

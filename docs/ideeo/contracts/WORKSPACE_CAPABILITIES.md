@@ -34,6 +34,14 @@ The disposable Willow Studio browser route can opt in to reservation verificatio
 
 The check requires current conversation read/write, browser interaction and `tool:booking:verify` authority. It reserves a tool attempt under a separate deterministic check key before contacting the executor. The ordinary workspace operation deadline, executor timeout and shared tenant budget apply. Viewing a receipt requires current read and both tool permissions. The executor returns only the matching generated confirmation or an unknown outcome. Verification sends no receipt to a model.
 
+## Workshop calendar
+
+The trusted disposable Willow Studio route can enable `calendarBooking` together with booking verification. An explicit calendar request in the authenticated React conversation uses the workspace executor with current `tool:calendar:write`, `tool:calendar:read` and `tool:browser:interact` grants. The two private executor operations are unavailable to the model. The product recognizes a bounded English request beginning with "Add" or "Put" and naming the booking and the caller's calendar. It asks for a complete Sunday date and Mexico City time if the request is ambiguous. The user can resend the request with those details.
+
+The fixture resolves the confirmed reservation within the conversation. Its calendar copies the booking's title, confirmation, date, instants and zone, and stores an empty attendee list. A missing or mismatched reservation produces a clarification with zero events added. The product validates the returned slot, confirmation and event ID before publishing the answer.
+
+A write reserves one durable tool attempt and records its ID before dispatch. After a lost reply, an exact same-key append under fresh authority may reserve a separate, read-only workspace operation for that original attempt. Read retries for the same append share a deterministic operation key, a fixed deadline and the workspace tool ceiling. Each physical read also consumes the tenant budget. Recovery leaves the original deadline intact. A committed replay returns the original turn. Calendar replies are encrypted with conversation content, require current calendar permissions for publication, and are excluded from future model history. This local executor has no external calendar transport or invitation sender.
+
 ## Remaining coverage
 
 Computer control, connected apps/email, data, agents/delegation, memory, automation, research, image generation, voice, meetings, hosting, devices and workspace settings still need concrete workspace composition and individual authorization/lifecycle tests. The source inventory is discovery evidence only. Production VMs, external credentials, approval interaction, long workflows, real-model tool semantics, React capability UX, independent review and human acceptance remain open.

@@ -155,3 +155,9 @@ For an opted-in browser workspace, the first history page can include `booking_c
 An authenticated `POST /v2/conversations/{id}/turns/booking-check` accepts exactly `{"attempt_id":"<original attempt UUID>"}`. The product resolves the attempt under the complete caller and conversation, serializes against the original append key and returns `booking_check`. A verified entry includes the matching confirmation. Schema 5 stores the checked outcome as encrypted content bound to the caller, conversation, attempt and content expiry. Subsequent checks return that receipt. Content expiry prevents publication and maintenance removes expired receipts.
 
 The interrupted append continues to report `reconciliation_required`. Its turn sequence and outbox are untouched. Historical claims made before schema 5 have no attributable booking reference.
+
+## Booking calendar turns
+
+An opted-in workshop calendar handles explicit calendar requests at the authenticated append endpoint. The original user message, idempotency key, turn sequence, content expiry and outbox use the ordinary conversation contract. Answers use the additive `workspace_calendar` kind, including clarifications. A compatible reader is required for rollback if these turns exist. The executor receives the scoped conversation and a validated date. It resolves the booking in the workspace. The calendar path submits no message or receipt to a model.
+
+For this action the durable execution claim identifies the original calendar write attempt. An interrupted append continues to report `reconciliation_required` until a current, authorized, same-key retry reads the matching event and commits the answer. Only this calendar operation has the read-only recovery path. [Workspace executor contract](WORKSPACE_CAPABILITIES.md#workshop-calendar)

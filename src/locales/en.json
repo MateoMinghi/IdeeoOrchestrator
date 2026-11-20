@@ -15,6 +15,7 @@
   "ideeo.budget": "The daily AI limit has been reached. Try again tomorrow.",
   "ideeo.conflict": "This request could not continue. Reload the conversation before trying again.",
   "ideeo.restatedContext": "This message has no saved answer. You can retry it or include the details you need in your next message.",
+  "ideeo.calendarRetry": "The calendar did not confirm the result. Send the same message again to check the event.",
   "ideeo.checkBooking": "Check booking",
   "ideeo.bookingVerified": "Booking confirmed.",
   "ideeo.bookingUnknown": "Unable to verify booking.",

@@ -10,6 +10,7 @@ function errorText(error: unknown) {
     if([401,403].includes(error.status) || error.code==='authentication_required') return t('ideeo.signIn');
     if(error.status===404 || error.status===410) return t('ideeo.missing');
     if(error.code==='content_not_permitted') return t('ideeo.private');
+    if(error.code==='calendar_outcome_unknown') return t('ideeo.calendarRetry');
     if(error.code==='capability_outcome_unknown') return t('ideeo.bookingUnknown');
     if(error.code==='inference_budget_exhausted') return t('ideeo.budget');
     if(error.code==='capability_reconciliation_required') return t('ideeo.checkAction');

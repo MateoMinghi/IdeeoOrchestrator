@@ -1,3 +1,4 @@
+import { calendarClarification, type CalendarTurn } from '../workshop-calendar.ts';
 import { randomUUID } from 'node:crypto';
 import type postgres from 'postgres';
 import type { BookingCheck, ConversationHistory, ConversationView, ConversationMessage, TurnStatus, TurnView } from '../../../shared/ideeo/conversations.ts';
@@ -59,10 +60,10 @@ export async function createConversationStore(config: StorageConfiguration, tena
     const user = projected ? projected.message : stored;
     const answer = protection.decrypt(binding, 'answer', row.answer_content);
     if (!(typeof user === 'string' && Object.hasOwn(fixturePrompts,user)) && !isFreeFormMessage(user) || !answer || typeof answer !== 'object'
-      || !('kind' in answer) || !['synthetic_storage','openmaus_fixture','openmaus_openai_evaluation','free_form_fixture','free_form_openai_evaluation','free_form_gemini_evaluation'].includes(String(answer.kind)) || !('text' in answer) || typeof answer.text !== 'string'
+      || !('kind' in answer) || !['workspace_calendar','synthetic_storage','openmaus_fixture','openmaus_openai_evaluation','free_form_fixture','free_form_openai_evaluation','free_form_gemini_evaluation'].includes(String(answer.kind)) || !('text' in answer) || typeof answer.text !== 'string'
       || Object.keys(answer).length !== 2 || answer.text.length > 2000) throw new Error('Invalid stored turn');
     if (isFreeFormMessage(user)) {
-      if (!String(answer.kind).startsWith('free_form_') || !projected || !permittedProjection(projected.projection)
+      if (answer.kind!=='workspace_calendar' && !String(answer.kind).startsWith('free_form_') || !projected || !permittedProjection(projected.projection)
         || projected.projection.user !== user.text || projected.projection.assistant !== answer.text) throw new Error('Invalid inference projection');
     } else if (String(answer.kind).startsWith('free_form_') || answer.kind !== 'synthetic_storage' && !fixtureAnswers.has(answer.text)) throw new Error('Invalid inference projection');
     return { turn: { turn_id: row.id, conversation_id: row.conversation_id, event_id: row.event_id, sequence: row.sequence,
@@ -149,14 +150,14 @@ export async function createConversationStore(config: StorageConfiguration, tena
       });
     },
     async append(scope: CallerScope, id: string, key: string, message: ConversationMessage, authorize: Authorize, signal: AbortSignal,
-      generator?: ConversationGenerator, authorizeInference?: (kind: InferenceKind, permission?: string) => Promise<void>, workspace = false): Promise<TurnView> {
+      generator?: ConversationGenerator, authorizeInference?: (kind: InferenceKind, permission?: string) => Promise<void>, workspace = false, calendar?:CalendarTurn): Promise<TurnView> {
       const freeForm = isFreeFormMessage(message);
       const excluded = [...forbidden,...Object.values(scope),id];
       if (freeForm) {
-        if (!generator || !permittedText(message.text,1500,excluded)) throw new ConversationError(422,'content_not_permitted');
+        if (!generator && !calendar || !permittedText(message.text,1500,excluded)) throw new ConversationError(422,'content_not_permitted');
       } else if (typeof message !== 'string' || !Object.hasOwn(fixturePrompts,message) || !generator && message !== 'synthetic.hello' && message !== 'synthetic.follow-up') throw new ConversationError(422, 'synthetic_input_required');
       const keyHash = protection.fingerprint(scope, 'turn-key', key);
-      const fingerprint = protection.fingerprint(scope, 'turn-input', { conversation_id: id, message });
+      const fingerprint = protection.fingerprint(scope, calendar?'calendar-input':'turn-input', { conversation_id: id, message });
       const row = await scoped(scope, signal, async tx => {
         await lock(tx, keyHash);
         const [prior] = await tx<TurnRow[]>`select t.*, o.id as event_id from ideeo.turns t join ideeo.outbox o on o.scope=t.scope and o.turn_id=t.id where t.idempotency_key=${keyHash}`;
@@ -170,14 +171,38 @@ export async function createConversationStore(config: StorageConfiguration, tena
         if (parent.next_sequence > 1000) throw new ConversationError(409, 'conversation_limit');
         const op = await operation(tx, keyHash);
         if (op && (op.conversation_id !== id || op.fingerprint !== fingerprint)) throw new ConversationError(409, 'idempotency_conflict');
-        if (op?.execution_id) throw new ConversationError(409, 'capability_reconciliation_required');
+        if (op?.execution_id && !calendar) throw new ConversationError(409, 'capability_reconciliation_required');
         let generated: TurnView['answer'] = { kind: 'synthetic_storage', text: message === 'synthetic.hello' ? 'Synthetic greeting recorded.' : 'Synthetic follow-up recorded.' };
-        if (generator) {
+        let operationKey=keyHash;
+        if(calendar){
+          let text=calendarClarification;
+          if(calendar.date){
+            await authorize();
+            const original:string|undefined=op?.execution_id;
+            if(original) operationKey=protection.fingerprint(scope,'calendar-read',keyHash);
+            const attempt=await scoped(scope,signal,async ledger=>{
+              const [r]=await ledger`select * from ideeo.reserve_workspace_inference(${ledger.json(scope)},${operationKey},${id},${fingerprint},'tool')`;
+              if(r.code!=='reserved') throw new ConversationError(r.code==='conversation_expired'?410:409,r.code);
+              if(!original){
+                const [claim]=await ledger`select ideeo.claim_tool_execution(${ledger.json(scope)},${keyHash},${id},${fingerprint},${r.attempt_id}) as claimed`;
+                if(!claim.claimed) throw new ConversationError(409,'request_in_progress');
+              }
+              return {id:String(r.attempt_id),deadline:r.deadline as Date};
+            },false,accounting);
+            await authorize();
+            assertContentLive(parent.expires_at.toISOString());
+            text=await calendar.dispatch(id,calendar.date,original??attempt.id,attempt,Boolean(original),signal);
+            await authorize();
+            const [finished]=await tx`select ideeo.finish_inference(${tx.json(scope)},${attempt.id},null,null) as ok`;
+            if(!finished.ok) throw new Error('Calendar settlement failed');
+          }
+          generated={kind:'workspace_calendar',text};
+        }else if (generator) {
           if (!authorizeInference) throw new Error('Missing inference authority');
           const previous = await tx<TurnRow[]>`select t.*,o.id as event_id from ideeo.turns t join ideeo.outbox o on o.scope=t.scope and o.turn_id=t.id
             where t.conversation_id=${id} order by t.sequence desc limit 20`;
           const executionId=randomUUID();
-          generated = await generator({ message, signal, forbidden: excluded, execution:{scope,conversationId:id}, history: previous.reverse().map(p => {const decoded=decodedTurn(scope,p);return {...decoded.turn,projection:decoded.projection};}), authorize: authorizeInference,
+          generated = await generator({ message, signal, forbidden: excluded, execution:{scope,conversationId:id}, history: previous.reverse().map(p => {const decoded=decodedTurn(scope,p);return {...decoded.turn,projection:decoded.projection};}).filter(turn=>turn.answer.kind!=='workspace_calendar'), authorize: authorizeInference,
             claimTools:bookingAttemptId=>scoped(scope,signal,async ledger=>{
               const [claim]=await ledger`select ideeo.claim_tool_execution(${ledger.json(scope)},${keyHash},${id},${fingerprint},${executionId}) as claimed`;
               if(!claim.claimed) throw new ConversationError(409,'capability_reconciliation_required');
@@ -209,8 +234,8 @@ export async function createConversationStore(config: StorageConfiguration, tena
           values (${tx.json(scope)},${eventId},${turnId},${id},${parent.next_sequence},'answer.committed',${saved.created_at})`;
         await tx`update ideeo.conversations set next_sequence = next_sequence + 1 where id = ${id}`;
         await authorize();
-        if (generator) {
-          const [op] = await tx`select deadline_at > clock_timestamp() as live from ideeo.inference_operations where request_key=${keyHash} and conversation_id=${id}`;
+        if (calendar ? calendar.date : generator) {
+          const [op] = await tx`select deadline_at > clock_timestamp() as live from ideeo.inference_operations where request_key=${operationKey} and conversation_id=${id}`;
           if (!op?.live) throw new ConversationError(409, 'inference_expired');
         }
         assertContentLive(parent.expires_at.toISOString());

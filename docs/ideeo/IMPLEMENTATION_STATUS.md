@@ -1,5 +1,7 @@
 # Candidate implementation status
 
+**Workshop calendar.** The authenticated conversation can add a confirmed Willow Studio workshop to the disposable calendar, ask for a date, and recover the original event ID after a lost write response and product restart. [Executor contract](contracts/WORKSPACE_CAPABILITIES.md#workshop-calendar) and [verification record](development/VERIFICATION.md#confirmed-workshop-on-a-disposable-calendar).
+
 **Checking an interrupted booking.** An authorized caller can verify a Willow Studio reservation after the site accepts it and the answer fails to commit. The React conversation can recover the site's confirmation from the original browser attempt. Reopening the receipt uses no model call or additional site read. [Recovery contract](contracts/CONVERSATION_LOOP.md#explicit-booking-recovery) and [verification record](development/VERIFICATION.md#check-booking-after-an-interrupted-answer).
 
 **Completed booking across product restart.** A zero-cost local regression checks both committed turns on the first history read after each of five replacements, checks the original booking event on replay and commits a fresh turn. The additional Skills qualification covers authenticated discovery of enabled metadata from a disposable workspace. See the [restart and Skills verification record](development/VERIFICATION.md#completed-booking-restart-and-workspace-skills).

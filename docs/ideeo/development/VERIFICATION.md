@@ -614,3 +614,35 @@ node node_modules/typescript/bin/tsc --singleThreaded --checkers 1 --noEmit -p t
 ```
 
 Targeted Oxlint exited 0. `node scripts/generate-locale.mjs --check` validated all 16 locale catalogs. The React bundle built in the isolated test, and none of the six product child IDs in the replacement trace remained live Node processes. [Compiler exit codes](../../../output/ideeo-booking-check-types.log)
+
+## Confirmed workshop on a disposable calendar
+
+The authenticated React chat asked for a date when given only Sunday. A subsequent message specified November 22, 2026, 3 to 4 pm in Mexico City and requested no invitations. The isolated workspace copied the actual confirmed reservation into its owned calendar. Direct inspection of the calendar store independently checked the title, confirmation, empty attendee list, IANA zone, and UTC instants of 21:00 and 22:00. The private write endpoint accepted the event and destroyed the HTTP connection before sending its response.
+
+The regression expired the original write deadline, restarted just the product, then retried the same React message and idempotency key. Current permission checks denied a revoked grant, a caller without calendar read permission and a foreign tenant before lookup. The authorized retry used one budgeted calendar read and returned the original event ID. A further replay returned the same committed turn. Across creation and recovery the ledger gained two tool attempts, the model and browser counters stayed fixed, and the calendar recorded one write, one read and one event. The original deadline stayed expired. Removing calendar read permission also denied transcript publication. A second conversation completed a normal booking, rejected a mismatched date, and added its own confirmed event with a distinct ID. All fixtures used generated credentials and loopback destinations.
+
+```powershell
+node --experimental-strip-types --test --test-concurrency=1 --test-reporter=spec --test-reporter-destination=output/ideeo-calendar-initial.log server/ideeo/booking-check.node-test.ts
+node --experimental-strip-types --test --test-concurrency=1 --test-reporter=spec --test-reporter-destination=output/ideeo-calendar-serial.log server/ideeo/booking-check.node-test.ts server/ideeo/booking-restart.node-test.ts server/ideeo/restart.node-test.ts server/ideeo/capabilities.node-test.ts server/ideeo/deadlines.node-test.ts server/ideeo/workspace-budget.node-test.ts server/ideeo/conversation-loop.node-test.ts server/ideeo/storage/conversations.node-test.ts
+```
+
+The initial focused run passed 2/2 before the date mismatch and normal booking cases were added. [Initial log](../../../output/ideeo-calendar-initial.log) | [Final calendar and shutdown counters](../../../output/ideeo-booking-check-f096a687-044b-4307-81e5-e1767012b1cf.jsonl) | [Five restart comparison](../../../output/ideeo-booking-restart-9effb587-9a48-43c5-826a-870ce1ec28be.jsonl)
+
+The first serial comparison passed 97/97. The final revision pins recovery reads to a deterministic ledger key. Its regression also fills the tenant tool budget before recovery, requires `inference_budget_exhausted` with zero calendar reads, restores the fixture budget and retries the same request. The command for this revision was
+
+```powershell
+node --experimental-strip-types --test --test-concurrency=1 --test-reporter=spec --test-reporter-destination=output/ideeo-calendar-final.log server/ideeo/booking-check.node-test.ts server/ideeo/booking-restart.node-test.ts server/ideeo/restart.node-test.ts server/ideeo/capabilities.node-test.ts server/ideeo/deadlines.node-test.ts server/ideeo/workspace-budget.node-test.ts server/ideeo/conversation-loop.node-test.ts server/ideeo/storage/conversations.node-test.ts
+```
+
+The final comparison passed **97/97** in 265.1 seconds. The six owned product, calendar/browser workspace, model, UI and PostgreSQL cleanup entries reported success. None of the six product PIDs in the five-restart comparison remained live Node processes. [Final suite](../../../output/ideeo-calendar-final.log) | [Final calendar counters and cleanup](../../../output/ideeo-booking-check-4a8627c4-1d0a-4cbc-a1f2-09005be3170a.jsonl) | [Replacement trace](../../../output/ideeo-booking-restart-9ef1f59f-a210-464f-b551-afedd7ef7be6.jsonl)
+
+Changed sources were hash-checked against the refreshed frozen-lockfile checkout. The following three checks exited 0. Targeted Oxlint and the 16-catalog locale check passed. [Compiler results](../../../output/ideeo-calendar-final-types.log)
+
+```powershell
+Set-Location .omb-scratch/ideeo-capability-check
+$env:GOMAXPROCS='2'
+$env:GOMEMLIMIT='1700MiB'
+node node_modules/typescript/bin/tsc --singleThreaded --checkers 1 --noEmit -p tsconfig.ideeo-server.json
+node node_modules/typescript/bin/tsc --singleThreaded --checkers 1 --noEmit -p tsconfig.ideeo-ui.json
+node node_modules/typescript/bin/tsc --singleThreaded --checkers 1 --noEmit -p tsconfig.server.json
+```

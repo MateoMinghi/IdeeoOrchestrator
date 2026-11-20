@@ -14,7 +14,7 @@ export type TurnView = Readonly<{
   sequence: number;
   status: 'completed';
   message: ConversationMessage;
-  answer: Readonly<{ kind: 'synthetic_storage' | 'openmaus_fixture' | 'openmaus_openai_evaluation' | 'free_form_fixture' | 'free_form_openai_evaluation' | 'free_form_gemini_evaluation'; text: string }>;
+  answer: Readonly<{ kind: 'workspace_calendar' | 'synthetic_storage' | 'openmaus_fixture' | 'openmaus_openai_evaluation' | 'free_form_fixture' | 'free_form_openai_evaluation' | 'free_form_gemini_evaluation'; text: string }>;
   created_at: string;
   expires_at: string;
 }>;

@@ -1,0 +1,12 @@
+▶ Check booking recovers the exact reservation after a failed answer commit
+  ✔ React adds the confirmed workshop to a private calendar and recovers a lost write reply (3313.0492ms)
+✔ Check booking recovers the exact reservation after a failed answer commit (41897.9224ms)
+ℹ output/ideeo-booking-check-edd6a848-a0e7-4569-9e12-d077dbeeb904.jsonl
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 45896.3159

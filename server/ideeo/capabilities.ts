@@ -9,6 +9,8 @@ import { permittedCapabilityText, freeFormSystem } from './text-policy.ts';
 import { ConversationError } from './storage/conversations.ts';
 import type { ChatImagePart } from '../drivers/chat-images.ts';
 
+import { workshopCalendar, calendarPermissions } from './workshop-calendar.ts';
+
 export type ModelToolPolicy = {
   definitions: ChatToolDefinition[]; system: string;
   calls: Set<string>; results: Set<string>; images:Set<string>;
@@ -22,6 +24,10 @@ export function createCapabilities(routes: readonly CapabilityConfiguration[], s
   });
   const permitted=(scope: CapabilityConfiguration['scope'], permissions: readonly string[])=>entries.filter(entry=>capabilityScopeKey(entry.route.scope)===capabilityScopeKey(scope)&&permissions.includes(entry.tool.permission));
   return {
+    calendar(scope:CapabilityConfiguration['scope'], permissions:readonly string[]){
+      const entry=permitted(scope,permissions).find(e=>e.route.calendarBooking && e.tool.name==='agent_browser_click');
+      if(entry && calendarPermissions.every(p=>permissions.includes(p))) return workshopCalendar(entry.route,entry.credential);
+    },
     bookingVerifier(scope: CapabilityConfiguration['scope'], permissions: readonly string[]) {
       const entry=permitted(scope,permissions).find(e=>e.route.bookingVerification && e.tool.name==='agent_browser_click');
       if(!entry || !permissions.includes('tool:booking:verify')) return;
