@@ -26,7 +26,7 @@ export type TenantFixtureState = {
   fault: 'none' | 'outage' | 'redirect' | 'timeout' | 'malformed' | 'mismatch' | 'replay' | 'oversized' | 'echo' | 'future' | 'stale';
 };
 
-async function listen(server: Server) {
+export async function listen(server: Server) {
   await new Promise<void>((resolve, reject) => {
     server.once('error', reject);
     server.listen(0, '127.0.0.1', resolve);
@@ -36,11 +36,11 @@ async function listen(server: Server) {
   return `http://127.0.0.1:${address.port}`;
 }
 
-async function stopServer(server: Server) {
+export async function stopServer(server: Server) {
   await new Promise<void>(resolve => { server.close(() => resolve()); server.closeAllConnections(); });
 }
 
-async function createTenantFixture(id: string) {
+export async function createTenantFixture(id: string) {
   const key = await generateKeyPair('ES256');
   const pem = await exportSPKI(key.publicKey);
   const credential = randomBytes(32).toString('base64url');

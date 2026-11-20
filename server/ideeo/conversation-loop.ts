@@ -56,7 +56,7 @@ export function createConversationGenerator(config: InferenceConfiguration, secr
       apiKey:credential,apiUrl:config.url,models:()=>({default:config.model,options:[{id:config.model,label:'Synthetic fixture'}]}),
       requestBody:(model,messages,stream)=>({model,messages,stream,max_tokens:256}),httpErrorLabel:'fixture',missingKeyError:'Model unavailable',unavailableReason:'Model unavailable',
       timeoutMs:evaluation ? 9000 : 1200,retryScale:evaluation ? undefined : 0,reasoning:false,computerUse:Boolean(capabilities),nativeLog:{source:'fixture',outgoing:()=>({}),incoming:()=>({})},
-      ports:{send:(url,init)=>guarded(()=>send(url,init)),mount:async()=>tools,join:async()=>undefined,refit:async()=>undefined,notices:()=>[],
+      ports:{send:(url,init,onProgress)=>guarded(()=>send(url,init,onProgress)),mount:async()=>tools,join:async()=>undefined,refit:async()=>undefined,notices:()=>[],
         native:()=>{},handoff:()=>null,warning:()=>{},floor:()=>null,allowAskUser:false},
     });
     const abort=()=>{void runtime.adapter.interruptTurn(thread);};

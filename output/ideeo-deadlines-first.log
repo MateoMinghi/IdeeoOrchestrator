@@ -1,0 +1,36 @@
+✔ capability configuration pins complete scope, schema, destination and permission (196.7906ms)
+✔ large catalogs retain OpenMaus discovery with scoped permission and accounting (880.8446ms)
+✖ authenticated conversation executes scoped workspace tools through the OpenMaus loop (32876.2536ms)
+✖ authenticated evaluation deadlines with a loopback provider and disposable PostgreSQL (30228.2088ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 2
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 74489.7871
+
+✖ failing tests:
+
+test at server\ideeo\capabilities.node-test.ts:41:1
+✖ authenticated conversation executes scoped workspace tools through the OpenMaus loop (32876.2536ms)
+  Error: Command failed: C:\Program Files\PostgreSQL\18\bin\initdb.exe -D C:\Users\mateo\AppData\Local\Temp\ideeo-postgres-rpTlmM\data -U fixture_admin --pwfile=C:\Users\mateo\AppData\Local\Temp\ideeo-postgres-rpTlmM\bootstrap-password --auth=scram-sha-256 --encoding=UTF8 --locale=C
+
+      at genericNodeError (node:internal/errors:985:15)
+      at wrappedFn (node:internal/errors:539:14)
+      at ChildProcess.exithandler (node:child_process:417:12)
+      at ChildProcess.emit (node:events:509:28)
+      at maybeClose (node:internal/child_process:1124:16)
+      at ChildProcess._handle.onexit (node:internal/child_process:306:5) {
+    code: null,
+    killed: true,
+    signal: 'SIGTERM',
+    cmd: 'C:\\Program Files\\PostgreSQL\\18\\bin\\initdb.exe -D C:\\Users\\mateo\\AppData\\Local\\Temp\\ideeo-postgres-rpTlmM\\data -U fixture_admin --pwfile=C:\\Users\\mateo\\AppData\\Local\\Temp\\ideeo-postgres-rpTlmM\\bootstrap-password --auth=scram-sha-256 --encoding=UTF8 --locale=C',
+    stdout: 'The files belonging to this database system will be owned by user "mateo".\r\nThis user must also own the server process.\r\n\r\nThe database cluster will be initialized with locale "C".\r\nThe default text search configuration will be set to "english".\r\n\r\nData page checksums are enabled.\r\n\r\ncreating directory C:/Users/mateo/AppData/Local/Temp/ideeo-postgres-rpTlmM/data ... ok\r\ncreating subdirectories ... ok\r\nselecting dynamic shared memory implementation ... windows\r\nselecting default "max_connections" ... 100\r\nselecting default "shared_buffers" ... 128MB\r\nselecting default time zone ... UTC\r\ncreating configuration files ... ok\r\nrunning bootstrap script ... ok\r\nperforming post-bootstrap initialization ... ok\r\nsyncing data to disk ... ',
+    stderr: ''
+  }
+
+test at server\ideeo\deadlines.node-test.ts:15:1
+✖ authenticated evaluation deadlines with a loopback provider and disposable PostgreSQL (30228.2088ms)
+  [Error: EBUSY: resource busy or locked, rmdir 'C:\Users\mateo\AppData\Local\Temp\ideeo-postgres-yghtHO\data'] { errno: -4082, code: 'EBUSY', syscall: 'rmdir', path: 'C:\\Users\\mateo\\AppData\\Local\\Temp\\ideeo-postgres-yghtHO\\data' }

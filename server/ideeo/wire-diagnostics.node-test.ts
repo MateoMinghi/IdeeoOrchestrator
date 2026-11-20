@@ -3,6 +3,7 @@ import test, { mock } from 'node:test';
 import { randomBytes } from 'node:crypto';
 import https from 'node:https';
 import { createServer, request } from 'node:http';
+import { channel } from 'node:diagnostics_channel';
 
 test('fixture wire details require explicit activation and exclude secrets and reasoning',async()=>{
   const secret=randomBytes(32).toString('hex'),priorKey=process.env.IDEEO_DIAGNOSTIC_CANARY,priorDetail=process.env.IDEEO_TRACE_MODEL_DETAILS;
@@ -17,6 +18,12 @@ test('fixture wire details require explicit activation and exclude secrets and r
   const stderr=mock.method(process.stderr,'write',((chunk:unknown)=>{output+=String(chunk);return true;}) as typeof process.stderr.write);
   try {
     await import(new URL('../../scripts/testing/model-wire-shape.mjs',import.meta.url).href);
+    const timing=channel('ideeo.model.timing');
+    timing.publish({phase:secret,elapsed_ms:5});
+    timing.publish({phase:'provider_body',elapsed_ms:secret});
+    assert.equal(output,'');
+    timing.publish({phase:'provider_body',elapsed_ms:7510,content:secret});
+    assert.deepEqual(JSON.parse(output),{evaluation_wire_shape:{stage:'provider_body',elapsed_ms:7510}});
     const read=async()=>{
       output='';await new Promise<void>((resolve,reject)=>{const req=https.request(`http://127.0.0.1:${address.port}`,res=>{res.resume();res.on('end',resolve);});req.on('error',reject);req.end();});
       assert.ok(!output.includes(secret)&&!output.includes('private-reasoning-canary'));

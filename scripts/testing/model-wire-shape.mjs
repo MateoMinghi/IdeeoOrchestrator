@@ -1,8 +1,14 @@
 import https from 'node:https';
+import { channel } from 'node:diagnostics_channel';
 import { syncBuiltinESMExports } from 'node:module';
 import { permittedCapabilityText, secretValues } from '../../server/ideeo/text-policy.ts';
 
 const forbidden=secretValues(process.env);
+channel('ideeo.model.timing').subscribe(sample=>{
+  if (sample && ['provider_body','reauthorization','settlement'].includes(sample.phase)
+    && Number.isSafeInteger(sample.elapsed_ms) && sample.elapsed_ms>=0)
+    console.error(JSON.stringify({evaluation_wire_shape:{stage:sample.phase,elapsed_ms:sample.elapsed_ms}}));
+});
 
 const request=https.request;
 https.request=function(...args) {

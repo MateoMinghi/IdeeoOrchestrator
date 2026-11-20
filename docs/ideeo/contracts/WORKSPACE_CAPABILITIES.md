@@ -16,6 +16,8 @@ Migration `004_workspace_budget.sql` advances the database schema to 4. The trus
 
 Workspace replies may contain up to four tool calls plus screened user-visible text. Every schema is validated before any call in the batch executes. OpenMaus executes them sequentially, with current permission, durable execution claim and budget checks per call. Tool-call IDs retain upstream duplicate rejection. Only exact validated tool messages may re-enter model context; reasoning fields and arbitrary transcripts remain excluded. The original single-tool free-form profile is unchanged. Gemini's transport explicitly requests automatic tool selection; it does not force a browser or any particular action.
 
+If the last provider body stalls after a workspace write, the file effect, execution claim and attempt debits survive the failed turn. A same-key append returns `capability_reconciliation_required` before model dispatch. The [deadline verification](../development/VERIFICATION.md#coordinated-turn-deadlines) exercises that path with a partial HTTP body and an actual file in the disposable workspace.
+
 ## Disclosure and local implementations
 
 Tool text retains the synthetic-content screen. Only tightly constrained `.invalid` destinations are admitted as invented test observations; real customer destinations are not qualified. Tool screenshots are limited to two bounded validated PNG/JPEG/WebP data images. Sending them to the model additionally requires current `inference:disclose:images` before and after physical model dispatch. Tool access alone does not grant image disclosure. Image parts are transient turn context and are not added to encrypted chat history.

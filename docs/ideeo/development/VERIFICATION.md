@@ -505,3 +505,22 @@ A packaged build with automatic Tailwind discovery exceeded a diagnostic two-min
 A final isolated capability run after the HTTP header adjustment passed 15/15. It confirms that a request requiring external reconciliation carries no retry-after header and triggers no further model call or file write. This rerun overlaps the 127-check campaign. [Final workspace regression log](../../../output/ideeo-turn-recovery-claims.log).
 
 The refreshed frozen-lockfile checkout passed all four TypeScript configurations with `--noEmit` (`tsconfig.ideeo-server.json`, `tsconfig.ideeo-ui.json`, `tsconfig.server.json` and `tsconfig.json`). Targeted Oxlint finished without warnings after the temporary bundle cleanup was extracted from the finally block. All 16 locale catalogs validated. These are local developer results for the working tree.
+
+## Coordinated turn deadlines
+
+The authenticated API used the Gemini Flash-Lite evaluation configuration, a signed local authority and disposable PostgreSQL. The test intercepted the exact provider destination and sent the request over loopback to a scripted HTTP server. It used generated credentials and spent $0 on model APIs.
+
+| Measured stage | Duration |
+| --- | ---: |
+| Provider request through complete body | 7,521 ms |
+| Current permission checks after receipt | 2,378 ms |
+| Durable attempt settlement | 515 ms |
+| Authenticated append, end to end | 10,871 ms |
+
+The workspace operation committed once. Replaying its key returned the same event and the provider observed one call. Two separate failures tested the publication boundary. Revoking disclosure after receipt kept the attempt reserved. Expiring the operation after settlement kept the attempt finished. Both withheld the answer and rolled back the outbox event. The provider, shared-loop idle and PostgreSQL idle-in-transaction limits were eight, nine and ten seconds respectively. Permission and settlement delays were deliberately injected. These figures qualify deadline handling on this fixture. Live provider latency and production performance still require separate evaluation. [Boundary test log](../../../output/ideeo-deadlines-boundary.log)
+
+The first run stopped before either API fixture started. One PostgreSQL `initdb` reached the fixture's 30-second setup timeout during disk synchronization. Cleanup of the other fixture reported a locked directory. The bootstrap allowance is now 90 seconds, with bounded removal retries and preservation of both setup and cleanup errors. The remaining directory from that run was removed after checking process ownership. The earlier intermittent product restart remains a separate open investigation. [Initial failure log](../../../output/ideeo-deadlines-first.log)
+
+The serial developer regression run passed 104/104 across capabilities, the conversation loop, free-form and Gemini protocols, restart, wire diagnostics and workspace budgets. The new file-effect case received HTTP 200 headers and a partial final body. Its timeout left one finished model attempt, one finished tool attempt, one reserved model attempt and empty history. Replaying the same key returned HTTP 409 and the workspace counted exactly one file write. The run also exercised the native browser against the local fake booking site. [Regression log](../../../output/ideeo-deadlines-regression.log)
+
+The refreshed frozen-lockfile checkout passed the strict Ideeo server and full server TypeScript configurations. Targeted Oxlint exited successfully. The shared OpenMaus protocol and stream-retry suites passed 48/48 using throwaway homes. The first Vitest launch stopped in the config loader because esbuild could not read the parent directory under the sandbox. The same suites ran successfully outside it. Independent acceptance remains open.

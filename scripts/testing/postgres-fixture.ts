@@ -35,13 +35,13 @@ export async function launchPostgresFixture(options: { beforeUpgrade?: (sql: pos
     }
     const resolved = await realpath(root);
     if (dirname(resolved) !== await realpath(tmpdir()) || !basename(resolved).startsWith('ideeo-postgres-')) throw new Error('Unexpected PostgreSQL cleanup target');
-    await rm(resolved, { recursive: true, force: true });
+    await rm(resolved, { recursive: true, force: true, maxRetries: 5, retryDelay: 250 });
     stopped = true;
   };
   try {
     const pwFile = join(root, 'bootstrap-password');
     await writeFile(pwFile, password + '\n', { mode: 0o600 });
-    await run(binary('initdb'), ['-D', data, '-U', 'fixture_admin', `--pwfile=${pwFile}`, '--auth=scram-sha-256', '--encoding=UTF8', '--locale=C'], { env, windowsHide: true, timeout: 30000 });
+    await run(binary('initdb'), ['-D', data, '-U', 'fixture_admin', `--pwfile=${pwFile}`, '--auth=scram-sha-256', '--encoding=UTF8', '--locale=C'], { env, windowsHide: true, timeout: 90000 });
     await rm(pwFile);
     const listener = createServer();
     await new Promise<void>(resolve => listener.listen(0, '127.0.0.1', resolve));
@@ -87,5 +87,8 @@ export async function launchPostgresFixture(options: { beforeUpgrade?: (sql: pos
     await admin.unsafe(`GRANT CONNECT ON DATABASE ${database} TO ideeo_runtime, ideeo_maintenance`);
     return { root, data, admin, adminUrl, runtimeUrl: url('ideeo_runtime', runtimePassword), maintenanceUrl: url('ideeo_maintenance', maintenancePassword),
       stop, diagnostics: () => logs, version: (await run(binary('postgres'), ['--version'], { env, windowsHide: true })).stdout.trim() };
-  } catch (error) { await stop(); throw error; }
+  } catch (error) {
+    try { await stop(); } catch (cleanupError) { throw new AggregateError([error,cleanupError],'PostgreSQL fixture setup and cleanup failed'); }
+    throw error;
+  }
 }

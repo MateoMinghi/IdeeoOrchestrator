@@ -32,6 +32,6 @@ jobs:
       - run: pnpm typecheck:ideeo-ui
       - run: pnpm i18n:check
       - run: pnpm exec oxlint server/ideeo server/routes/ideeo-conversations.ts src/ideeo scripts/testing/ideeo-ui.ts scripts/testing/live-free-form.ts scripts/testing/model-fixture.ts scripts/testing/payme-storage-worker.ts
-      - run: node --experimental-strip-types --test --test-concurrency=1 server/ideeo/identity.node-test.ts server/ideeo/admission.node-test.ts server/ideeo/storage/conversations.node-test.ts server/ideeo/conversation-loop.node-test.ts server/ideeo/free-form.node-test.ts server/ideeo/gemini.node-test.ts server/ideeo/restart.node-test.ts server/ideeo/wire-diagnostics.node-test.ts server/ideeo/workspace-budget.node-test.ts server/ideeo/openmaus-tools.node-test.ts src/ideeo/client.node-test.ts
+      - run: node --experimental-strip-types --test --test-concurrency=1 server/ideeo/identity.node-test.ts server/ideeo/admission.node-test.ts server/ideeo/storage/conversations.node-test.ts server/ideeo/conversation-loop.node-test.ts server/ideeo/free-form.node-test.ts server/ideeo/gemini.node-test.ts server/ideeo/deadlines.node-test.ts server/ideeo/restart.node-test.ts server/ideeo/wire-diagnostics.node-test.ts server/ideeo/workspace-budget.node-test.ts server/ideeo/openmaus-tools.node-test.ts src/ideeo/client.node-test.ts
       - run: pnpm test:ideeo-free-form-mutation
       - run: pnpm build:ideeo-ui

@@ -1,5 +1,6 @@
 import { Agent, request } from 'node:http';
 import { Agent as HttpsAgent, request as httpsRequest } from 'node:https';
+import { channel } from 'node:diagnostics_channel';
 import type { InferenceConfiguration } from './inference-policy.ts';
 import { fixtureAnswers, fixturePrompts, inferenceAnswerKind } from './inference-policy.ts';
 import type { InferenceContext } from './inference.ts';
@@ -13,6 +14,13 @@ export const evaluationSystem = fixtureSystem + ' This is a constrained live API
 export const fixtureTool = { type: 'function' as const, function: { name: 'fixture_catalog', description: 'Read a synthetic fixture color.',
   parameters: { type: 'object', properties: { item: { type: 'string', enum: ['color'] } }, required: ['item'], additionalProperties: false } } };
 const invalid = () => new ConversationError(503,'model_unavailable');
+const timings = channel('ideeo.model.timing');
+async function measure<T>(phase: 'provider_body' | 'reauthorization' | 'settlement', work: () => Promise<T>): Promise<T> {
+  if (!timings.hasSubscribers) return work();
+  const start = performance.now();
+  try { return await work(); }
+  finally { timings.publish({phase, elapsed_ms: Math.round(performance.now() - start)}); }
+}
 function object(value: unknown): Record<string,unknown> {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw invalid();
   return value as Record<string,unknown>;
@@ -64,7 +72,7 @@ export function controlledModelTransport(config: InferenceConfiguration, credent
     const captions=new Set([...policy.calls].flatMap(call=>(JSON.parse(call).tool_calls as {id:string}[]).map(call=>JSON.stringify({type:'text',text:`Screenshot result from tool call ${call.id}:`}))));
     return captions.has(JSON.stringify(caption))&&images.every(image=>policy.images.has(JSON.stringify(image)));
   };
-  return async (url: string, init: RequestInit): Promise<Response> => {
+  return async (url: string, init: RequestInit, onProgress?: () => void): Promise<Response> => {
     const requestLimit=policy?4000000:16384;
     if (url !== config.url+'/chat/completions' || init.method !== 'POST' || typeof init.body !== 'string' || Buffer.byteLength(init.body)>requestLimit) throw invalid();
     const body=object(JSON.parse(init.body));
@@ -91,45 +99,63 @@ export function controlledModelTransport(config: InferenceConfiguration, credent
     if(images) await context.authorize('images');
     await context.authorize('model');
     const attempt=await context.reserve('model');
-    const remaining=attempt.deadline.getTime()-Date.now();
-    if (remaining<=0) throw invalid();
-    const timeout=AbortSignal.timeout(Math.min(evaluation ? 8000 : 1000,remaining));
-    const signal=AbortSignal.any([context.signal,...(init.signal ? [init.signal] : []),timeout]);
-    const assertActive=()=>{
-      if(signal.aborted) throw new ConversationError(503,timeout.aborted&&!context.signal.aborted&&!init.signal?.aborted?'model_timeout':'model_unavailable');
+    const active = init.signal ? AbortSignal.any([context.signal, init.signal]) : context.signal;
+    const assertActive = () => {
+      if (active.aborted) throw invalid();
+      if (Date.now() >= attempt.deadline.getTime()) throw new ConversationError(409,'inference_expired');
     };
+    await context.checkpoint();
     assertActive();
-    const agent=evaluation ? new HttpsAgent({keepAlive:false,maxSockets:1}) : new Agent({keepAlive:false,maxSockets:1});
-    try {
-      const response=await new Promise<{status:number;body:string;type:string}>((resolve,reject) => {
-        const req=(evaluation ? httpsRequest : request)(url,{method:'POST',agent,signal,headers:{authorization:`Bearer ${credential}`,'content-type':'application/json'}},res => {
-          const chunks:Buffer[]=[]; let size=0;
-          res.on('data',(chunk:Buffer) => {size+=chunk.length; if(size>16384){res.destroy();reject(invalid());} else chunks.push(chunk);});
-          res.on('error',reject);
-          res.on('end',()=>resolve({status:res.statusCode??503,body:Buffer.concat(chunks).toString('utf8'),type:String(res.headers['content-type']??'')}));
-        });
-        req.on('error',reject); req.end(payload);
-      }).catch(error=>{
+    onProgress?.();
+    const response = await measure('provider_body', async () => {
+      const wireMs = evaluation ? 8000 : 1000;
+      const wireEnd = performance.now() + wireMs;
+      const timeout = AbortSignal.timeout(Math.max(0, Math.min(wireMs, attempt.deadline.getTime() - Date.now())));
+      const signal = AbortSignal.any([active, timeout]);
+      const checkWire = () => {
         assertActive();
-        if(error instanceof ConversationError) throw error;
+        if (timeout.aborted || performance.now() >= wireEnd) throw new ConversationError(503,'model_timeout');
+      };
+      const agent=evaluation ? new HttpsAgent({keepAlive:false,maxSockets:1}) : new Agent({keepAlive:false,maxSockets:1});
+      try {
+        const reply = await new Promise<{status:number;body:string;type:string}>((resolve,reject) => {
+          const req=(evaluation ? httpsRequest : request)(url,{method:'POST',agent,signal,headers:{authorization:`Bearer ${credential}`,'content-type':'application/json'}},res => {
+            const chunks:Buffer[]=[]; let size=0;
+            res.on('data',(chunk:Buffer) => {size+=chunk.length; if(size>16384){res.destroy();reject(invalid());} else chunks.push(chunk);});
+            res.on('error',reject);
+            res.on('end',()=>resolve({status:res.statusCode??503,body:Buffer.concat(chunks).toString('utf8'),type:String(res.headers['content-type']??'')}));
+          });
+          req.on('error',reject); req.end(payload);
+        });
+        checkWire();
+        return reply;
+      } catch {
+        checkWire();
         throw invalid();
-      });
-      assertActive();
+      } finally { agent.destroy(); }
+    });
+
+    onProgress?.();
+    await context.checkpoint();
+    assertActive();
+    await measure('reauthorization', async () => {
       await context.authorize('model');
       if (freeForm) await context.authorize('disclosure');
       if(images) await context.authorize('images');
-      if (response.status>=300 && response.status<400) throw invalid();
-      if (response.status!==200) {
-        await context.finish(attempt.id);
-        if (evaluation) throw new ConversationError(503,response.status===429 ? 'model_rate_limited' : response.status===400 ? 'model_request_rejected' : 'model_unavailable');
-        return new Response(JSON.stringify({error:{message:'synthetic model unavailable'}}),{status:response.status>=400 && response.status<=599 ? response.status : 503,headers:{'content-type':'application/json'}});
-      }
-      if (!response.type.startsWith('application/json')) throw invalid();
-      let safe:ReturnType<typeof safeCompletion>;
-      try {safe=safeCompletion(response.body,config.mode,freeForm,context.forbidden ?? [],policy);} catch {throw invalid();}
-      await context.finish(attempt.id,safe.usage);
+    });
+    assertActive();
+    if (response.status>=300 && response.status<400) throw invalid();
+    if (response.status!==200) {
+      await measure('settlement', () => context.finish(attempt.id));
       assertActive();
-      return new Response(safe.body,{headers:{'content-type':'application/json'}});
-    } finally { agent.destroy(); }
+      if (evaluation) throw new ConversationError(503,response.status===429 ? 'model_rate_limited' : response.status===400 ? 'model_request_rejected' : 'model_unavailable');
+      return new Response(JSON.stringify({error:{message:'synthetic model unavailable'}}),{status:response.status>=400 && response.status<=599 ? response.status : 503,headers:{'content-type':'application/json'}});
+    }
+    if (!response.type.startsWith('application/json')) throw invalid();
+    let safe:ReturnType<typeof safeCompletion>;
+    try {safe=safeCompletion(response.body,config.mode,freeForm,context.forbidden ?? [],policy);} catch {throw invalid();}
+    await measure('settlement', () => context.finish(attempt.id,safe.usage));
+    assertActive();
+    return new Response(safe.body,{headers:{'content-type':'application/json'}});
   };
 }

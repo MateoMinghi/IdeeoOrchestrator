@@ -161,6 +161,10 @@ export async function createConversationStore(config: StorageConfiguration, tena
           values (${tx.json(scope)},${eventId},${turnId},${id},${parent.next_sequence},'answer.committed',${saved.created_at})`;
         await tx`update ideeo.conversations set next_sequence = next_sequence + 1 where id = ${id}`;
         await authorize();
+        if (generator) {
+          const [op] = await tx`select deadline_at > clock_timestamp() as live from ideeo.inference_operations where request_key=${keyHash} and conversation_id=${id}`;
+          if (!op?.live) throw new ConversationError(409, 'inference_expired');
+        }
         assertContentLive(parent.expires_at.toISOString());
         return { ...saved, event_id: eventId };
       });

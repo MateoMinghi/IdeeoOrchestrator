@@ -82,7 +82,7 @@ interface NativeLog {
 const LIVENESS_MISSES = 3;
 
 export interface ChatRuntimePorts {
-  send(url: string, init: RequestInit): Promise<Response>;
+  send(url: string, init: RequestInit, onProgress?: () => void): Promise<Response>;
   mount(turn: SendTurnInput, signal: AbortSignal, model: string, scope: ReturnType<typeof parseToolScope> & { ok: true }, safeText: (text: string) => string, notice: (notice: {message: string; text?: import("../../shared/server-text.ts").ServerText}) => void, toolsOff: boolean): Promise<ChatToolSession>;
   join(tools: ChatToolSession, reserved: ChatToolDefinition[]): Promise<string[] | undefined>;
   refit(tools: ChatToolSession, error: Error, model: string, reserved: ChatToolDefinition[]): Promise<string[] | undefined>;
@@ -307,7 +307,7 @@ export function createOpenAIChatRuntime<Config>(options: RuntimeOptions<Config>)
         headers: { authorization: `Bearer ${options.apiKey}`, "content-type": "application/json" },
         body: payload,
         signal: activeSignal,
-      });
+      }, resetIdleTimer);
       const failure = (status: number, body: string): Error => {
         const plain = options.plainRefusal?.(status, body); if (plain) return new Error(plain);
         const message = `${options.httpErrorLabel} HTTP ${status}${body ? `: ${httpErrorDetail(body)}` : ""}`;

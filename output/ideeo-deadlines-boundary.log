@@ -1,0 +1,14 @@
+▶ authenticated evaluation deadlines with a loopback provider and disposable PostgreSQL
+  ✔ a near-limit body can settle and commit after ten seconds (11139.5026ms)
+  ✔ revoked after receipt (308.8724ms)
+  ✔ expired after settlement (290.8855ms)
+✔ authenticated evaluation deadlines with a loopback provider and disposable PostgreSQL (45700.3415ms)
+ℹ {"turn_ms":10871,"provider_body":7521,"reauthorization":2378,"settlement":515}
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 48857.7167

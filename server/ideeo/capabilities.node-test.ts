@@ -59,12 +59,16 @@ test('authenticated conversation executes scoped workspace tools through the Ope
   const executor=createCapabilityExecutor({scope,credential,tools:registered,claim:async id=>{try{const file=await open(join(receipts,id),'wx');await file.close();return true;}catch{return false;}},handlers});
   const endpoint=await listen(executor);cleanup.push(()=>close(executor));
   const observed:Record<string,unknown>[]=[];
+  let stallFinalBody=false;
   const model=createServer(async(req,res)=>{
     try{
       assert.equal(req.headers.authorization,`Bearer ${modelKey}`);
       const chunks:Buffer[]=[];for await(const chunk of req)chunks.push(chunk);
       const body=JSON.parse(Buffer.concat(chunks).toString('utf8'));observed.push(body);
       const last=body.messages.at(-1),didSearch=last.role==='tool'&&String(last.content).includes('matches');
+      if(stallFinalBody && last.role==='tool'){
+        res.writeHead(200,{'content-type':'application/json'});res.write('{"choices":');return;
+      }
       const call=!textOnly&&!Array.isArray(last.content)&&(last.role!=='tool'||didSearch);
       const name=toolName;
       const args=toolArgs;
@@ -167,6 +171,21 @@ test('authenticated conversation executes scoped workspace tools through the Ope
   await t.test('revocation after an effect withholds its answer',async()=>{
     const path=await create();afterEffect=()=>product.tenants[0].set({scopes:scopes.filter(s=>s!=='tool:files:write')});
     try{assert.equal((await request(path,input)).status,503);assert.equal((await request(path)).body.turns.length,0);}finally{afterEffect=undefined;product.tenants[0].set({scopes});}
+  });
+  await t.test('timeout reading the final body keeps the original debit and prevents a second file write',async()=>{
+    const path=await create(), idem=randomUUID(), before=effects, calls=observed.length;
+    stallFinalBody=true;
+    try{
+      const timedOut=await request(path,input,idem);
+      assert.equal(timedOut.status,503);assert.equal(timedOut.body.error.code,'model_timeout');
+    }finally{stallFinalBody=false;}
+    const replay=await request(path,input,idem);
+    assert.equal(replay.status,409);assert.equal(replay.body.error.code,'capability_reconciliation_required');
+    assert.equal((await request(path)).body.turns.length,0);
+    assert.equal(observed.length,calls+2);assert.equal(effects,before+1);
+    const rows=await pg.admin`select a.kind,a.status from ideeo.inference_attempts a
+      join ideeo.inference_operations o using(scope,request_key) where o.conversation_id=${path.split('/')[3]} order by a.created_at`;
+    assert.deepEqual(Array.from(rows,r=>[r.kind,r.status]),[['model','finished'],['tool','finished'],['model','reserved']]);
   });
   await t.test('commit failure cannot repeat an external effect on retry',async()=>{
     const path=await create(),idem=randomUUID(),before=effects;
