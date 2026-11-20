@@ -143,6 +143,8 @@ export async function launchIdeeoFixture(options: { storage?: StorageConfigurati
   const root = await mkdtemp(join(tmpdir(), 'ideeo-admission-'));
   const tenants: Awaited<ReturnType<typeof createTenantFixture>>[] = [];
   let child: ReturnType<typeof spawn> | undefined;
+  let url:string|undefined;
+  let stopped=false;
   let generation=0;
   const lifecycle:ProductLifecycleEvent[]=[];
   const record=(event:string,start:number,details:Partial<ProductLifecycleEvent>={})=>{
@@ -151,6 +153,7 @@ export async function launchIdeeoFixture(options: { storage?: StorageConfigurati
     options.onLifecycle?.(entry);
   };
   const kill = async () => {
+    url=undefined;
     if (child?.pid && child.exitCode === null && child.signalCode === null) {
       const ownedChild = child;
       const started=Date.now();
@@ -162,6 +165,7 @@ export async function launchIdeeoFixture(options: { storage?: StorageConfigurati
     }
   };
   const stop = async () => {
+    if(stopped) return;
     await kill();
     await Promise.all(tenants.map(tenant => stopServer(tenant.server)));
     const resolved = await realpath(root);
@@ -169,6 +173,7 @@ export async function launchIdeeoFixture(options: { storage?: StorageConfigurati
       throw new Error('Unexpected fixture cleanup target');
     }
     await rm(resolved, { recursive: true, force: true });
+    stopped=true;
   };
   try {
     for (const id of ['alpha', 'beta']) tenants.push(await createTenantFixture(id));
@@ -194,36 +199,74 @@ registerHooks({resolve(specifier,context,next){const result=next(specifier,conte
       await writeFile(configPath, JSON.stringify(config));
       child = spawn(process.execPath, ['--experimental-strip-types',...(options.onLifecycle?['--import',new URL('./product-startup.mjs',import.meta.url).href]:[]),...(options.guardHostImports?['--import',pathToFileURL(guardPath).href]:[]),...(options.traceModelShape?['--import',new URL('./model-wire-shape.mjs',import.meta.url).href]:[]), fileURLToPath(new URL('../../server/ideeo-main.ts', import.meta.url)), '--config', configPath],
       { cwd: root, env: environment, windowsHide: true, stdio: options.onLifecycle?['ignore','pipe','pipe','ipc']:['ignore','pipe','pipe'] });
-    const ownedChild = child;
-    ownedChild.on('message',phase=>{
-      if(typeof phase==='string'&&['preload','configure','admission','capabilities','storage','routes_ready'].includes(phase)) record(phase,started);
-    });
-    ownedChild.once('spawn',()=>record('spawn',started,{pid:ownedChild.pid}));
-    child.stderr!.on('data', chunk => { logs = (logs + chunk.toString()).slice(options.traceModelShape?-32768:-4096); });
-    return new Promise<string>((resolve, reject) => {
-      const timer = setTimeout(() => {record('startup_timeout',started);reject(Object.assign(new Error('Fixture startup timed out'),{code:'ETIMEDOUT'}));}, options.startupTimeoutMs??10000);
-      ownedChild.once('error', (error:NodeJS.ErrnoException) => { record('child_error',started,{code:error.code});clearTimeout(timer); reject(error); });
-      ownedChild.once('exit', (code,signal) => {
-        record('exit',started,{pid:ownedChild.pid,code,signal});
-        clearTimeout(timer);
-        const category = logs.includes('Host composition forbidden') ? 'host-import' : logs.match(/\bERR_[A-Z_]+\b/)?.[0] ?? 'startup';
-        reject(new Error(`Fixture exited before readiness (${code}, ${category})`));
+      const ownedChild = child;
+      ownedChild.on('message',phase=>{
+        if(typeof phase==='string'&&['preload','configure','admission','capabilities','storage','routes_ready'].includes(phase)) record(phase,started);
       });
-      let output = '';
-      ownedChild.stdout!.on('data', chunk => {
-        output += chunk.toString();
-        if (!output.includes('\n')) return;
-        try {
-          const event = JSON.parse(output.split('\n')[0]);
-          if (event.event !== 'listening' || !/^http:\/\/127\.0\.0\.1:\d+$/.test(event.url)) throw new Error('Invalid fixture address');
-          record('listening',started,{url:event.url});clearTimeout(timer); resolve(event.url);
-        } catch { clearTimeout(timer); reject(new Error('Invalid fixture readiness')); }
+      ownedChild.once('spawn',()=>record('spawn',started,{pid:ownedChild.pid}));
+      ownedChild.stderr!.on('data', chunk => { logs = (logs + chunk.toString()).slice(options.traceModelShape?-32768:-4096); });
+      const stdout=ownedChild.stdout!;
+      let output='';
+      return new Promise<string>((resolve,reject)=>{
+        function finishWaiting() {
+          clearTimeout(timer);
+          stdout.off('data',onOutput);
+        }
+        function onOutput(chunk:Buffer) {
+          output+=chunk.toString();
+          if(!output.includes('\n')) return;
+          finishWaiting();
+          try {
+            const event=JSON.parse(output.split('\n')[0]);
+            if(event.event!=='listening'||event.pid!==ownedChild.pid||!/^http:\/\/127\.0\.0\.1:\d+$/.test(event.url)) throw new Error('Invalid fixture address');
+            record('listening',started,{pid:ownedChild.pid,url:event.url});
+            resolve(event.url);
+          } catch {reject(new Error('Invalid fixture readiness'));}
+        }
+        const timer=setTimeout(()=>{
+          finishWaiting();
+          record('startup_timeout',started,{pid:ownedChild.pid,code:ownedChild.exitCode,signal:ownedChild.signalCode});
+          reject(Object.assign(new Error('Fixture startup timed out'),{code:'ETIMEDOUT'}));
+        },options.startupTimeoutMs??10000);
+        stdout.on('data',onOutput);
+        ownedChild.once('error',(error:NodeJS.ErrnoException)=>{
+          finishWaiting();
+          record('child_error',started,{code:error.code});
+          reject(error);
+        });
+        ownedChild.once('exit',(code,signal)=>{
+          finishWaiting();
+          record('exit',started,{pid:ownedChild.pid,code,signal});
+          const category=logs.includes('Host composition forbidden')?'host-import':logs.match(/\bERR_[A-Z_]+\b/)?.[0]??'startup';
+          reject(new Error(`Fixture exited before readiness (${code}, ${category})`));
+        });
       });
-    });
     };
-    let url = await start();
-    return { get url() { return url; }, root, tenants, config, environment, stop, kill,
-      async restart() { await kill(); url = await start(); },
+    url=await start();
+    let pending=0;
+    let last=Promise.resolve();
+    const transition=(operation:()=>Promise<void>)=>{
+      pending++;
+      const result=last.then(operation).finally(()=>{pending--;});
+      last=result.catch(()=>{});
+      return result;
+    };
+    const restart=async()=>{
+      if(stopped) throw Object.assign(new Error('Product fixture has stopped'),{code:'ERR_FIXTURE_STOPPED'});
+      await kill();
+      try {url=await start();}
+      catch(error){
+        try {await kill();} catch(cleanupError){throw new AggregateError([error,cleanupError],'Product replacement and cleanup failed');}
+        throw error;
+      }
+    };
+    return { get url() {
+      if(pending||!url||child?.exitCode!==null||child.signalCode!==null) {
+        throw Object.assign(new Error('Product fixture has no ready listener'),{code:'ERR_FIXTURE_NOT_READY'});
+      }
+      return url;
+    }, root, tenants, config, environment, stop:()=>transition(stop), kill:()=>transition(kill),
+      restart:()=>transition(restart),
       processStatus:()=>({exit_code:child?.exitCode??null,signal_code:child?.signalCode??null}),
       lifecycle:()=>lifecycle.slice(-100),
       diagnostics: () => logs,

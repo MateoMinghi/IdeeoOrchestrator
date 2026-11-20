@@ -1,5 +1,8 @@
 import assert from 'node:assert/strict';
 import { randomBytes, randomUUID } from 'node:crypto';
+import { access, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import test from 'node:test';
 import { launchIdeeoFixture } from '../../scripts/testing/ideeo-fixture.ts';
 import { launchPostgresFixture } from '../../scripts/testing/postgres-fixture.ts';
@@ -7,6 +10,44 @@ import { launchModelFixture } from '../../scripts/testing/model-fixture.ts';
 import { fixtureFetch } from '../../scripts/testing/fixture-http.ts';
 import { workshopPrompt, workshopScenarios } from '../../scripts/testing/workshop-scenarios.ts';
 import type { ConversationHistory, TurnView } from '../../shared/ideeo/conversations.ts';
+
+test('a timed-out replacement retires its address and an explicit restart recovers',async t=>{
+  const fixture=await launchIdeeoFixture();
+  t.after(()=>fixture.stop());
+  const proof=await fixture.tenants[0].token();
+  const session=async()=>{
+    const response=await fixtureFetch(fixture.url+'/v2/session',{headers:{authorization:'Bearer '+proof}});
+    assert.equal(response.status,200);
+    assert.equal((await response.json() as {tenant_id:string}).tenant_id,'alpha');
+  };
+  await session();
+  const preload=join(fixture.root,'hold-startup.mjs');
+  await writeFile(preload,`import {channel} from 'node:diagnostics_channel';
+import {writeFileSync} from 'node:fs';
+channel('ideeo.product.startup').subscribe(phase=>{
+  if(phase==='routes_ready'){
+    writeFileSync(new URL('./entered-hold',import.meta.url),'ready to listen');
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0,30000);
+  }
+});`);
+  fixture.environment.NODE_OPTIONS='--import='+pathToFileURL(preload).href;
+  try { await assert.rejects(fixture.restart(),{code:'ETIMEDOUT'}); }
+  finally { delete fixture.environment.NODE_OPTIONS; }
+  await access(join(fixture.root,'entered-hold'));
+  assert.throws(()=>fixture.url,{code:'ERR_FIXTURE_NOT_READY'});
+  const failed=fixture.lifecycle().filter(event=>event.generation===2);
+  assert.ok(failed.some(event=>event.event==='startup_timeout'));
+  assert.ok(failed.some(event=>event.event==='exit'));
+  assert.ok(!failed.some(event=>event.event==='listening'));
+  await fixture.restart();
+  await session();
+  const stopped=fixture.stop();
+  const afterStop=assert.rejects(fixture.restart(),{code:'ERR_FIXTURE_STOPPED'});
+  assert.throws(()=>fixture.url,{code:'ERR_FIXTURE_NOT_READY'});
+  await Promise.all([stopped,afterStop]);
+  assert.deepEqual(fixture.lifecycle().filter(event=>event.event==='spawn').map(event=>event.generation),[1,2,3]);
+  await assert.rejects(access(fixture.root),{code:'ENOENT'});
+});
 
 test('failed model turns survive repeated product restart without losing service',{timeout:180000},async t=>{
   const pg=await launchPostgresFixture(),model=await launchModelFixture();

@@ -155,6 +155,12 @@ node --experimental-strip-types --test --test-concurrency=1 server/ideeo/booking
 
 The booking test prints its unique JSONL path under `output/`. Each first history read targets the reported loopback URL before the React client performs session admission for status or replay. Inspect the ledger and browser counters, child lifecycle, and individual shutdown records. The separate live booking diagnostic writes its shutdown outcomes beside its pre-cleanup report in a `.shutdown.jsonl` file.
 
+To check recovery from a failed replacement on its own, run the following from the repository root. This case holds a disposable replacement immediately before listening and uses the default ten-second readiness window. The fixture retires the old URL and waits for the failed child to exit before returning the startup error. A subsequent explicit restart can publish a new URL and serve the original tenant.
+
+```powershell
+node --experimental-strip-types --test --test-concurrency=1 --test-name-pattern="timed-out replacement" server/ideeo/restart.node-test.ts
+```
+
 For failed-turn recovery, run the following suites sequentially. The restart fixture injects a model timeout, restarts the product on the same database, checks the failed key and sends a self-contained planning revision. The capability fixture exercises an actual workspace effect followed by a failed answer commit. The browser recipe in the free-form section also checks a lost first response and an edited draft after a rejected model answer.
 
 ```powershell

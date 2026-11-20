@@ -562,3 +562,18 @@ node node_modules/typescript/bin/tsc --singleThreaded --checkers 1 --noEmit -p t
 ```
 
 Both strict configurations exited 0. Targeted Oxlint on the thirteen changed TypeScript/JavaScript sources and `git diff --check` also exited 0. All linked evidence files were present. A scan of the retained booking artifacts found zero database URL, bearer credential, JWT, provider-key or private-key patterns. The work remains local for review.
+
+## Retiring a failed product replacement
+
+On local `dev` at `158858d`, a deterministic fixture regression held an owned replacement at `routes_ready` past the ten-second window. The test verified that the child entered the hold and that restart returned `ETIMEDOUT`. Reading the fixture URL then returned the previous listener's address, even though the fixture had already stopped that child. The assertion detected this before sending another HTTP request. [Pre-fix failure](../../../output/ideeo-restart-retirement-before.log)
+
+The fixture now withdraws the address during lifecycle changes, waits for a failed replacement to exit and preserves the startup error. A successful handshake must identify the spawned PID and its loopback listener. The test checks that the failed generation produced a timeout and exit, then explicitly restarts and reads the original tenant's authenticated session from the next generation. A restart queued behind final shutdown is rejected and the fixture root is removed. This covers the stale-address failure after a readiness timeout. The cause of the historical spontaneous ten-second stall remains open.
+
+```powershell
+node --experimental-strip-types --test --test-concurrency=1 --test-name-pattern="timed-out replacement" server/ideeo/restart.node-test.ts
+node --experimental-strip-types --test --test-concurrency=1 server/ideeo/booking-restart.node-test.ts server/ideeo/restart.node-test.ts server/ideeo/storage/conversations.node-test.ts server/ideeo/conversation-loop.node-test.ts
+```
+
+The first command failed 0/1 on the original implementation. The second passed **66/66** on Node 24.15.0 and PostgreSQL 18.0, including process death before and after commit, recovered receipts, and five completed-booking replacements. Each first history read took 59–62 ms and verified both turns. Replays left one booking, three browser actions and unchanged model and tool counters. The fresh turn committed. Product, browser workspace, model and PostgreSQL reported successful shutdown. [Serial suite log](../../../output/ideeo-restart-retirement-after.log) · [Booking and cleanup evidence](../../../output/ideeo-booking-restart-deabc6da-84ca-4e9a-b22b-73a4997f848f.jsonl)
+
+The first focused typecheck found an ES2024 Promise API in fixture code targeting ES2023. The readiness listener now uses the existing Promise constructor. Both strict configurations passed with the single-checker commands above after refreshing the two changed sources and verifying their hashes. Targeted Oxlint and `git diff --check` passed, and none of the six recorded booking child PIDs remained as Node processes.

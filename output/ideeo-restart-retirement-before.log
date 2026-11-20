@@ -1,0 +1,25 @@
+✖ a timed-out replacement retires its address and an explicit restart recovers (13468.9055ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14743.8617
+
+✖ failing tests:
+
+test at server\ideeo\restart.node-test.ts:14:1
+✖ a timed-out replacement retires its address and an explicit restart recovers (13468.9055ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/server/ideeo/restart.node-test.ts:37:10)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { code: 'ERR_FIXTURE_NOT_READY' },
+    operator: 'throws',
+    diff: 'simple'
+  }
