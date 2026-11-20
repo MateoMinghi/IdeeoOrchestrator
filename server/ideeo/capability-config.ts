@@ -4,7 +4,7 @@ import { compileToolSchema } from '../mcp-schema-validator.ts';
 
 /** Trusted development configuration binds a pinned tool contract to one complete caller and isolated executor. */
 export type CapabilityConfiguration = Readonly<{
-  scope: CallerScope; url: string; credentialEnv: string;
+  bookingVerification?: true; scope: CallerScope; url: string; credentialEnv: string;
   tools: readonly Readonly<{ name: string; family: CapabilityFamily; description: string; inputSchema: Record<string,unknown>; permission: string }>[];
 }>;
 const validators=new WeakMap<Record<string,unknown>,{json:string;validate:ReturnType<typeof compileToolSchema>}>();
@@ -29,7 +29,9 @@ export function parseCapabilityConfiguration(raw: unknown, tenants: readonly str
   if (!Array.isArray(raw) || raw.length>64) throw new Error('Invalid capability routes');
   const names=new Set<string>();
   return raw.map(value=>{
-    const route=fields(value,['scope','url','credentialEnv','tools']);
+    const verify=value && Object.hasOwn(value,'bookingVerification');
+    const route=fields(value,['scope','url','credentialEnv','tools',...(verify?['bookingVerification']:[])]);
+    if(verify && route.bookingVerification!==true) throw new Error('Invalid booking verification configuration');
     const scope=fields(route.scope,['tenant_id','membership_id','client_id','agent_account_id','grant_id','channel','channel_binding_id']);
     for(const [name,item] of Object.entries(scope)) if(typeof item!=='string' || item.length>200 || /[\p{Cc}\p{Cf}]/u.test(item) || name!=='channel_binding_id'&&!item) throw new Error('Invalid capability owner');
     if(!tenants.includes(String(scope.tenant_id)) || !['sdk','whatsapp'].includes(String(scope.channel)) || (scope.channel==='sdk') !== (scope.channel_binding_id==='')) throw new Error('Invalid capability owner');
@@ -39,7 +41,7 @@ export function parseCapabilityConfiguration(raw: unknown, tenants: readonly str
     if(!Array.isArray(route.tools)||!route.tools.length||route.tools.length>256) throw new Error('Invalid capability tools');
     const tools=route.tools.map(value=>{
       const tool=fields(value,['name','family','description','inputSchema','permission']);
-      if(typeof tool.name!=='string'||!/^[A-Za-z][A-Za-z0-9_]{0,63}$/.test(tool.name)||['search_tools','describe_tool','call_tool','fixture_catalog'].includes(tool.name)
+      if(typeof tool.name!=='string'||!/^[A-Za-z][A-Za-z0-9_]{0,63}$/.test(tool.name)||['search_tools','describe_tool','call_tool','fixture_catalog','lookup_workshop_booking'].includes(tool.name)
         || !CAPABILITY_FAMILIES.includes(tool.family as CapabilityFamily) || typeof tool.description!=='string'||!tool.description.trim()||tool.description.length>1000
         || typeof tool.permission!=='string'||!/^tool:[a-z][a-z0-9_-]{0,63}:[a-z][a-z0-9_-]{0,63}$/.test(tool.permission)) throw new Error('Invalid capability tool');
       if(!tool.inputSchema||typeof tool.inputSchema!=='object'||Array.isArray(tool.inputSchema)||JSON.stringify(tool.inputSchema).length>12000) throw new Error('Invalid capability schema');
@@ -49,6 +51,7 @@ export function parseCapabilityConfiguration(raw: unknown, tenants: readonly str
       names.add(key);
       return Object.freeze(tool as CapabilityConfiguration['tools'][number]);
     });
-    return Object.freeze({scope:Object.freeze(scope as CallerScope),url:url.href,credentialEnv:route.credentialEnv,tools:Object.freeze(tools)});
+    if(verify && !tools.some(t=>t.name==='agent_browser_click' && t.family==='browser' && t.permission==='tool:browser:interact')) throw new Error('Missing booking browser');
+    return Object.freeze({...(verify?{bookingVerification:true as const}:{}),scope:Object.freeze(scope as CallerScope),url:url.href,credentialEnv:route.credentialEnv,tools:Object.freeze(tools)});
   });
 }

@@ -50,11 +50,17 @@ export function createIdeeoConversationRoutes(service: ReturnType<typeof createC
       const url = new URL(req.url, 'http://127.0.0.1');
       const create = url.pathname === '/v2/conversations';
       const capabilities=url.pathname==='/v2/conversations/capabilities';
-      const match = /^\/v2\/conversations\/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})\/turns(\/status)?$/.exec(url.pathname);
+      const match = /^\/v2\/conversations\/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})\/turns(\/status|\/booking-check)?$/.exec(url.pathname);
       if (!create && !match && !capabilities) throw new ConversationError(404, 'not_found');
-      if (capabilities || match?.[2] ? req.method!=='GET' : req.method !== 'POST' && !(req.method === 'GET' && match)) throw new ConversationError(405, 'method_not_allowed');
+      const bookingCheck=match?.[2]==='/booking-check';
+      if (bookingCheck ? req.method!=='POST' : capabilities || match?.[2] ? req.method!=='GET' : req.method !== 'POST' && !(req.method === 'GET' && match)) throw new ConversationError(405, 'method_not_allowed');
       let result: unknown;
-      if (match?.[2]) {
+      if (bookingCheck && match) {
+        if(url.search) throw invalid();
+        const body=await json(req);
+        if(Object.keys(body).join(',')!=='attempt_id' || typeof body.attempt_id!=='string' || !/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/.test(body.attempt_id)) throw invalid();
+        result=await service.checkBooking(req.headers.authorization,match[1],body.attempt_id,controller.signal);
+      } else if (match?.[2]) {
         if (url.search || req.headers['transfer-encoding'] || Number(req.headers['content-length'] ?? 0) !== 0) throw invalid();
         result = await service.turnStatus(req.headers.authorization, match[1], requestKey(req), controller.signal);
       } else if(capabilities){

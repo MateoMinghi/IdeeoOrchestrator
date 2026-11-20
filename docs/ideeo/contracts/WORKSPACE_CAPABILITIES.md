@@ -28,6 +28,12 @@ The file adapter uses the four inherited OpenMaus host file tools with workspace
 
 The disposable Skills executor exposes `skills_list` with `tool:skills:read`. The trusted workspace supplies its catalog. Listing returns enabled names and descriptions. A query uses the OpenMaus input schema and skill ranking and returns up to eight matches. The fixture exercises current disclosure authority after the read, cancellation during the read, retained tool debits, replay and the shared tenant ceiling. Skill bodies, management, installation and execution remain outside this qualification.
 
+## Explicit booking verification
+
+The disposable Willow Studio browser route can opt in to reservation verification. Its executor binds a hidden reservation reference to the conversation and original click attempt before submitting the form. The site records its confirmation under that reference. Its authenticated lookup reads that exact record, including when another booking already exists. The verifier is reserved for explicit product requests and is absent from the model tool catalog. Enabling it requires the trusted route setting `bookingVerification: true` and the pinned browser click permission.
+
+The check requires current conversation read/write, browser interaction and `tool:booking:verify` authority. It reserves a tool attempt under a separate deterministic check key before contacting the executor. The ordinary workspace operation deadline, executor timeout and shared tenant budget apply. Viewing a receipt requires current read and both tool permissions. The executor returns only the matching generated confirmation or an unknown outcome. Verification sends no receipt to a model.
+
 ## Remaining coverage
 
 Computer control, connected apps/email, data, agents/delegation, memory, automation, research, image generation, voice, meetings, hosting, devices and workspace settings still need concrete workspace composition and individual authorization/lifecycle tests. The source inventory is discovery evidence only. Production VMs, external credentials, approval interaction, long workflows, real-model tool semantics, React capability UX, independent review and human acceptance remain open.

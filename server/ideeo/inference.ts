@@ -8,7 +8,7 @@ export type InferenceContext = {
   forbidden?: readonly string[];
   toolPermissions?: readonly string[];
   execution?: Readonly<{scope: CallerScope; conversationId: string}>;
-  claimTools?(): Promise<void>;
+  claimTools?(bookingAttemptId?: string): Promise<void>;
   authorize(kind: InferenceKind, permission?: string): Promise<void>;
   checkpoint(): Promise<void>;
   reserve(kind: 'model'|'tool'): Promise<{ id: string; deadline: Date }>;

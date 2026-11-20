@@ -1,0 +1,5 @@
+{"phase":"booking append","http":503,"error":"storage_unavailable","events":[{"name":"agent_browser_open","status":"succeeded","hasForm":true,"hasConfirmation":false},{"name":"agent_browser_click","status":"succeeded","hasForm":false,"hasConfirmation":false},{"name":"agent_browser_snapshot","status":"succeeded","hasForm":false,"hasConfirmation":true}],"modelCalls":4,"bookings":1}
+{"phase":"shutdown","fixture":"product","elapsed_ms":189,"outcome":"stopped"}
+{"phase":"shutdown","fixture":"model","elapsed_ms":2,"outcome":"stopped"}
+{"phase":"shutdown","fixture":"browser workspace","elapsed_ms":26371,"outcome":"stopped"}
+{"phase":"shutdown","fixture":"PostgreSQL","elapsed_ms":5848,"outcome":"stopped"}

@@ -18,9 +18,15 @@ export type TurnView = Readonly<{
   created_at: string;
   expires_at: string;
 }>;
+/** Read-only recovery for one dispatched browser attempt. */
+export type BookingCheck = Readonly<{ attempt_id: string }> & (
+  | Readonly<{ status: 'pending' | 'unable_to_verify' }>
+  | Readonly<{ status: 'verified'; confirmation: string }>
+);
 /** A bounded committed snapshot; next_after is an exclusive sequence cursor, not authority. */
 export type ConversationHistory = ConversationView & Readonly<{
   turns: readonly TurnView[];
+  booking_checks?: readonly BookingCheck[];
   next_after: number | null;
 }>;
 /** Caller-scoped observation of an append key. A workspace claim leaves its external outcome uncertain. */

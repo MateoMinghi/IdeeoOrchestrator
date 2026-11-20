@@ -577,3 +577,40 @@ node --experimental-strip-types --test --test-concurrency=1 server/ideeo/booking
 The first command failed 0/1 on the original implementation. The second passed **66/66** on Node 24.15.0 and PostgreSQL 18.0, including process death before and after commit, recovered receipts, and five completed-booking replacements. Each first history read took 59–62 ms and verified both turns. Replays left one booking, three browser actions and unchanged model and tool counters. The fresh turn committed. Product, browser workspace, model and PostgreSQL reported successful shutdown. [Serial suite log](../../../output/ideeo-restart-retirement-after.log) · [Booking and cleanup evidence](../../../output/ideeo-booking-restart-deabc6da-84ca-4e9a-b22b-73a4997f848f.jsonl)
 
 The first focused typecheck found an ES2024 Promise API in fixture code targeting ES2023. The readiness listener now uses the existing Promise constructor. Both strict configurations passed with the single-checker commands above after refreshing the two changed sources and verifying their hashes. Targeted Oxlint and `git diff --check` passed, and none of the six recorded booking child PIDs remained as Node processes.
+
+## Check booking after an interrupted answer
+
+On local `dev` based on `ca78062`, a generated tenant used the shared OpenMaus loop and an isolated Chrome browser to book the disposable Willow Studio site. A PostgreSQL trigger then rejected the answer insert. A second conversation clicked a heading without making a reservation and reached the same trigger. A nontransactional sequence counted both rejected inserts. The product restarted against the same authority, workspace, database and keys.
+
+The test requested the first booking's check after removing its verify permission, after revoking the grant, from a different tenant and from the wrong conversation. The tool ledger and site lookup counts stayed at their baseline. In the built React UI, **Check booking** displayed the site's matching confirmation. Reload and explicit replay returned the encrypted receipt. The site had one booking and the check consumed one tool reservation and one site read. The original status remained `reconciliation_required` with empty committed history. Checking the heading click returned `unable_to_verify` even though the site had a reservation for the other conversation.
+
+The standalone command was `node --experimental-strip-types --test --test-concurrency=1 server/ideeo/booking-check.node-test.ts`. Two runs failed at the trigger counter because the disposable runtime cannot resolve a sequence in the restricted public schema. The second run independently recorded site success. Moving the counter to the fixture-accessible schema let the test distinguish a rejected insert from other HTTP 503 outcomes. The next standalone run passed 1/1. Its browser workspace shutdown took 662,529 ms and required explicitly retiring the run's owned Chrome processes after verifying their parent and profile. PostgreSQL stopped in 26,804 ms. The subsequent fixture change builds the React bundle in a short-lived process before launching Chrome and closes each conversation browser after use. [First shutdown trace](../../../output/ideeo-booking-check-56ec74ce-73a9-4306-b792-d2577324a1bd.jsonl) | [Failed counter and site evidence](../../../output/ideeo-booking-check-8967647f-e2e0-4d6e-873a-64ed2aecc8d7.jsonl) | [First passing run and slow shutdown](../../../output/ideeo-booking-check-4314f1ec-b7d1-4f13-b033-9268047508aa.jsonl)
+
+The first combined run used the following command, with test files executed serially.
+
+```powershell
+node --experimental-strip-types --test --test-concurrency=1 server/ideeo/booking-check.node-test.ts server/ideeo/booking-restart.node-test.ts server/ideeo/restart.node-test.ts server/ideeo/capabilities.node-test.ts server/ideeo/deadlines.node-test.ts server/ideeo/workspace-budget.node-test.ts server/ideeo/conversation-loop.node-test.ts server/ideeo/storage/conversations.node-test.ts *> output/ideeo-booking-check-serial.log
+```
+
+It reported 65 passes and 11 failures across 76 tests. Both booking scenarios reached the first model call and started a browser open, with zero reservations at the site. The new recovery test therefore failed its precondition. The comparison also recorded an aborted browser request, a failed image check, product readiness timeouts and later capability cases encountering the retired fixture listener. The passing cases included the schema upgrade, controlled loop, deadline and repeated restart checks. No product readiness, provider, database or durable budget limit was raised. [Serial log](../../../output/ideeo-booking-check-serial.log) | [Recovery fixture trace](../../../output/ideeo-booking-check-34150bb4-c145-41f3-858f-d135c1f9389d.jsonl) | [Completed-booking comparison trace](../../../output/ideeo-booking-restart-3d67f7e0-0ed1-4902-be69-235913ce687a.jsonl)
+
+On November 20 the same eight files and time limits passed **96/96** in 339.1 seconds. The storage fixture reached its nested cases on this run. The exact command was
+
+```powershell
+node --experimental-strip-types --test --test-concurrency=1 --test-reporter=spec --test-reporter-destination=output/ideeo-booking-check-final.log server/ideeo/booking-check.node-test.ts server/ideeo/booking-restart.node-test.ts server/ideeo/restart.node-test.ts server/ideeo/capabilities.node-test.ts server/ideeo/deadlines.node-test.ts server/ideeo/workspace-budget.node-test.ts server/ideeo/conversation-loop.node-test.ts server/ideeo/storage/conversations.node-test.ts
+```
+
+The verified check increased tool reservations from five to six and site reads from zero to one. Model calls stayed at seven, browser actions at five and website bookings at one. The unmatched-reference check used one additional read. Each replay returned its original outcome with unchanged counters. The React browser, React preview, product, model, browser workspace and database all reported successful shutdown. The browser workspace stopped in 11 ms and PostgreSQL in 3,879 ms. In the completed-booking comparison, all five authenticated first reads verified both turns in 65 to 103 ms and the fresh append committed. The earlier failure was not reproduced under these conditions. The runs do not establish the cause of the earlier stall. [Final suite log](../../../output/ideeo-booking-check-final.log) | [Receipt, replay and shutdown counters](../../../output/ideeo-booking-check-bbc7cec1-86cc-4e9c-b8ec-9f2324fef90a.jsonl) | [Five replacement cycles](../../../output/ideeo-booking-restart-3f15fcd3-773a-4e9b-9566-e6bf527f63d3.jsonl)
+
+The modified TypeScript, locale and migration sources were copied to the frozen-lockfile verification checkout and their SHA-256 hashes compared. The first focused compilation identified untyped JSON responses in the new fixture and assertions. The corrected sources passed all three configurations below. The interrupted November 19 full-check session had no recoverable exit status. The November 20 results are from a fresh invocation.
+
+```powershell
+Set-Location .omb-scratch/ideeo-capability-check
+$env:GOMAXPROCS='2'
+$env:GOMEMLIMIT='1700MiB'
+node node_modules/typescript/bin/tsc --singleThreaded --checkers 1 --noEmit -p tsconfig.ideeo-ui.json
+node node_modules/typescript/bin/tsc --singleThreaded --checkers 1 --noEmit -p tsconfig.ideeo-server.json
+node node_modules/typescript/bin/tsc --singleThreaded --checkers 1 --noEmit -p tsconfig.server.json
+```
+
+Targeted Oxlint exited 0. `node scripts/generate-locale.mjs --check` validated all 16 locale catalogs. The React bundle built in the isolated test, and none of the six product child IDs in the replacement trace remained live Node processes. [Compiler exit codes](../../../output/ideeo-booking-check-types.log)

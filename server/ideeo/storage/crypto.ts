@@ -44,7 +44,7 @@ export function createContentProtection(config: StorageConfiguration, tenants: r
     fingerprint(scope: CallerScope, purpose: string, value: unknown) {
       return createHmac('sha256', fingerprintKey).update(JSON.stringify(['ideeo', 1, scope, purpose, value])).digest('hex');
     },
-    encrypt(binding: ContentBinding, field: 'user' | 'answer', value: unknown): Envelope {
+    encrypt(binding: ContentBinding, field: 'user' | 'answer' | 'booking-receipt', value: unknown): Envelope {
       const kid = config.activeKeyId, key = keys.get(binding.scope.tenant_id)?.get(kid);
       if (!key) throw new Error('Unavailable storage key');
       const iv = randomBytes(12), cipher = createCipheriv('aes-256-gcm', key, iv);
@@ -52,7 +52,7 @@ export function createContentProtection(config: StorageConfiguration, tenants: r
       const data = Buffer.concat([cipher.update(JSON.stringify(value), 'utf8'), cipher.final()]);
       return { v: 1, kid, iv: iv.toString('base64'), tag: cipher.getAuthTag().toString('base64'), data: data.toString('base64') };
     },
-    decrypt(binding: ContentBinding, field: 'user' | 'answer', rawEnvelope: unknown): unknown {
+    decrypt(binding: ContentBinding, field: 'user' | 'answer' | 'booking-receipt', rawEnvelope: unknown): unknown {
       const e = object(rawEnvelope);
       if (e.v !== 1 || Object.keys(e).sort().join(',') !== 'data,iv,kid,tag,v' || typeof e.kid !== 'string'
         || typeof e.iv !== 'string' || typeof e.tag !== 'string' || typeof e.data !== 'string' || e.data.length > 16384) throw new Error('Invalid ciphertext');

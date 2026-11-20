@@ -1,0 +1,248 @@
+✖ Check booking recovers the exact reservation after a failed answer commit (610579.9526ms)
+ℹ output/ideeo-booking-check-34150bb4-c145-41f3-858f-d135c1f9389d.jsonl
+✖ completed browser booking survives five product replacements without repeating work (75985.4289ms)
+ℹ output/ideeo-booking-restart-3d67f7e0-0ed1-4902-be69-235913ce687a.jsonl
+✔ capability configuration pins complete scope, schema, destination and permission (335.9519ms)
+✔ large catalogs retain OpenMaus discovery with scoped permission and accounting (207.2836ms)
+▶ authenticated conversation executes scoped workspace tools through the OpenMaus loop
+  ✔ availability follows full owner and current grant (158.445ms)
+  ✔ real file effect and committed replay survive product restart (5350.7693ms)
+  ✔ a caller without workspace tools can still have an ordinary conversation (388.0623ms)
+  ✔ small catalogs expose direct tools with the same tenant and permission guards (1184.5613ms)
+  ✔ native OpenMaus file tools write and read only the caller workspace (2669.2012ms)
+  ✔ bounded tool batches validate every call before any effect and replay without execution (3932.9633ms)
+  ✖ actual OpenMaus browser opens the local site and makes one fixture booking (14008.1187ms)
+  ✔ different tenant, unknown tools and schema violations cause no effect (5236.478ms)
+  ✖ actual browser images require separate current model disclosure authority (10050.3682ms)
+  ✔ revocation after an effect withholds its answer (1371.5343ms)
+  ✔ timeout reading the final body keeps the original debit and prevents a second file write (2665.5917ms)
+  ✖ commit failure cannot repeat an external effect on retry (12863.0617ms)
+  ✔ tool context and storage exclude workspace credentials (81.6632ms)
+  ✖ skills discovery authenticates the executor, screens results and replays the committed turn (15.5779ms)
+  ✖ skills discovery enforces caller scope, current read permission and disclosure after execution (4.4219ms)
+  ✖ cancelling a pending skills read aborts the executor and retains its debit and claim (1.6903ms)
+  ✖ the tenant tool ceiling prevents a skills lookup before executor dispatch (0.8718ms)
+✖ authenticated conversation executes scoped workspace tools through the OpenMaus loop (133907.6189ms)
+✔ model route configuration rejects relabelled live and incomplete profiles (6.0184ms)
+✔ OpenAI evaluation requires exact destination, model and explicit activation (2.3062ms)
+✔ authority freshness permits one epoch tick and rejects older, future or reversed time (1.2568ms)
+✔ helper, fallback and unqualified context cannot dispatch (4.1989ms)
+▶ model transport preserves authority and storage failures
+  ✔ checkpoint (1.8224ms)
+  ✔ authorize (1.0672ms)
+  ✔ reserve (1.1473ms)
+  ✔ finish (55.4341ms)
+  ✔ reauthorize (12.9206ms)
+✔ model transport preserves authority and storage failures (134.5039ms)
+▶ controlled OpenMaus loop through actual product and PostgreSQL
+  ✔ schema one record survives the explicit forward migration (20.1247ms)
+  ✔ greeting, draft, revision, recall and reload use the shared loop (3266.5931ms)
+  ✔ SDK, WhatsApp and second tenant stay isolated (549.5243ms)
+  ✔ one independently authorized typed tool feeds the next model round (184.5467ms)
+  ✔ idempotent and concurrent retries do not regenerate a committed answer (346.4039ms)
+  ✔ transient retry charges both physical attempts (212.3472ms)
+  ✔ exhausted attempts survive restart and changed input cannot reuse failed work (3675.0661ms)
+  ✔ revocation after dispatch prevents persistence and later disclosure (157.623ms)
+  ✔ model and tool permissions cannot be inferred from conversation admission (173.096ms)
+  ✔ fails closed on model redirect (89.5988ms)
+  ✔ fails closed on model oversized (73.4776ms)
+  ✔ fails closed on model unknown-tool (94.5728ms)
+  ✔ fails closed on model repeat-tool (317.3068ms)
+  ✔ fails closed on model secret (148.0724ms)
+  ✔ fails closed on model length (389.0207ms)
+  ✔ fails closed on model empty (92.6851ms)
+  ✔ fails closed on model timeout (1084.2791ms)
+  ✔ unknown token usage and all costs remain unknown (119.4391ms)
+  ✔ commit failure withholds answer but retains consumed inference (1795.7816ms)
+  ✔ process death after dispatch preserves uncertainty and consumed budget (4323.4317ms)
+  ✔ an operation deadline is retained across retry (646.3842ms)
+  ✔ ledger ownership, immutable debits and a weakened budget guard are checked (1332.3606ms)
+  ✔ tenant budget cannot be reset by creating a new conversation or channel (258.1617ms)
+  ✔ credentials, ownership and private reasoning never enter model context or native logs (8.2758ms)
+✔ controlled OpenMaus loop through actual product and PostgreSQL (69343.3872ms)
+▶ authenticated evaluation deadlines with a loopback provider and disposable PostgreSQL
+  ✔ a near-limit body can settle and commit after ten seconds (11316.7486ms)
+  ✔ revoked after receipt (253.5168ms)
+  ✔ expired after settlement (261.2796ms)
+✔ authenticated evaluation deadlines with a loopback provider and disposable PostgreSQL (41234.3969ms)
+ℹ {"turn_ms":11022,"provider_body":7523,"reauthorization":2412,"settlement":484}
+✔ a timed-out replacement retires its address and an explicit restart recovers (17168.3817ms)
+▶ failed model turns survive repeated product restart without losing service
+  ✔ restart 1 (4612.4485ms)
+  ✔ restart 2 (5954.8576ms)
+  ✔ restart 3 (4126.0488ms)
+  ✔ restart 4 (3731.7119ms)
+  ✔ restart 5 (5038.2886ms)
+✔ failed model turns survive repeated product restart without losing service (77818.8154ms)
+✔ storage configuration refuses real destinations and incomplete evidence (94.3932ms)
+✔ ciphertext authenticates every caller and resource binding (5.889ms)
+✖ actual product process with disposable PostgreSQL (57747.3146ms)
+ℹ postgres (PostgreSQL) 18.0
+▶ workspace reservations retain bounded profiles, deadlines and tenant debits
+  ✔ eight model attempts and seven tools survive connection restart without refunds (648.1975ms)
+  ✔ constrained reservations cannot be upgraded on retry (46.0456ms)
+  ✔ expired workspace deadlines are retained on retry (36.1979ms)
+  ✔ workspace calls share the original tenant daily ceiling across keys (183.9311ms)
+✔ workspace reservations retain bounded profiles, deadlines and tenant debits (34222.9496ms)
+ℹ tests 76
+ℹ suites 0
+ℹ pass 65
+ℹ fail 11
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1171148.0968
+
+✖ failing tests:
+
+test at server\ideeo\booking-check.node-test.ts:18:1
+✖ Check booking recovers the exact reservation after a failed answer commit (610579.9526ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  false !== true
+
+      at failedAppend (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/server/ideeo/booking-check.node-test.ts:71:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/server/ideeo/booking-check.node-test.ts:77:19)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at server\ideeo\booking-restart.node-test.ts:19:1
+✖ completed browser booking survives five product replacements without repeating work (75985.4289ms)
+  Error: model_unavailable
+      at request (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/src/ideeo/client.ts:45:15)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/src/ideeo/client.ts:73:20
+      at async TestContext.<anonymous> (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/server/ideeo/booking-restart.node-test.ts:76:19)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    code: 'model_unavailable',
+    status: 503
+  }
+
+test at server\ideeo\capabilities.node-test.ts:158:11
+✖ actual OpenMaus browser opens the local site and makes one fixture booking (14008.1187ms)
+  Error [AbortError]: The operation was aborted
+      at stream.<computed>.AbortError.cause (node:internal/streams/add-abort-signal:47:22)
+      at [nodejs.internal.kHybridDispatch] (node:internal/event_target:843:20)
+      at AbortSignal.dispatchEvent (node:internal/event_target:776:26)
+      at runAbort (node:internal/abort_controller:488:10)
+      at abortSignal (node:internal/abort_controller:459:3)
+      at Timeout._onTimeout (node:internal/abort_controller:152:7)
+      at listOnTimeout (node:internal/timers:605:17)
+      at process.processTimers (node:internal/timers:541:7) {
+    code: 'ABORT_ERR',
+    [cause]: TimeoutError: The operation was aborted due to timeout
+        at new DOMException (node:internal/per_context/domexception:76:18)
+        at Timeout._onTimeout (node:internal/abort_controller:154:9)
+        at listOnTimeout (node:internal/timers:605:17)
+        at process.processTimers (node:internal/timers:541:7)
+  }
+
+test at server\ideeo\capabilities.node-test.ts:179:11
+✖ actual browser images require separate current model disclosure authority (10050.3682ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  503 !== 200
+
+      at TestContext.<anonymous> (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/server/ideeo/capabilities.node-test.ts:182:87)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async TestContext.<anonymous> (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/server/ideeo/capabilities.node-test.ts:179:3)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 503,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at server\ideeo\capabilities.node-test.ts:211:11
+✖ commit failure cannot repeat an external effect on retry (12863.0617ms)
+  Error: Fixture startup timed out
+      at Timeout.<anonymous> (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/scripts/testing/ideeo-fixture.ts:229:32)
+      at listOnTimeout (node:internal/timers:605:17)
+      at process.processTimers (node:internal/timers:541:7) {
+    code: 'ETIMEDOUT'
+  }
+
+test at server\ideeo\capabilities.node-test.ts:243:11
+✖ skills discovery authenticates the executor, screens results and replays the committed turn (15.5779ms)
+  Error: Product fixture has no ready listener
+      at get url (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/scripts/testing/ideeo-fixture.ts:265:29)
+      at request (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/server/ideeo/capabilities.node-test.ts:110:130)
+      at create (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/server/ideeo/capabilities.node-test.ts:111:51)
+      at TestContext.<anonymous> (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/server/ideeo/capabilities.node-test.ts:245:22)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async TestContext.<anonymous> (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/server/ideeo/capabilities.node-test.ts:243:3)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    code: 'ERR_FIXTURE_NOT_READY'
+  }
+
+test at server\ideeo\capabilities.node-test.ts:258:11
+✖ skills discovery enforces caller scope, current read permission and disclosure after execution (4.4219ms)
+  Error: Product fixture has no ready listener
+      at get url (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/scripts/testing/ideeo-fixture.ts:265:29)
+      at request (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/server/ideeo/capabilities.node-test.ts:110:130)
+      at create (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/server/ideeo/capabilities.node-test.ts:111:51)
+      at TestContext.<anonymous> (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/server/ideeo/capabilities.node-test.ts:260:22)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.start (node:internal/test_runner/test:1096:17)
+      at TestContext.test (node:internal/test_runner/test:377:20)
+      at TestContext.<anonymous> (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/server/ideeo/capabilities.node-test.ts:258:11)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+    code: 'ERR_FIXTURE_NOT_READY'
+  }
+
+test at server\ideeo\capabilities.node-test.ts:276:11
+✖ cancelling a pending skills read aborts the executor and retains its debit and claim (1.6903ms)
+  Error: Product fixture has no ready listener
+      at get url (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/scripts/testing/ideeo-fixture.ts:265:29)
+      at request (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/server/ideeo/capabilities.node-test.ts:110:130)
+      at create (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/server/ideeo/capabilities.node-test.ts:111:51)
+      at TestContext.<anonymous> (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/server/ideeo/capabilities.node-test.ts:277:22)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.start (node:internal/test_runner/test:1096:17)
+      at TestContext.test (node:internal/test_runner/test:377:20)
+      at TestContext.<anonymous> (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/server/ideeo/capabilities.node-test.ts:276:11)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+    code: 'ERR_FIXTURE_NOT_READY'
+  }
+
+test at server\ideeo\capabilities.node-test.ts:298:11
+✖ the tenant tool ceiling prevents a skills lookup before executor dispatch (0.8718ms)
+  Error: Product fixture has no ready listener
+      at get url (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/scripts/testing/ideeo-fixture.ts:265:29)
+      at request (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/server/ideeo/capabilities.node-test.ts:110:130)
+      at create (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/server/ideeo/capabilities.node-test.ts:111:51)
+      at TestContext.<anonymous> (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/server/ideeo/capabilities.node-test.ts:299:22)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.start (node:internal/test_runner/test:1096:17)
+      at TestContext.test (node:internal/test_runner/test:377:20)
+      at TestContext.<anonymous> (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/server/ideeo/capabilities.node-test.ts:298:11)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+    code: 'ERR_FIXTURE_NOT_READY'
+  }
+
+test at server\ideeo\storage\conversations.node-test.ts:58:1
+✖ actual product process with disposable PostgreSQL (57747.3146ms)
+  Error: Fixture startup timed out
+      at Timeout.<anonymous> (file:///C:/Users/mateo/Desktop/IdeeoOrchestrator/scripts/testing/ideeo-fixture.ts:229:32)
+      at listOnTimeout (node:internal/timers:605:17)
+      at process.processTimers (node:internal/timers:541:7) {
+    code: 'ETIMEDOUT'
+  }

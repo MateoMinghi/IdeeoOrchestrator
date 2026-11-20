@@ -1,4 +1,4 @@
-import { CONVERSATION_VERSION, type ConversationHistory, type ConversationView, type TurnStatus, type TurnView } from '../../shared/ideeo/conversations.ts';
+import { CONVERSATION_VERSION, type BookingCheck, type ConversationHistory, type ConversationView, type TurnStatus, type TurnView } from '../../shared/ideeo/conversations.ts';
 
 export class ProductApiError extends Error {
   readonly code: string;
@@ -52,7 +52,18 @@ export function createProductClient(getToken: TenantTokenSource) {
     return work(request);
   }
   function conversationId(id:string) {if(!uuid.test(id)) throw new ProductApiError('not_found');return id;}
+  function validateCheck(value:BookingCheck) {
+    if(!value || !uuid.test(value.attempt_id) || !(value.status==='pending' || value.status==='unable_to_verify'
+      || value.status==='verified' && typeof value.confirmation==='string' && /^WILLOW-[A-Z]{8}$/.test(value.confirmation))) throw new ProductApiError('unavailable');
+    return value;
+  }
   return {
+    checkBooking:(id:string,attemptId:string,signal:AbortSignal)=>session(signal,async request=>{
+      const result=await request(`/v2/conversations/${conversationId(id)}/turns/booking-check`,{attempt_id:conversationId(attemptId)});
+      const check=validateCheck(result.booking_check as BookingCheck);
+      if(result.conversation_id!==id || check.attempt_id!==attemptId || check.status==='pending') throw new ProductApiError('unavailable');
+      return check;
+    }),
     check: (signal:AbortSignal)=>session(signal,async()=>undefined),
     create: (key:string,signal:AbortSignal)=>session(signal,async request=>{
       const result=await request('/v2/conversations',{},key);
@@ -69,17 +80,19 @@ export function createProductClient(getToken: TenantTokenSource) {
         || result.status==='uncommitted' || result.status==='reconciliation_required')) throw new ProductApiError('unavailable');
       return result as unknown as TurnStatus;
     }),
-    history: (id:string,signal:AbortSignal)=>session(signal,async request=>{
+    history: (id:string,signal:AbortSignal,onBookings?:(checks:readonly BookingCheck[])=>void)=>session(signal,async request=>{
       const turns: TurnView[]=[];let after=0;
+      let checks:readonly BookingCheck[]=[];
       for(let page=0;page<20;page++) {
         const result=await request(`/v2/conversations/${conversationId(id)}/turns?after=${after}&limit=50`) as unknown as ConversationHistory;
         if(result.conversation_id!==id || !Array.isArray(result.turns) || result.turns.length>50) throw new ProductApiError('unavailable');
+        if(page===0 && result.booking_checks) checks=result.booking_checks.map(validateCheck);
         for(const turn of result.turns) {
           if(turn.conversation_id!==id || turn.status!=='completed' || turn.sequence!==after+1 || typeof turn.answer?.text!=='string'
             || turn.answer.text.length>2000 || !(typeof turn.message==='string' || typeof turn.message?.text==='string')) throw new ProductApiError('unavailable');
           after=turn.sequence;turns.push(turn);
         }
-        if(result.next_after===null) return turns;
+        if(result.next_after===null) {signal.throwIfAborted();onBookings?.(checks);return turns;}
         if(result.next_after!==after || !result.turns.length) throw new ProductApiError('unavailable');
       }
       throw new ProductApiError('unavailable');

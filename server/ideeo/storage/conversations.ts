@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type postgres from 'postgres';
-import type { ConversationHistory, ConversationView, ConversationMessage, TurnStatus, TurnView } from '../../../shared/ideeo/conversations.ts';
+import type { BookingCheck, ConversationHistory, ConversationView, ConversationMessage, TurnStatus, TurnView } from '../../../shared/ideeo/conversations.ts';
 import { isFreeFormMessage, permittedText, permittedProjection, secretValues, TEXT_POLICY, type ModelProjection } from '../text-policy.ts';
 import type { StorageConfiguration } from './config.ts';
 import { createContentProtection, type CallerScope, type ContentBinding } from './crypto.ts';
@@ -74,7 +74,54 @@ export async function createConversationStore(config: StorageConfiguration, tena
     const [op] = await tx`select conversation_id, fingerprint, execution_id from ideeo.inference_operations where request_key=${keyHash}`;
     return op;
   }
+  type CheckRow = {attempt_id:string;request_key:string;receipt:unknown};
+  async function bookingRows(tx:postgres.TransactionSql, id:string, attemptId?:string) {
+    return tx<CheckRow[]>`select b.attempt_id,a.request_key,b.receipt from ideeo.booking_checks b
+      join ideeo.inference_attempts a on (a.scope,a.id)=(b.scope,b.attempt_id)
+      join ideeo.inference_operations o on (o.scope,o.request_key)=(a.scope,a.request_key)
+      where o.conversation_id=${id} and not exists(select 1 from ideeo.turns t where t.scope=o.scope and t.idempotency_key=o.request_key)
+      ${attemptId ? tx`and b.attempt_id=${attemptId}` : tx``} order by a.created_at,b.attempt_id`;
+  }
+  function bookingView(scope:CallerScope,parent:ConversationRow,row:CheckRow):BookingCheck {
+    if(!row.receipt) return {attempt_id:row.attempt_id,status:'pending'};
+    const binding={scope,conversationId:parent.id,turnId:row.attempt_id,sequence:0,expiresAt:parent.expires_at.toISOString()};
+    const confirmation=protection.decrypt(binding,'booking-receipt',row.receipt);
+    if(confirmation===null) return {attempt_id:row.attempt_id,status:'unable_to_verify'};
+    if(typeof confirmation!=='string' || !/^WILLOW-[A-Z]{8}$/.test(confirmation)) throw new Error('Invalid booking receipt');
+    return {attempt_id:row.attempt_id,status:'verified',confirmation};
+  }
   return Object.freeze({
+    async checkBooking(scope:CallerScope,id:string,attemptId:string,signal:AbortSignal,authorize:Authorize,
+      lookup:(id:string,original:string,attempt:{id:string;deadline:Date},signal:AbortSignal)=>Promise<string|null>) {
+      return scoped(scope,signal,async tx=>{
+        const parent=await conversation(tx,id);
+        const [marker]=await bookingRows(tx,id,attemptId);
+        if(!marker) throw notFound();
+        await lock(tx,marker.request_key);
+        const [current]=await bookingRows(tx,id,attemptId);
+        if(!current) throw notFound();
+        await authorize();
+        if(current.receipt) return {...view(parent),booking_check:bookingView(scope,parent,current)};
+        const key=protection.fingerprint(scope,'booking-check',attemptId);
+        const fingerprint=protection.fingerprint(scope,'booking-check-input',[id,attemptId]);
+        const attempt=await scoped(scope,signal,async ledger=>{
+          const [reserved]=await ledger`select * from ideeo.reserve_workspace_inference(${ledger.json(scope)},${key},${id},${fingerprint},'tool')`;
+          if(reserved.code!=='reserved') throw new ConversationError(reserved.code==='conversation_expired'?410:409,reserved.code);
+          return {id:String(reserved.attempt_id),deadline:reserved.deadline as Date};
+        },false,accounting);
+        await authorize();
+        const confirmation=await lookup(id,attemptId,attempt,signal);
+        await authorize();
+        assertContentLive(parent.expires_at.toISOString());
+        if(attempt.deadline.getTime()<=Date.now()) throw new ConversationError(409,'inference_expired');
+        const binding={scope,conversationId:id,turnId:attemptId,sequence:0,expiresAt:parent.expires_at.toISOString()};
+        const receipt=protection.encrypt(binding,'booking-receipt',confirmation);
+        await tx`update ideeo.booking_checks set receipt=${tx.json(receipt)} where attempt_id=${attemptId}`;
+        const [settled]=await tx`select ideeo.finish_inference(${tx.json(scope)},${attempt.id},null,null) as ok`;
+        if(!settled.ok) throw new Error('Booking check settlement failed');
+        return {...view(parent),booking_check:bookingView(scope,parent,{...current,receipt})};
+      });
+    },
     async turnStatus(scope: CallerScope, id: string, key: string, signal: AbortSignal): Promise<TurnStatus> {
       const keyHash = protection.fingerprint(scope, 'turn-key', key);
       return scoped(scope, signal, async (tx): Promise<TurnStatus> => {
@@ -131,9 +178,10 @@ export async function createConversationStore(config: StorageConfiguration, tena
             where t.conversation_id=${id} order by t.sequence desc limit 20`;
           const executionId=randomUUID();
           generated = await generator({ message, signal, forbidden: excluded, execution:{scope,conversationId:id}, history: previous.reverse().map(p => {const decoded=decodedTurn(scope,p);return {...decoded.turn,projection:decoded.projection};}), authorize: authorizeInference,
-            claimTools:()=>scoped(scope,signal,async ledger=>{
+            claimTools:bookingAttemptId=>scoped(scope,signal,async ledger=>{
               const [claim]=await ledger`select ideeo.claim_tool_execution(${ledger.json(scope)},${keyHash},${id},${fingerprint},${executionId}) as claimed`;
               if(!claim.claimed) throw new ConversationError(409,'capability_reconciliation_required');
+              if(bookingAttemptId) await ledger`insert into ideeo.booking_checks(scope,attempt_id) values (${ledger.json(scope)},${bookingAttemptId})`;
             },false,accounting),
             checkpoint: async () => { signal.throwIfAborted(); await tx`select 1`; assertContentLive(parent.expires_at.toISOString()); },
             reserve: kind => scoped(scope,signal,async ledger => {
@@ -170,15 +218,16 @@ export async function createConversationStore(config: StorageConfiguration, tena
       });
       return turnView(scope, row);
     },
-    async history(scope: CallerScope, id: string, after: number, limit: number, signal: AbortSignal): Promise<ConversationHistory> {
+    async history(scope: CallerScope, id: string, after: number, limit: number, signal: AbortSignal, includeBookings=false): Promise<ConversationHistory> {
       const result = await scoped(scope, signal, async tx => {
         const parent = await conversation(tx, id);
         const rows = await tx<TurnRow[]>`select t.*, o.id as event_id from ideeo.turns t join ideeo.outbox o on o.scope=t.scope and o.turn_id=t.id
           where t.conversation_id=${id} and t.sequence>${after} order by t.sequence limit ${limit + 1}`;
-        return { parent, rows };
+        const checks=includeBookings && after===0 ? (await bookingRows(tx,id)).map(row=>bookingView(scope,parent,row)) : undefined;
+        return { parent, rows, checks };
       }, true);
       const turns = result.rows.slice(0, limit).map(row => turnView(scope, row));
-      return { ...view(result.parent), turns, next_after: result.rows.length > limit ? turns.at(-1)!.sequence : null };
+      return { ...view(result.parent), ...(result.checks?.length ? {booking_checks:result.checks}:{}), turns, next_after: result.rows.length > limit ? turns.at(-1)!.sequence : null };
     },
     close: async () => { await Promise.all([sql.end({ timeout: 2 }),accounting.end({ timeout: 2 })]); },
   });

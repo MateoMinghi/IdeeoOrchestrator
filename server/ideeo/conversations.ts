@@ -14,16 +14,17 @@ export function createConversationService(admission: Awaited<ReturnType<typeof c
     const current = await admission.admit(proof, signal);
     if (!current.scopes.includes('conversation:read') || write && !current.scopes.includes('conversation:write')) throw new AdmissionError(403);
     const scope = callerScope(current.principal);
-    const reauthorize = async (kind?: InferenceKind, permission?: string) => {
+    const reauthorize = async (kind?: InferenceKind, permission?: string, required:readonly string[] = []) => {
       if(permission!==undefined&&(kind!=='tool'||!/^tool:[a-z][a-z0-9_-]{0,63}:[a-z][a-z0-9_-]{0,63}$/.test(permission))) throw new AdmissionError(403);
       signal.throwIfAborted();
       const fresh = await admission.admit(proof, signal);
-      if (JSON.stringify(callerScope(fresh.principal)) !== JSON.stringify(scope) || !fresh.scopes.includes('conversation:read')
+      if (!required.every(s=>fresh.scopes.includes(s)) || JSON.stringify(callerScope(fresh.principal)) !== JSON.stringify(scope) || !fresh.scopes.includes('conversation:read')
         || write && !fresh.scopes.includes('conversation:write') || kind && !fresh.scopes.includes(kind === 'model' ? 'inference:invoke' : kind === 'disclosure' ? 'inference:disclose' : kind==='images'?'inference:disclose:images':permission ?? 'tool:fixture:read')) throw new AdmissionError(403);
       signal.throwIfAborted();
     };
     return { scope, reauthorize, toolPermissions: current.scopes };
   }
+  const bookingPermissions=['tool:booking:verify','tool:browser:interact'] as const;
   return Object.freeze({
     async capabilities(proof: string, signal: AbortSignal){
       const {scope,reauthorize,toolPermissions}=await access(proof,false,signal);
@@ -55,9 +56,21 @@ export function createConversationService(admission: Awaited<ReturnType<typeof c
       assertContentLive(result.expires_at);
       return result;
     },
+    async checkBooking(proof:string,id:string,attemptId:string,signal:AbortSignal) {
+      const {scope,reauthorize,toolPermissions}=await access(proof,true,signal);
+      const verifier=capabilities?.bookingVerifier(scope,toolPermissions);
+      if(!verifier) throw new AdmissionError(403);
+      const authorize=()=>reauthorize(undefined,undefined,bookingPermissions);
+      const result=await store.checkBooking(scope,id,attemptId,signal,authorize,verifier);
+      await authorize();
+      assertContentLive(result.expires_at);
+      return result;
+    },
     async history(proof: string, id: string, after: number, limit: number, signal: AbortSignal) {
-      const { scope, reauthorize } = await access(proof, false, signal);
-      const result = await store.history(scope, id, after, limit, signal);
+      const { scope, reauthorize, toolPermissions } = await access(proof, false, signal);
+      const includeBookings=Boolean(capabilities?.bookingVerifier(scope,toolPermissions));
+      const result = await store.history(scope, id, after, limit, signal,includeBookings);
+      if(result.booking_checks?.length) await reauthorize(undefined,undefined,bookingPermissions);
       await reauthorize();
       assertContentLive(result.expires_at);
       return result;

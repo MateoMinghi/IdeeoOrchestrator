@@ -5,7 +5,7 @@ import type { CapabilityHandler } from '../../server/ideeo/capability-executor.t
 import type { CapabilityConfiguration } from '../../server/ideeo/capability-config.ts';
 import { chatImage } from '../../server/drivers/chat-images.ts';
 
-export async function launchIdeeoBrowserFixture(root:string, site:string) {
+export async function launchIdeeoBrowserFixture(root:string, site:string, bookingReference?:(conversation:string,attempt:string)=>string) {
   const address=new URL(site);
   if(address.hostname!=='127.0.0.1'||address.protocol!=='http:'||!address.port) throw new Error('Owned fixture site required');
   const gate=await openGate({refuseName:target=>target.host===address.hostname&&target.port===Number(address.port)?null:'fixture-only',
@@ -28,6 +28,13 @@ export async function launchIdeeoBrowserFixture(root:string, site:string) {
     context.signal.addEventListener('abort',interrupt,{once:true});
     try{
       context.signal.throwIfAborted();
+      if(bookingReference && tool.name==='agent_browser_click'){
+        const reference=bookingReference(context.conversationId,context.attemptId);
+        const expression=`location.origin===${JSON.stringify(site)} && (()=>{const field=document.querySelector('form[action="/book"] input[name="reference"]');if(field)field.value=${JSON.stringify(reference)};return Boolean(field)})()`;
+        const prepared=await browser.service.agentRpc(target,'tools/call',{name:'agent_browser_eval',
+          arguments:{expression,...(input.tab===undefined?{}:{tab:input.tab})}},()=>context.signal.throwIfAborted()) as {isError?:boolean};
+        if(prepared.isError) throw new Error('Unable to bind booking attempt');
+      }
       const result=await browser.service.agentRpc(target,'tools/call',{name:tool.name,arguments:input},()=>context.signal.throwIfAborted()) as {isError?:boolean;content?:{type:string;text?:string;mimeType?:string;data?:string}[]};
       context.signal.throwIfAborted();
       if(result.isError||!result.content||result.content.some(part=>!['text','image'].includes(part.type))) throw new Error('Browser operation failed');
@@ -36,5 +43,5 @@ export async function launchIdeeoBrowserFixture(root:string, site:string) {
       return images.length?{text,images}:text;
     }finally{context.signal.removeEventListener('abort',interrupt);}
   }]));
-  return {tools,handlers,close:async()=>{try{await browser.close();}finally{await gate.close();}}};
+  return {tools,handlers,closeConversation:(id:string)=>browser.service.close(id),close:async()=>{try{await browser.close();}finally{await gate.close();}}};
 }

@@ -22,6 +22,18 @@ export function createCapabilities(routes: readonly CapabilityConfiguration[], s
   });
   const permitted=(scope: CapabilityConfiguration['scope'], permissions: readonly string[])=>entries.filter(entry=>capabilityScopeKey(entry.route.scope)===capabilityScopeKey(scope)&&permissions.includes(entry.tool.permission));
   return {
+    bookingVerifier(scope: CapabilityConfiguration['scope'], permissions: readonly string[]) {
+      const entry=permitted(scope,permissions).find(e=>e.route.bookingVerification && e.tool.name==='agent_browser_click');
+      if(!entry || !permissions.includes('tool:booking:verify')) return;
+      return async (conversationId:string, originalAttempt:string, attempt:{id:string;deadline:Date}, signal:AbortSignal) => {
+        const result=await executeCapability(entry.route,entry.credential,{signal,execution:{scope,conversationId}},
+          'lookup_workshop_booking',{original_attempt_id:originalAttempt},attempt);
+        let receipt: {reference?:unknown;confirmation?:unknown} | null;
+        try { receipt=JSON.parse(result.text); } catch { return null; }
+        return receipt?.reference===originalAttempt && typeof receipt.confirmation==='string' && /^WILLOW-[A-Z]{8}$/.test(receipt.confirmation)
+          ? receipt.confirmation as string : null;
+      };
+    },
     availability(scope: CapabilityConfiguration['scope'], permissions: readonly string[]): CapabilityView[] {
       const selected=permitted(scope,permissions);
       return CAPABILITY_FAMILIES.map(family=>({family,available:selected.filter(entry=>entry.tool.family===family).length}));
@@ -66,7 +78,7 @@ export function createCapabilities(routes: readonly CapabilityConfiguration[], s
             if(attempt.deadline.getTime()<=Date.now()) throw invalid();
             let text:string;let images:readonly ChatImagePart[]=[];
             if(entry){
-              await context.claimTools!();
+              await context.claimTools!(entry.route.bookingVerification && entry.tool.name==='agent_browser_click' ? attempt.id : undefined);
               signal.throwIfAborted();await context.authorize('tool',entry.tool.permission);
               const output=await executeCapability(entry.route,entry.credential,{...context,signal:AbortSignal.any([context.signal,signal])},entry.tool.name,(name===CALL_TOOL?args.arguments:args) as Record<string,unknown>,attempt);
               text=output.text;images=output.images??[];

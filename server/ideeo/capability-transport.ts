@@ -4,7 +4,7 @@ import type { InferenceContext } from './inference.ts';
 import { ConversationError } from './storage/conversations.ts';
 import { capabilityImages, type CapabilityOutput } from './capability-output.ts';
 
-export async function executeCapability(route: CapabilityConfiguration, credential: string, context: InferenceContext,
+export async function executeCapability(route: CapabilityConfiguration, credential: string, context: Pick<InferenceContext,'signal'|'execution'>,
   name: string, args: Record<string,unknown>, attempt: {id:string;deadline:Date}): Promise<CapabilityOutput> {
   if(!context.execution) throw new ConversationError(503,'capability_unavailable');
   const payload=JSON.stringify({version:'ideeo-tools-1',scope:context.execution.scope,conversation_id:context.execution.conversationId,

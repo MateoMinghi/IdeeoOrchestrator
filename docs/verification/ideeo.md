@@ -189,3 +189,7 @@ node --experimental-strip-types scripts/testing/conversation-tasks.ts --gemini -
 ```
 
 This mode provides the actual browser tools to Gemini with automatic selection. It uses the same workshop conversation, a fake local booking site, an executor credential generated per fixture, and a tenant budget pre-debit allowing at most 24 model calls and 20 tool reservations. Each report has timestamped JSON and HTML, observed browser actions and a strict booking criterion. A failed criterion leaves a nonzero exit status. No real email/booking service is connected. The six recorded campaigns did not complete booking; the last demonstrated real model-selected browser open/snapshot but then an empty provider completion. See the [full live evidence](../ideeo/development/VERIFICATION.md#live-browser-conversation--19-november-2026).
+
+### Interrupted booking in React
+
+Run `node --experimental-strip-types --test --test-concurrency=1 server/ideeo/booking-check.node-test.ts` from the repository root with the UI build dependencies, Chrome and disposable PostgreSQL installed. The test builds the React entry in a temporary directory, books through the authenticated shared loop, rejects the answer insert, restarts the product and selects **Check booking** in headless Chrome. Its JSONL evidence under `output/ideeo-booking-check-*.jsonl` records the two injected failures, site and ledger counters, cached replay and fixture shutdown.

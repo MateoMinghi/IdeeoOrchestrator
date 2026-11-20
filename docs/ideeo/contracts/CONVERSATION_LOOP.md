@@ -1,6 +1,6 @@
 # Controlled OpenMaus conversation loop
 
-The optional [workspace capability extension](WORKSPACE_CAPABILITIES.md) adds caller-scoped tools and separately authorized screenshots to the free-form development profile. Statements below about the single color tool describe the original profile. The database is now schema 4 after the durable execution-claim and bounded workspace-budget migrations; the public conversation protocol remains `ideeo-conversation-storage-3`.
+The optional [workspace capability extension](WORKSPACE_CAPABILITIES.md) adds caller-scoped tools and separately authorized screenshots to the free-form development profile. Statements below about the single color tool describe the original profile. The database is now schema 5 after the execution-claim, workspace-budget and booking-receipt migrations; the public conversation protocol remains `ideeo-conversation-storage-3`.
 
 Current protocol is `ideeo-conversation-storage-3`. The constrained profiles below remain supported. The opt-in free-form extension has scripted-provider evidence and a separately authorized, bounded live Luna campaign. Independent acceptance remains outstanding.
 
@@ -147,3 +147,11 @@ All existing caller scopes, current disclosure/model/tool permission checks, fix
 Gemini tool replies may omit `content`. The adapter normalizes absent text to null only when the Gemini reply contains tool calls, then enforces the existing exact tool/argument/cardinality and role constraints. Missing final text, simultaneous text and tool calls, unknown tools and private content remain rejected. Gemini call identifiers admit only bounded opaque alphanumeric/underscore/hyphen strings and exclude known secrets. Private reasoning and unknown fields are stripped.
 
 Live evidence is partial: the first campaign exposed the omitted-content incompatibility, which was reproduced and fixed. Later campaigns and a separate bounded protocol diagnostic observed an empty final provider message after the synthetic tool result. The product withholds that answer; it does not substitute hardcoded text or retry automatically. Reliable Gemini tool completion remains open. Ordinary drafting, revision, Spanish invitation and restarted context recall have observed evidence, with explicit semantic weaknesses. See the [verification record](../development/VERIFICATION.md#gemini-flash-lite-realistic-conversation--19-november-2026).
+
+## Explicit booking recovery
+
+For an opted-in browser workspace, the first history page can include `booking_checks` for original browser attempts whose append has no committed turn. Each entry carries its `attempt_id` and a status of `pending`, `verified` or `unable_to_verify`. The React conversation exposes **Check booking** for a pending entry, including after a page reload.
+
+An authenticated `POST /v2/conversations/{id}/turns/booking-check` accepts exactly `{"attempt_id":"<original attempt UUID>"}`. The product resolves the attempt under the complete caller and conversation, serializes against the original append key and returns `booking_check`. A verified entry includes the matching confirmation. Schema 5 stores the checked outcome as encrypted content bound to the caller, conversation, attempt and content expiry. Subsequent checks return that receipt. Content expiry prevents publication and maintenance removes expired receipts.
+
+The interrupted append continues to report `reconciliation_required`. Its turn sequence and outbox are untouched. Historical claims made before schema 5 have no attributable booking reference.

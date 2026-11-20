@@ -77,7 +77,7 @@ test('controlled OpenMaus loop through actual product and PostgreSQL',{timeout:1
   t.after(async()=>{await product?.stop();await model.stop();await pg.stop();});
   await t.test('schema one record survives the explicit forward migration',async()=>{
     const [schema]=await pg.admin`select version from ideeo.schema_version`;
-    assert.equal(schema.version,4);
+    assert.equal(schema.version,5);
     const [record]=await pg.admin`select id,next_sequence from ideeo.conversations where id=${retained}`;
     assert.equal(record.id,retained);assert.equal(record.next_sequence,1);
   });

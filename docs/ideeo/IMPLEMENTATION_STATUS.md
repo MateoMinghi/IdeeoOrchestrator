@@ -1,5 +1,7 @@
 # Candidate implementation status
 
+**Checking an interrupted booking.** An authorized caller can verify a Willow Studio reservation after the site accepts it and the answer fails to commit. The React conversation can recover the site's confirmation from the original browser attempt. Reopening the receipt uses no model call or additional site read. [Recovery contract](contracts/CONVERSATION_LOOP.md#explicit-booking-recovery) and [verification record](development/VERIFICATION.md#check-booking-after-an-interrupted-answer).
+
 **Completed booking across product restart.** A zero-cost local regression checks both committed turns on the first history read after each of five replacements, checks the original booking event on replay and commits a fresh turn. The additional Skills qualification covers authenticated discovery of enabled metadata from a disposable workspace. See the [restart and Skills verification record](development/VERIFICATION.md#completed-booking-restart-and-workspace-skills).
 
 **Coordinated turn deadlines** bound the physical model request through the complete response body. Current permission checks and database settlement use the remaining operation time. The shared OpenMaus loop recognizes dispatch and receipt as progress, and the database checks expiry before publication. Developer verification through the authenticated API used a scripted loopback provider. See the [timing contract](contracts/CONVERSATION_LOOP.md) and [measured phases](development/VERIFICATION.md#coordinated-turn-deadlines).

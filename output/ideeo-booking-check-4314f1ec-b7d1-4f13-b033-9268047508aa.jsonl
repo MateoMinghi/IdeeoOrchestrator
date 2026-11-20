@@ -1,0 +1,8 @@
+{"phase":"booking append","http":503,"error":"storage_unavailable","events":[{"name":"agent_browser_open","status":"succeeded","hasForm":true,"hasConfirmation":false},{"name":"agent_browser_click","status":"succeeded","hasForm":false,"hasConfirmation":false},{"name":"agent_browser_snapshot","status":"succeeded","hasForm":false,"hasConfirmation":true}],"modelCalls":4,"bookings":1}
+{"phase":"inspection append","http":503,"error":"storage_unavailable","events":[{"name":"agent_browser_open","status":"succeeded","hasForm":true,"hasConfirmation":false},{"name":"agent_browser_click","status":"succeeded","hasForm":false,"hasConfirmation":false},{"name":"agent_browser_snapshot","status":"succeeded","hasForm":false,"hasConfirmation":true},{"name":"agent_browser_open","status":"succeeded","hasForm":true,"hasConfirmation":false},{"name":"agent_browser_click","status":"succeeded","hasForm":false,"hasConfirmation":false}],"modelCalls":7,"bookings":1}
+{"phase":"shutdown","fixture":"React browser","elapsed_ms":9,"outcome":"stopped"}
+{"phase":"shutdown","fixture":"React preview","elapsed_ms":12,"outcome":"stopped"}
+{"phase":"shutdown","fixture":"product","elapsed_ms":93,"outcome":"stopped"}
+{"phase":"shutdown","fixture":"model","elapsed_ms":1,"outcome":"stopped"}
+{"phase":"shutdown","fixture":"browser workspace","elapsed_ms":662529,"outcome":"stopped"}
+{"phase":"shutdown","fixture":"PostgreSQL","elapsed_ms":26804,"outcome":"stopped"}

@@ -1,0 +1,4 @@
+{"phase":"shutdown","fixture":"product","elapsed_ms":110,"outcome":"stopped"}
+{"phase":"shutdown","fixture":"model","elapsed_ms":1,"outcome":"stopped"}
+{"phase":"shutdown","fixture":"browser workspace","elapsed_ms":4070,"outcome":"stopped"}
+{"phase":"shutdown","fixture":"PostgreSQL","elapsed_ms":4736,"outcome":"stopped"}
