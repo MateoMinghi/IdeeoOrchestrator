@@ -1,0 +1,85 @@
+vite v7.3.6 building client environment for production...
+transforming...
+node : Found 2 warnings while optimizing generated CSS:
+At line:2 char:1
++ node --experimental-strip-types scripts/testing/payme-storage.ts --ap ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Found 2 warning... generated CSS::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+
+Issue #1:
+│   border-radius: 4px;
+│ }
+│ ::highlight(search-result-text) {
+┆             ^-- 'highlight' is not recognized as a valid pseudo-element. Did you mean
+':highlight' (pseudo-class) or is this a typo?
+┆
+│   color: var(--color-ink);
+│   background-color: color-mix(in srgb, #1084fe 35%, transparent);
+
+Issue #2:
+│   }
+│ }
+│ ::highlight(omb-citation-source) {
+┆             ^-- 'highlight' is not recognized as a valid pseudo-element. Did you mean
+':highlight' (pseudo-class) or is this a typo?
+┆
+│   background-color: color-mix(in srgb, #1084fe 35%, transparent);
+│   @supports (color: color-mix(in lab, red, red)) {
+
+node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js (400:0): A comment
+
+"// Wrapped in a `@__PURE__` IIFE: esbuild never tree-shakes a top-level initializer that contains a member access on
+`Number`, so the bare object literal survived into every bundle."
+
+in "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js" contains an annotation that Rollup cannot interpret
+due to the position of the comment. The comment will be removed to avoid issues.
+node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/regexes.js (74:0): A comment
+
+"/** Anchors a pattern source. The interpolation lives here rather than at the call site because
+ * esbuild will not drop a `@__PURE__` call whose own argument interpolates a variable, but it
+ * will drop `anchor(dateSource)`. Keeping it inline pinned `date` into every bundle. */"
+
+in "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/regexes.js" contains an annotation that Rollup cannot
+interpret due to the position of the comment. The comment will be removed to avoid issues.
+✓ 1800 modules transformed.
+
+(!) outDir C:\Users\mateo\AppData\Local\Temp\ideeo-ui-bundle-RchiMX is not inside project
+root and will not be emptied.
+Use --emptyOutDir to override.
+
+rendering chunks...
+computing gzip size...
+../../../../AppData/Local/Temp/ideeo-ui-bundle-RchiMX/ideeo.html                                                     0.41 kB │ gzip:   0.27 kB
+../../../../AppData/Local/Temp/ideeo-ui-bundle-RchiMX/assets/geist-mono-symbols2-wght-normal-CO5SzqOn.woff2          5.81 kB
+../../../../AppData/Local/Temp/ideeo-ui-bundle-RchiMX/assets/geist-mono-cyrillic-ext-wght-normal-X_5orZeX.woff2      6.18 kB
+../../../../AppData/Local/Temp/ideeo-ui-bundle-RchiMX/assets/geist-cyrillic-ext-wght-normal-DjL33-gN.woff2           7.42 kB
+../../../../AppData/Local/Temp/ideeo-ui-bundle-RchiMX/assets/geist-mono-vietnamese-wght-normal-DadHysG0.woff2        7.70 kB
+../../../../AppData/Local/Temp/ideeo-ui-bundle-RchiMX/assets/geist-vietnamese-wght-normal-6IgcOCM7.woff2             8.00 kB
+../../../../AppData/Local/Temp/ideeo-ui-bundle-RchiMX/assets/inter-vietnamese-wght-normal-CBcvBZtf.woff2            10.25 kB
+../../../../AppData/Local/Temp/ideeo-ui-bundle-RchiMX/assets/inter-greek-ext-wght-normal-DlzME5K_.woff2             11.23 kB
+../../../../AppData/Local/Temp/ideeo-ui-bundle-RchiMX/assets/geist-mono-cyrillic-wght-normal-DiZS0aHC.woff2         12.94 kB
+../../../../AppData/Local/Temp/ideeo-ui-bundle-RchiMX/assets/geist-mono-latin-ext-wght-normal-Bwz-egvJ.woff2        14.70 kB
+../../../../AppData/Local/Temp/ideeo-ui-bundle-RchiMX/assets/geist-cyrillic-wght-normal-BEAKL7Jp.woff2              15.08 kB
+../../../../AppData/Local/Temp/ideeo-ui-bundle-RchiMX/assets/geist-latin-ext-wght-normal-DC-KSUi6.woff2             16.51 kB
+../../../../AppData/Local/Temp/ideeo-ui-bundle-RchiMX/assets/inter-cyrillic-wght-normal-DqGufNeO.woff2              18.75 kB
+../../../../AppData/Local/Temp/ideeo-ui-bundle-RchiMX/assets/inter-greek-wght-normal-CkhJZR-_.woff2                 19.00 kB
+../../../../AppData/Local/Temp/ideeo-ui-bundle-RchiMX/assets/geist-mono-latin-wght-normal-XN7g48iV.woff2            23.13 kB
+../../../../AppData/Local/Temp/ideeo-ui-bundle-RchiMX/assets/inter-cyrillic-ext-wght-normal-BOeWTOD4.woff2          25.96 kB
+../../../../AppData/Local/Temp/ideeo-ui-bundle-RchiMX/assets/geist-latin-wght-normal-BgDaEnEv.woff2                 29.40 kB
+../../../../AppData/Local/Temp/ideeo-ui-bundle-RchiMX/assets/inter-latin-wght-normal-Dx4kXJAl.woff2                 48.26 kB
+../../../../AppData/Local/Temp/ideeo-ui-bundle-RchiMX/assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2             85.07 kB
+../../../../AppData/Local/Temp/ideeo-ui-bundle-RchiMX/assets/ideeo-TMvCR9qt.css                                    120.10 kB │ gzip:  23.64 kB
+../../../../AppData/Local/Temp/ideeo-ui-bundle-RchiMX/assets/ideeo-BlBKBV2E.js                                   1,090.00 kB │ gzip: 310.44 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking:
+https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 36.64s
+UI fixture: checking initial render
+UI fixture: committed first answer
+{"ui":"actual React / tenant API / product / PostgreSQL","provider":"scripted fixture","firstAnswer":"Join us in the invented moon garden.","revisedAnswer":"Join us in the invented moon garden.","checks":["cookie exchange","committed chat","reload without inference","lost response same-key replay","authorized tool","no token or transcript web storage","four layouts","revocation clears history","other tenant denied","first-send recovery by key","edited draft after failed turn","inert assistant HTML","stale history suppressed"]}
+{"classification":"actual API/product, synthetic identities and source; developer evidence only","loop":true,"postgres":"postgres (PostgreSQL) 18.0","checks":28,"results":[{"name":"cookie-exchanged SDK creates conversation","status":200,"sourceCalls":3},{"name":"SDK commits synthetic turn","status":200,"sourceCalls":7},{"name":"WhatsApp creates separate conversation","status":200,"sourceCalls":3},{"name":"WhatsApp commits synthetic turn","status":200,"sourceCalls":7},{"name":"current typed-tool authority and second inference round","status":200,"sourceCalls":13},{"name":"channel cannot read SDK history","status":404,"sourceCalls":1},{"name":"signed foreign tenant denied","status":401,"sourceCalls":0},{"name":"signed different caller denied","status":403,"sourceCalls":0},{"name":"reload uses current API admission","status":200,"sourceCalls":2},{"name":"committed replay uses current API admission","status":200,"sourceCalls":3},{"name":"grant revocation hides existing history","status":403,"sourceCalls":1},{"name":"grant revocation denies committed replay","status":403,"sourceCalls":1},{"name":"paused agent denied","status":403,"sourceCalls":1},{"name":"expired grant denied","status":403,"sourceCalls":1},{"name":"bank history scope does not authorize transcript","status":403,"sourceCalls":1},{"name":"tenant configuration cannot be enlarged by source","status":403,"sourceCalls":1},{"name":"logout revokes stored history","status":403,"sourceCalls":0},{"name":"rebinding revokes old channel transcript access","status":403,"sourceCalls":0},{"name":"new channel generation cannot inherit old transcript","status":404,"sourceCalls":1},{"name":"wrong workload denied","status":403,"sourceCalls":0},{"name":"source outage fails safely","status":503,"sourceCalls":1},{"name":"source timeout fails safely","status":503,"sourceCalls":1},{"name":"source unsupported fails safely","status":503,"sourceCalls":1},{"name":"source echo fails safely","status":503,"sourceCalls":1},{"name":"logout before disclosure hides committed answer","status":403,"sourceCalls":7},{"name":"unsupported hosted evidence remains unavailable","status":503,"sourceCalls":0},{"name":"native financial capability grants no transcript permission","status":403,"sourceCalls":0},{"name":"API outage denies history","status":503,"sourceCalls":0}],"semantics":[]}

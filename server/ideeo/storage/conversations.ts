@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type postgres from 'postgres';
-import type { ConversationHistory, ConversationView, ConversationMessage, TurnView } from '../../../shared/ideeo/conversations.ts';
+import type { ConversationHistory, ConversationView, ConversationMessage, TurnStatus, TurnView } from '../../../shared/ideeo/conversations.ts';
 import { isFreeFormMessage, permittedText, permittedProjection, secretValues, TEXT_POLICY, type ModelProjection } from '../text-policy.ts';
 import type { StorageConfiguration } from './config.ts';
 import { createContentProtection, type CallerScope, type ContentBinding } from './crypto.ts';
@@ -70,7 +70,23 @@ export async function createConversationStore(config: StorageConfiguration, tena
       ...(projected && permittedProjection(projected.projection) ? {projection:projected.projection} : {}) };
   }
   const turnView = (scope: CallerScope, row: TurnRow) => decodedTurn(scope,row).turn;
+  async function operation(tx: postgres.TransactionSql, keyHash: string) {
+    const [op] = await tx`select conversation_id, fingerprint, execution_id from ideeo.inference_operations where request_key=${keyHash}`;
+    return op;
+  }
   return Object.freeze({
+    async turnStatus(scope: CallerScope, id: string, key: string, signal: AbortSignal): Promise<TurnStatus> {
+      const keyHash = protection.fingerprint(scope, 'turn-key', key);
+      return scoped(scope, signal, async (tx): Promise<TurnStatus> => {
+        const parent = await conversation(tx, id);
+        await lock(tx, keyHash);
+        const [turn] = await tx`select id from ideeo.turns where conversation_id=${id} and idempotency_key=${keyHash}`;
+        if (turn) return { ...view(parent), status: 'committed', turn_id: String(turn.id) };
+        const op = await operation(tx, keyHash);
+        const claimed = op?.conversation_id === id && op.execution_id != null;
+        return { ...view(parent), status: claimed ? 'reconciliation_required' : 'uncommitted' };
+      });
+    },
     async create(scope: CallerScope, key: string, authorize: Authorize, signal: AbortSignal): Promise<ConversationView> {
       const keyHash = protection.fingerprint(scope, 'create-key', key);
       return scoped(scope, signal, async tx => {
@@ -105,6 +121,9 @@ export async function createConversationStore(config: StorageConfiguration, tena
         await lock(tx, protection.fingerprint(scope, 'conversation-lock', id));
         const parent = await conversation(tx, id);
         if (parent.next_sequence > 1000) throw new ConversationError(409, 'conversation_limit');
+        const op = await operation(tx, keyHash);
+        if (op && (op.conversation_id !== id || op.fingerprint !== fingerprint)) throw new ConversationError(409, 'idempotency_conflict');
+        if (op?.execution_id) throw new ConversationError(409, 'capability_reconciliation_required');
         let generated: TurnView['answer'] = { kind: 'synthetic_storage', text: message === 'synthetic.hello' ? 'Synthetic greeting recorded.' : 'Synthetic follow-up recorded.' };
         if (generator) {
           if (!authorizeInference) throw new Error('Missing inference authority');

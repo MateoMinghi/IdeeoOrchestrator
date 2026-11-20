@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   product:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       IDEEO_TEST_PG_BIN: /usr/lib/postgresql/16/bin

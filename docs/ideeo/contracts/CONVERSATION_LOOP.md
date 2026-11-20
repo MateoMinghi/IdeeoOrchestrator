@@ -8,6 +8,20 @@ This development increment uses the existing OpenMaus Chat Completions loop thro
 
 ## Interface and context
 
+### Checking a failed or interrupted append
+
+Send `GET /v2/conversations/{id}/turns/status` with the original `Idempotency-Key` header and fresh tenant proof. The request has an empty body and no query parameters. Current conversation read permission, full caller binding and content expiry apply. The response includes the usual protocol, request and conversation metadata. The lookup takes the same nonblocking request-key lock as append. A concurrent append holding the lock yields HTTP 409 `request_in_progress`.
+
+| HTTP 200 status | Meaning and recovery |
+| --- | --- |
+| `committed` | The response includes the saved `turn_id`. Read authorized history to obtain the answer. |
+| `uncommitted` | At lookup time this conversation has neither a saved turn nor a workspace execution claim for the key. A user can explicitly retry identical input with the original key and remaining budget, or restate the facts needed for a different request. |
+| `reconciliation_required` | A workspace execution was claimed and the answer did not commit. The external outcome is unknown. Verify it separately before taking further action. |
+
+The lookup discloses no prompt, answer, tool result or ledger details and spends no inference or tool quota. A status snapshot cannot rule out a request that has yet to acquire its lock. Replaying an uncommitted claimed key with matching input returns HTTP 409 `capability_reconciliation_required` before model dispatch, including after restart. A different key denotes a separate request. Committed replay still takes precedence. Recovery adds no failed messages to history or provider context.
+
+### Committed conversation context
+
 The [storage interface](CONVERSATION_STORAGE.md) now returns `api_version: ideeo-conversation-storage-2`. Existing URLs, caller binding, idempotency and committed publication remain. Without inference configuration, only `synthetic.hello` and `synthetic.follow-up` produce `synthetic_storage` answers. With inference enabled, these and `synthetic.draft`, `synthetic.revise`, `synthetic.recall` invoke the shared loop and produce `openmaus_fixture` answers. Inputs are enum tokens, not arbitrary customer text. Five fixed harmless answer strings are allowed. This profile proves protocol integration and continuity; it does not qualify model semantics.
 
 Each turn reconstructs a fresh runtime from at most 20 completed, unexpired, caller-owned turn pairs. Only approved `openmaus_fixture` answers and trusted prompts mapped from the enum enter the model projection. Storage-only receipts, proof, cookies, caller/resource identifiers, workload credentials, raw database records and private reasoning are excluded. The model credential goes only into the dedicated transport's authorization header. Model error bodies and unapproved output are discarded. Native logs, handoff files and ambient host configuration/tool imports are disabled in the product composition.

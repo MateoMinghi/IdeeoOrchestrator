@@ -1,5 +1,7 @@
 # IdeeoOrchestrator product documentation
 
+Authenticated clients can now check a failed send using its original key, recover a saved answer, and identify a workspace action that needs verification. The [recovery contract](contracts/CONVERSATION_LOOP.md#checking-a-failed-or-interrupted-append) and [isolated verification record](development/VERIFICATION.md#failed-turn-recovery) describe the local increment.
+
 Isolated booking diagnosis: a fully specified OpenAI request completed one real browser booking on the local fake site, returned its generated confirmation, replayed without another effect and verified it through a new browser read. The model, prompts, eight-second request limit and operation budgets were unchanged. The subsequent product restart timed out, so this is successful booking evidence rather than a clean complete campaign. See [the conversation](../../output/ideeo-booking-diagnosis-2026-11-19T23-14-53-967Z.html) and [causal findings](development/VERIFICATION.md#isolating-booking-from-conversation-and-restart-failures--19-november-2026).
 
 Failure investigation: a diagnostic Luna campaign confirmed the eight-second model cutoff and misleading storage error classification. The classification is fixed locally; timeout tuning and reliable booking remain open. Seven turns timed out, and a separate connection reset interrupted the post-restart request. See [diagnosis and regression evidence](development/VERIFICATION.md#conversation-failure-investigation--19-november-2026).

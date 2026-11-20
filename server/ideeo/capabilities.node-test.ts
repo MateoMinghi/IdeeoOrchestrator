@@ -82,7 +82,7 @@ test('authenticated conversation executes scoped workspace tools through the Ope
   const scopes=['conversation:read','conversation:write','inference:invoke','inference:disclose','inference:disclose:images','tool:files:write','tool:files:read','tool:browser:interact'];
   product.tenants.forEach(tenant=>tenant.set({scopes}));
   const token=await product.tenants[0].token('sdk',{scope:scopes.join(' ')}),other=await product.tenants[1].token('sdk',{scope:scopes.join(' ')});
-  const request=async(path:string,body?:unknown,key:string=randomUUID(),proof=token)=>{const response=await fixtureFetch(product.url+path,{method:body?'POST':'GET',headers:{authorization:`Bearer ${proof}`,...(body?{'content-type':'application/json','idempotency-key':key}:{})},...(body?{body:JSON.stringify(body)}:{})});return {status:response.status,body:await response.json() as Record<string,any>};};
+  const request=async(path:string,body?:unknown,key:string=randomUUID(),proof=token)=>{const response=await fixtureFetch(product.url+path,{method:body?'POST':'GET',headers:{authorization:`Bearer ${proof}`,...(body?{'content-type':'application/json','idempotency-key':key}:{})},...(body?{body:JSON.stringify(body)}:{})});return {status:response.status,retryAfter:response.headers.get('retry-after'),body:await response.json() as Record<string,any>};};
   const create=async(proof=token)=>{const r=await request('/v2/conversations',{},randomUUID(),proof);assert.equal(r.status,200);return `/v2/conversations/${r.body.conversation_id}/turns`;};
   const input={message:{text:'Save an invented workshop note.',disclosure:'model'}};
   await t.test('availability follows full owner and current grant',async()=>{
@@ -176,7 +176,20 @@ test('authenticated conversation executes scoped workspace tools through the Ope
     const id=path.split('/')[3];
     const [attempts]=await pg.admin`select count(*)::int as n from ideeo.inference_attempts a join ideeo.inference_operations o on o.scope=a.scope and o.request_key=a.request_key where o.conversation_id=${id} and a.kind='model'`;
     assert.equal(attempts.n,2);
-    await product.restart();assert.equal((await request(path,input,idem)).status,503);assert.equal(effects,before+1);
+    await product.restart();
+    const modelCalls=observed.length;
+    const status=await fixtureFetch(product.url+path+'/status',{headers:{authorization:`Bearer ${token}`,'idempotency-key':idem}});
+    assert.equal(status.status,200);
+    assert.equal((await status.json() as {status:string}).status,'reconciliation_required');
+    textOnly=true;
+    try{
+      const replay=await request(path,input,idem);
+      assert.equal(replay.status,409);assert.equal(replay.body.error.code,'capability_reconciliation_required');
+      assert.equal(replay.retryAfter,null);
+      assert.equal((await request(path,{message:{text:'Different invented note.',disclosure:'model'}},idem)).body.error.code,'idempotency_conflict');
+      assert.equal((await request(path)).body.turns.length,0);
+      assert.equal(observed.length,modelCalls);assert.equal(effects,before+1);
+    }finally{textOnly=false;}
   });
   await t.test('tool context and storage exclude workspace credentials',async()=>{
     const serialized=JSON.stringify(observed);for(const value of [credential,token,other,modelKey])assert.ok(!serialized.includes(value));

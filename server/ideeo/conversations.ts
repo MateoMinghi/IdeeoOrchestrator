@@ -48,6 +48,13 @@ export function createConversationService(admission: Awaited<ReturnType<typeof c
       assertContentLive(result.expires_at);
       return result;
     },
+    async turnStatus(proof: string, id: string, key: string, signal: AbortSignal) {
+      const { scope, reauthorize } = await access(proof, false, signal);
+      const result = await store.turnStatus(scope, id, key, signal);
+      await reauthorize();
+      assertContentLive(result.expires_at);
+      return result;
+    },
     async history(proof: string, id: string, after: number, limit: number, signal: AbortSignal) {
       const { scope, reauthorize } = await access(proof, false, signal);
       const result = await store.history(scope, id, after, limit, signal);

@@ -90,7 +90,7 @@ try {
     const beta=product.tenants[1];beta.set({scopes:permissions.split(' ')});
     const other=await beta.token('sdk',{scope:permissions});
     model?.setAnswer(()=> 'Join us in the invented moon garden.');
-    await verifyIdeeoUi({live:evaluation,apiUrl,productUrl:product.url,apiOrigin:api.d.env.PUBLIC_ORIGIN,cookie:api.sessionCredential,otherToken:other,answer:text=>model?.setAnswer(()=>text),
+    await verifyIdeeoUi({bundle:process.argv[process.argv.indexOf('--ui')+1],live:evaluation,apiUrl,productUrl:product.url,apiOrigin:api.d.env.PUBLIC_ORIGIN,cookie:api.sessionCredential,otherToken:other,answer:text=>model?.setAnswer(()=>text),
       revoke:async()=>{await api.db.update(sessions).set({revokedAt:new Date()});},
       restore:async()=>{await api.db.update(sessions).set({revokedAt:null});},
       attempts:async()=>Number((await pg!.admin`select count(*)::int as n from ideeo.inference_attempts where kind='model'`)[0].n)});

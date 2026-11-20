@@ -23,3 +23,8 @@ export type ConversationHistory = ConversationView & Readonly<{
   turns: readonly TurnView[];
   next_after: number | null;
 }>;
+/** Caller-scoped observation of an append key. A workspace claim leaves its external outcome uncertain. */
+export type TurnStatus = ConversationView & (
+  | Readonly<{ status: 'committed'; turn_id: string }>
+  | Readonly<{ status: 'uncommitted' | 'reconciliation_required' }>
+);

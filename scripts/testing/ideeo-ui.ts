@@ -3,12 +3,10 @@ import { mkdtemp, mkdir, realpath, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createServer } from 'vite';
-import react from '@vitejs/plugin-react';
-import tailwind from '@tailwindcss/vite';
+import { preview } from 'vite';
 import { fixtureFetch } from './fixture-http.ts';
 
-export async function verifyIdeeoUi(options: {live?:boolean;apiUrl:string;productUrl:string;apiOrigin:string;cookie:string;otherToken:string; answer(text:string):void;
+export async function verifyIdeeoUi(options: {bundle:string;live?:boolean;apiUrl:string;productUrl:string;apiOrigin:string;cookie:string;otherToken:string; answer(text:string):void;
   revoke():Promise<void>;restore():Promise<void>;attempts():Promise<number>}) {
   const root=await mkdtemp(join(tmpdir(),'ideeo-ui-'));
   const cleanup=async()=>{
@@ -19,8 +17,8 @@ export async function verifyIdeeoUi(options: {live?:boolean;apiUrl:string;produc
   let foreign=false, drop=false, hold=false;
   let releaseHeld: (()=>void) | undefined, reachedHeld: (()=>void) | undefined;
   const repository=fileURLToPath(new URL('../../',import.meta.url));
-  const server=await createServer({configFile:false,root:repository,envFile:false,logLevel:'error',optimizeDeps:{entries:['ideeo.html']},
-    plugins:[react(),tailwind(),{name:'isolated-tenant-exchange',configureServer(vite){
+  const server=await preview({configFile:false,root:repository,envFile:false,logLevel:'error',build:{outDir:options.bundle},
+    plugins:[{name:'isolated-tenant-exchange',configurePreviewServer(vite){
       vite.middlewares.use(async(req,res,next)=>{
         if(req.url==='/api/nico/token') {
           if(foreign){res.setHeader('content-type','application/json');res.end(JSON.stringify({token:options.otherToken}));return;}
@@ -49,10 +47,10 @@ export async function verifyIdeeoUi(options: {live?:boolean;apiUrl:string;produc
         }
         next();
       });
-    }}],resolve:{alias:{'@':join(repository,'src')}},server:{host:'127.0.0.1',port:0,strictPort:true,proxy:{'/v2':{target:options.productUrl}}}});
+    }}],preview:{host:'127.0.0.1',port:0,strictPort:true,proxy:{'/v2':{target:options.productUrl}}}});
   let page: Awaited<ReturnType<typeof import('./headless-chrome.ts').openHeadlessChrome>> | undefined;
   try {
-    await server.listen();const address=server.httpServer!.address();assert.ok(address && typeof address!=='string');
+    const address=server.httpServer.address();assert.ok(address && typeof address!=='string');
     const url=`http://127.0.0.1:${address.port}`;
     process.env.OMB_CDP_CHROME ??= process.platform==='win32'?'C:/Program Files/Google/Chrome/Application/chrome.exe':'/usr/bin/google-chrome';
     const {openHeadlessChrome}=await import('./headless-chrome.ts');
@@ -63,12 +61,21 @@ export async function verifyIdeeoUi(options: {live?:boolean;apiUrl:string;produc
     await page.send('Page.navigate',{url:url+'/ideeo.html'});
     console.log('UI fixture: checking initial render');
     await page.until(`document.querySelector('textarea') && !document.querySelector('textarea').disabled`,60000);
-    const send=async(text:string)=>{
+    const send=async(text:string,label='Send message')=>{
       await page!.evaluate(`(()=>{const input=document.querySelector('textarea');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(input,${JSON.stringify(text)});input.dispatchEvent(new Event('input',{bubbles:true}));})()`);
-      await page!.until(`!document.querySelector('button[aria-label="Send message"]').disabled`);
-      await page!.evaluate(`document.querySelector('button[aria-label="Send message"]').click()`);
+      const button=JSON.stringify(`button[aria-label="${label}"]`);
+      await page!.until(`document.querySelector(${button}) && !document.querySelector(${button}).disabled`);
+      await page!.evaluate(`document.querySelector(${button}).click()`);
     };
+    drop=!options.live;
     await send('Write a friendly invitation under thirty words to the invented moon garden. Mention moon garden. Do not use tools.');
+    if(!options.live){
+      await page.until(`document.querySelector('[role="status"]').textContent.includes('could not be confirmed')`);
+      const beforeReload=await options.attempts();
+      await page.evaluate(`Array.from(document.querySelectorAll('button')).find(button=>button.textContent==='Reload conversation').click()`);
+      await page.until(`document.querySelector('[role="log"]').textContent.includes('moon garden') && document.querySelector('textarea').value===''`);
+      assert.equal(await options.attempts(),beforeReload);
+    }
     await page.until(`document.querySelector('[role="log"]').children.length===1 && !document.querySelector('textarea').disabled`);
     const firstAnswer=await page.evaluate(`document.querySelector('[role="log"]').firstElementChild.lastElementChild.textContent`);
     assert.match(firstAnswer,/moon garden/i);
@@ -114,6 +121,20 @@ export async function verifyIdeeoUi(options: {live?:boolean;apiUrl:string;produc
       await send('Show an invented HTML example as text.');
       await page.until(`document.querySelector('[role="log"]').textContent.includes('<img src=')`);
       assert.equal(await page.evaluate(`document.querySelectorAll('[role="log"] img').length`),0);
+      options.answer('');
+      await send('Draft an invitation for the invented lake picnic.');
+      await page.until(`document.querySelector('[role="status"]').textContent.includes('could not be confirmed')`);
+      const afterFailure=await options.attempts();
+      const restated='Draft a short invitation for a picnic by the invented lake on Sunday.';
+      await send(restated,'Check previous message');
+      await page.until(`document.querySelector('[role="status"]').textContent.includes('no saved answer')`);
+      assert.equal(await options.attempts(),afterFailure);
+      assert.equal(await page.evaluate(`document.querySelector('textarea').value`),restated);
+      assert.equal(await page.evaluate(`document.querySelector('[role="log"]').textContent.includes('lake picnic')`),false);
+      options.answer('Join us by the lake on Sunday.');
+      await send(restated);
+      await page.until(`document.querySelector('[role="log"]').textContent.includes('Join us by the lake on Sunday.')`);
+      assert.equal(await options.attempts(),afterFailure+1);
     }
     hold=true;const reached=new Promise<void>(resolve=>{reachedHeld=resolve;});
     await page.evaluate(`window.dispatchEvent(new Event('focus'))`);
@@ -124,7 +145,7 @@ export async function verifyIdeeoUi(options: {live?:boolean;apiUrl:string;produc
     await page.until(`!document.querySelector('textarea').disabled`);
     assert.equal(await page.evaluate(`document.querySelector('[role="log"]').textContent`),'Start a conversation below.');
     console.log(JSON.stringify({ui:'actual React / tenant API / product / PostgreSQL',provider:options.live?'OpenAI Luna':'scripted fixture',firstAnswer,revisedAnswer,
-      checks:['cookie exchange','committed chat','reload without inference','lost response same-key replay','authorized tool','no token or transcript web storage','four layouts','revocation clears history','other tenant denied',...(!options.live?['inert assistant HTML']:[]),'stale history suppressed']}));
+      checks:['cookie exchange','committed chat','reload without inference','lost response same-key replay','authorized tool','no token or transcript web storage','four layouts','revocation clears history','other tenant denied',...(!options.live?['first-send recovery by key','edited draft after failed turn','inert assistant HTML']:[]),'stale history suppressed']}));
   } finally {
     releaseHeld?.();page?.close();await server.close();await options.restore();
     await cleanup();

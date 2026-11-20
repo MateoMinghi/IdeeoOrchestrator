@@ -11,6 +11,7 @@ function errorText(error: unknown) {
     if(error.status===404 || error.status===410) return t('ideeo.missing');
     if(error.code==='content_not_permitted') return t('ideeo.private');
     if(error.code==='inference_budget_exhausted') return t('ideeo.budget');
+    if(error.code==='capability_reconciliation_required') return t('ideeo.checkAction');
     if(error.status===409) return t('ideeo.conflict');
   }
   return t('ideeo.unavailable');
@@ -18,11 +19,11 @@ function errorText(error: unknown) {
 
 export function IdeeoChat({getToken}: {getToken: TenantTokenSource}) {
   const client=useRef(createProductClient(getToken));
-  const [id,setId]=useState(()=>/^#[a-f0-9-]{36}$/.test(location.hash)?location.hash.slice(1):'');
+  const conversation=useRef(/^#[a-f0-9-]{36}$/.test(location.hash)?location.hash.slice(1):'');
   const [turns,setTurns]=useState<readonly TurnView[]>([]), [draft,setDraft]=useState(''), [error,setError]=useState('');
   const [busy,setBusy]=useState(true), [ready,setReady]=useState(false);
   const active=useRef<AbortController | null>(null), epoch=useRef(0);
-  const pending=useRef<{text:string;key:string;createKey:string} | null>(null);
+  const pending=useRef<{text:string;key:string;createKey:string;checked:boolean} | null>(null);
   const transcript=useRef<HTMLDivElement>(null);
   const run=useCallback(async(work:(signal:AbortSignal)=>Promise<readonly TurnView[]>)=>{
     active.current?.abort();const controller=new AbortController();active.current=controller;
@@ -34,7 +35,23 @@ export function IdeeoChat({getToken}: {getToken: TenantTokenSource}) {
     }}
     finally{if(epoch.current===generation)setBusy(false);}
   },[]);
-  const load=useCallback(()=>run(async signal=>id?client.current.history(id,signal):(await client.current.check(signal),[])),[id,run]);
+  const load=useCallback(()=>run(async signal=>{
+    const id=conversation.current;
+    if(!id){await client.current.check(signal);return [];}
+    const attempt=pending.current;
+    const status=attempt && await client.current.turnStatus(id,attempt.key,signal);
+    const history=await client.current.history(id,signal);
+    signal.throwIfAborted();
+    if(status?.status==='committed'){
+      if(!history.some(turn=>turn.turn_id===status.turn_id))throw new ProductApiError('unavailable');
+      pending.current=null;
+      setDraft(text=>text===attempt?.text?'':text);
+    }else if(status && attempt){
+      attempt.checked=true;
+      setError(t(status.status==='reconciliation_required'?'ideeo.checkAction':'ideeo.restatedContext'));
+    }
+    return history;
+  }),[run]);
   useEffect(()=>{client.current=createProductClient(getToken);pending.current=null;setDraft('');void load();
     return()=>{++epoch.current;active.current?.abort();};},[getToken,load]);
   useEffect(()=>{
@@ -45,20 +62,29 @@ export function IdeeoChat({getToken}: {getToken: TenantTokenSource}) {
     return()=>{document.removeEventListener('visibilitychange',refresh);window.removeEventListener('focus',focus);clearInterval(timer);};
   },[busy,load]);
   useEffect(()=>{transcript.current?.scrollTo({top:transcript.current.scrollHeight});},[turns]);
+  const checkBeforeSend=Boolean(conversation.current && pending.current && pending.current.text!==draft && !pending.current.checked);
+  const sendLabel=t(checkBeforeSend?'ideeo.checkPrevious':'ideeo.send');
   const send=()=>{
     if(busy || !draft.trim())return;
     const text=draft;
-    if(!pending.current || pending.current.text!==text)pending.current={text,key:crypto.randomUUID(),createKey:crypto.randomUUID()};
+    if(checkBeforeSend){
+      void load();return;
+    }
+    if(!pending.current || pending.current.text!==text)pending.current={text,key:crypto.randomUUID(),createKey:crypto.randomUUID(),checked:false};
     const attempt=pending.current;
+    attempt.checked=false;
     void run(async signal=>{
-      let current=id;
-      if(!current){current=(await client.current.create(attempt.createKey,signal)).conversation_id;history.replaceState(null,'',`#${current}`);}
+      let current=conversation.current;
+      if(!current){
+        current=(await client.current.create(attempt.createKey,signal)).conversation_id;
+        signal.throwIfAborted();conversation.current=current;history.replaceState(null,'',`#${current}`);
+      }
       await client.current.append(current,text,attempt.key,signal);
       const result=await client.current.history(current,signal);signal.throwIfAborted();
-      pending.current=null;setDraft('');setId(current);return result;
+      pending.current=null;setDraft('');return result;
     });
   };
-  const fresh=()=>{active.current?.abort();++epoch.current;pending.current=null;setDraft('');setTurns([]);history.replaceState(null,'',location.pathname);if(id)setId('');else void load();};
+  const fresh=()=>{active.current?.abort();++epoch.current;pending.current=null;conversation.current='';setDraft('');setTurns([]);history.replaceState(null,'',location.pathname);void load();};
   return <main className="flex h-dvh min-h-0 bg-app text-ink">
     <aside className="hidden w-56 shrink-0 bg-panel p-4 sm:block">
       <h1 className="text-[20px] font-semibold">Ideeo</h1>
@@ -81,7 +107,7 @@ export function IdeeoChat({getToken}: {getToken: TenantTokenSource}) {
           disabled={busy || (!ready && !error)} onChange={event=>setDraft(event.target.value)}
           onKeyDown={event=>{if(event.key==='Enter' && !event.shiftKey && !event.nativeEvent.isComposing){event.preventDefault();send();}}}
           className="min-w-0 flex-1 resize-none bg-transparent text-[15px] leading-[22px]" />
-        <ComposerSendButton compact={false} waits={false} label={t('ideeo.send')} title={t('ideeo.send')}
+        <ComposerSendButton compact={false} waits={false} label={sendLabel} title={sendLabel}
           look={{className:'bg-ink text-app'}} disabled={busy || !draft.trim()} onSend={send} onChoose={()=>{}} />
       </div>
       <button className="ui-button ui-button-sm mt-2 self-start sm:hidden" onClick={fresh}>{t('ideeo.new')}</button>

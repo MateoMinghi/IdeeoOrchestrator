@@ -1,0 +1,24 @@
+✔ capability configuration pins complete scope, schema, destination and permission (170.854ms)
+✔ large catalogs retain OpenMaus discovery with scoped permission and accounting (508.448ms)
+▶ authenticated conversation executes scoped workspace tools through the OpenMaus loop
+  ✔ availability follows full owner and current grant (62.5721ms)
+  ✔ real file effect and committed replay survive product restart (2118.3902ms)
+  ✔ a caller without workspace tools can still have an ordinary conversation (221.8734ms)
+  ✔ small catalogs expose direct tools with the same tenant and permission guards (548.576ms)
+  ✔ native OpenMaus file tools write and read only the caller workspace (660.9642ms)
+  ✔ bounded tool batches validate every call before any effect and replay without execution (382.3535ms)
+  ✔ actual OpenMaus browser opens the local site and makes one fixture booking (2932.3088ms)
+  ✔ different tenant, unknown tools and schema violations cause no effect (610.1297ms)
+  ✔ actual browser images require separate current model disclosure authority (3162.9647ms)
+  ✔ revocation after an effect withholds its answer (227.0106ms)
+  ✔ commit failure cannot repeat an external effect on retry (2363.453ms)
+  ✔ tool context and storage exclude workspace credentials (14.4972ms)
+✔ authenticated conversation executes scoped workspace tools through the OpenMaus loop (37700.6244ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 49172.0474

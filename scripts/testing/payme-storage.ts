@@ -1,5 +1,7 @@
 import { spawn } from 'node:child_process';
-import { resolve } from 'node:path';
+import { mkdtemp, realpath, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const args=process.argv.slice(2), loop=args.includes('--loop');
@@ -16,15 +18,39 @@ if(live !== !!keyFile) throw new Error('OpenAI evaluation requires explicit --ke
 const [flag, path, ...extra] = args;
 if (flag !== '--api-root' || !path || extra.length) throw new Error('Provide --api-root <isolated-payme-api-checkout>');
 const apiRoot = resolve(path);
-const child = spawn(process.execPath, ['--import', pathToFileURL(resolve(apiRoot, 'node_modules/tsx/dist/loader.mjs')).href,
-  fileURLToPath(new URL('./payme-storage-worker.ts', import.meta.url)), apiRoot,...(loop?['--loop']:[]),...(freeForm?['--free-form']:[]),...(ui?['--ui']:[]),...(live?['--openai-evaluation',resolve(keyFile!)]:[])], {
-  cwd: apiRoot, windowsHide: true, stdio: 'inherit', env: { SystemRoot: process.env.SystemRoot, WINDIR: process.env.WINDIR,
-    PATH: process.env.PATH, TEMP: process.env.TEMP, TMP: process.env.TMP, IDEEO_TEST_PG_BIN: process.env.IDEEO_TEST_PG_BIN },
-});
-child.once('error', () => { process.exitCode = 1; });
-child.once('exit', (code,signal) => {
-  if(code!==0) console.error(JSON.stringify({fixture:'payme-storage',exitCode:code,signal}));
-  process.exitCode = code ?? 1;
-});
-process.once('SIGINT', () => child.kill('SIGINT'));
-process.once('SIGTERM', () => child.kill('SIGTERM'));
+const repository=fileURLToPath(new URL('../../',import.meta.url));
+const env={SystemRoot:process.env.SystemRoot,WINDIR:process.env.WINDIR,PATH:process.env.PATH,
+  TEMP:process.env.TEMP,TMP:process.env.TMP,IDEEO_TEST_PG_BIN:process.env.IDEEO_TEST_PG_BIN};
+async function run(args:string[],cwd:string):Promise<number>{
+  const child=spawn(process.execPath,args,{cwd,env,windowsHide:true,stdio:'inherit'});
+  const interrupt=()=>child.kill('SIGINT');
+  process.once('SIGINT',interrupt);
+  try {
+    return await new Promise<number>((done,fail)=>{
+      child.once('error',fail);
+      child.once('exit',(code,signal)=>{
+        if(code!==0) console.error(JSON.stringify({fixture:'payme-storage',exitCode:code,signal}));
+        done(code??1);
+      });
+    });
+  } finally {process.off('SIGINT',interrupt);}
+}
+
+const bundle=ui ? await mkdtemp(join(tmpdir(),'ideeo-ui-bundle-')) : undefined;
+async function removeBundle(path:string){
+  const target=await realpath(path);
+  if(dirname(target)!==await realpath(tmpdir()) || !basename(target).startsWith('ideeo-ui-bundle-')) throw new Error('Unexpected fixture bundle');
+  await rm(target,{recursive:true,force:true});
+}
+try {
+  if(bundle){
+    const vite=fileURLToPath(new URL('bin/vite.js',import.meta.resolve('vite/package.json')));
+    const result=await run([vite,'build','--config','vite.ideeo.config.ts','--outDir',bundle],repository);
+    if(result!==0)throw new Error('Could not build the fixture UI');
+  }
+  process.exitCode=await run(['--import',pathToFileURL(resolve(apiRoot,'node_modules/tsx/dist/loader.mjs')).href,
+    fileURLToPath(new URL('./payme-storage-worker.ts',import.meta.url)),apiRoot,...(loop?['--loop']:[]),
+    ...(freeForm?['--free-form']:[]),...(bundle?['--ui',bundle]:[]),...(live?['--openai-evaluation',resolve(keyFile!)]:[])],apiRoot);
+} finally {
+  if(bundle)await removeBundle(bundle);
+}

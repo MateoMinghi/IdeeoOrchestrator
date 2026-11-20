@@ -3,6 +3,7 @@
   "include": [
     "server/ideeo-main.ts",
     "server/ideeo/**/*.node-test.ts",
+    "scripts/testing/payme-storage.ts",
     "scripts/testing/payme-storage-worker.ts",
     "scripts/testing/conversation-tasks.ts",
     "scripts/testing/booking-diagnosis.ts"

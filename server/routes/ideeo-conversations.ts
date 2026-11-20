@@ -10,6 +10,11 @@ import type { ConversationMessage } from '../../shared/ideeo/conversations.ts';
 import { isFreeFormMessage } from '../ideeo/text-policy.ts';
 
 const invalid = () => new ConversationError(422, 'invalid_request');
+function requestKey(req: IncomingMessage): string {
+  const key = req.headers['idempotency-key'];
+  if (req.headersDistinct['idempotency-key']?.length !== 1 || typeof key !== 'string' || !/^[A-Za-z0-9._:-]{1,100}$/.test(key)) throw invalid();
+  return key;
+}
 async function json(req: IncomingMessage): Promise<Record<string, unknown>> {
   if (req.headers['content-type']?.split(';')[0].trim() !== 'application/json' || Number(req.headers['content-length'] ?? 0) > 4096) throw invalid();
   const chunks: Buffer[] = [];
@@ -29,11 +34,11 @@ export function createIdeeoConversationRoutes(service: ReturnType<typeof createC
   return async (req: IncomingMessage, res: ServerResponse): Promise<boolean> => {
     if (!req.url?.startsWith('/v2/conversations')) return false;
     const requestId = randomUUID();
-    const send = (status: number, body: unknown) => {
+    const send = (status: number, body: unknown, requiresReconciliation = false) => {
       if (res.destroyed) return;
       res.writeHead(status, { 'content-type': 'application/json', 'cache-control': 'no-store', 'x-content-type-options': 'nosniff',
         'x-request-id': requestId, ...(status === 401 ? { 'www-authenticate': 'Bearer realm="ideeo"' } : {}),
-        ...(status === 409 ? { 'retry-after': '1' } : {}) });
+        ...(status === 409 && !requiresReconciliation ? { 'retry-after': '1' } : {}) });
       res.end(JSON.stringify(body));
     };
     const controller = new AbortController();
@@ -45,17 +50,19 @@ export function createIdeeoConversationRoutes(service: ReturnType<typeof createC
       const url = new URL(req.url, 'http://127.0.0.1');
       const create = url.pathname === '/v2/conversations';
       const capabilities=url.pathname==='/v2/conversations/capabilities';
-      const match = /^\/v2\/conversations\/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})\/turns$/.exec(url.pathname);
+      const match = /^\/v2\/conversations\/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})\/turns(\/status)?$/.exec(url.pathname);
       if (!create && !match && !capabilities) throw new ConversationError(404, 'not_found');
-      if (capabilities?req.method!=='GET':req.method !== 'POST' && !(req.method === 'GET' && match)) throw new ConversationError(405, 'method_not_allowed');
+      if (capabilities || match?.[2] ? req.method!=='GET' : req.method !== 'POST' && !(req.method === 'GET' && match)) throw new ConversationError(405, 'method_not_allowed');
       let result: unknown;
-      if(capabilities){
+      if (match?.[2]) {
+        if (url.search || req.headers['transfer-encoding'] || Number(req.headers['content-length'] ?? 0) !== 0) throw invalid();
+        result = await service.turnStatus(req.headers.authorization, match[1], requestKey(req), controller.signal);
+      } else if(capabilities){
         if(url.search||req.headers['transfer-encoding']||Number(req.headers['content-length']??0)!==0) throw invalid();
         result=await service.capabilities(req.headers.authorization,controller.signal);
       } else if (req.method === 'POST') {
-        if (url.search || req.headersDistinct['idempotency-key']?.length !== 1) throw invalid();
-        const key = req.headers['idempotency-key'];
-        if (typeof key !== 'string' || !/^[A-Za-z0-9._:-]{1,100}$/.test(key)) throw invalid();
+        if (url.search) throw invalid();
+        const key = requestKey(req);
         const body = await json(req);
         if (create) {
           if (Object.keys(body).length) throw invalid();
@@ -77,7 +84,8 @@ export function createIdeeoConversationRoutes(service: ReturnType<typeof createC
     } catch (error) {
       if (!res.writableEnded) {
         const known = error instanceof ConversationError || error instanceof InvalidTenantSession || error instanceof AdmissionError;
-        send(known ? error.status : 503, { error: { code: known ? error.code : 'storage_unavailable' }, request_id: requestId });
+        const code = known ? error.code : 'storage_unavailable';
+        send(known ? error.status : 503, { error: { code }, request_id: requestId }, code === 'capability_reconciliation_required');
       }
     } finally { clearTimeout(timer); res.off('close', abort); }
     return true;

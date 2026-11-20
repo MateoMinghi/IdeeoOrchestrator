@@ -1,0 +1,7 @@
+@import "../styles.css" source(none);
+@source "./";
+@source "../components/ComposerSendButton.tsx";
+@source "../components/chat-bubble-style.ts";
+@source "../components/SidebarPopoverMenu.tsx";
+@source "../components/MenuMotion.tsx";
+@source "../components/menu-recipe.ts";

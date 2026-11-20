@@ -1,4 +1,4 @@
-import { CONVERSATION_VERSION, type ConversationHistory, type ConversationView, type TurnView } from '../../shared/ideeo/conversations.ts';
+import { CONVERSATION_VERSION, type ConversationHistory, type ConversationView, type TurnStatus, type TurnView } from '../../shared/ideeo/conversations.ts';
 
 export class ProductApiError extends Error {
   readonly code: string;
@@ -38,7 +38,7 @@ export function createProductClient(getToken: TenantTokenSource) {
     if (!token || token.length>12000 || /[\r\n]/.test(token)) throw new ProductApiError('authentication_required');
     const request=async(path:string,body?:object,key?:string)=>{
       const response=await fetch(path,{method:body?'POST':'GET',credentials:'omit',redirect:'error',cache:'no-store',signal,
-        headers:{authorization:`Bearer ${token}`,...(body?{'content-type':'application/json','idempotency-key':key!}:{})},...(body?{body:JSON.stringify(body)}:{})});
+        headers:{authorization:`Bearer ${token}`,...(body?{'content-type':'application/json'}:{}),...(key?{'idempotency-key':key}:{})},...(body?{body:JSON.stringify(body)}:{})});
       const value=await readJson(response);signal.throwIfAborted();
       if(!response.ok) {
         const code=value.error && typeof value.error==='object' && 'code' in value.error ? String(value.error.code) : 'unavailable';
@@ -63,6 +63,12 @@ export function createProductClient(getToken: TenantTokenSource) {
       if(result.conversation_id!==id || result.status!=='completed' || !uuid.test(String(result.turn_id))) throw new ProductApiError('unavailable');
       return result as unknown as TurnView;
     },70000),
+    turnStatus: (id:string,key:string,signal:AbortSignal)=>session(signal,async request=>{
+      const result=await request(`/v2/conversations/${conversationId(id)}/turns/status`,undefined,key);
+      if(result.conversation_id!==id || !(result.status==='committed' && uuid.test(String(result.turn_id))
+        || result.status==='uncommitted' || result.status==='reconciliation_required')) throw new ProductApiError('unavailable');
+      return result as unknown as TurnStatus;
+    }),
     history: (id:string,signal:AbortSignal)=>session(signal,async request=>{
       const turns: TurnView[]=[];let after=0;
       for(let page=0;page<20;page++) {

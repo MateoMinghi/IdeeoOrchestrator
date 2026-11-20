@@ -62,6 +62,8 @@ test('free-form product boundaries on isolated PostgreSQL', {timeout:180000}, as
   const create=async(token=sdk)=>{const result=await request('/v2/conversations',{},token);assert.equal(result.status,200);return result.body.conversation_id;};
   const turn=(id:string,text:string,idem:string=randomUUID(),token=sdk)=>request(`/v2/conversations/${id}/turns`,{message:{text,disclosure:'model'}},token,idem);
   const history=(id:string,token=sdk)=>request(`/v2/conversations/${id}/turns`,undefined,token);
+  const status=(id:string,key:string,token=sdk)=>fixtureFetch(product!.url+`/v2/conversations/${id}/turns/status`,
+    {headers:{authorization:`Bearer ${token}`,'idempotency-key':key}});
   const counts=async(id:string)=>{
     const [row]=await pg.admin`select (select count(*)::int from ideeo.turns where conversation_id=${id}) as turns,
       (select count(*)::int from ideeo.inference_attempts a join ideeo.inference_operations o using(scope,request_key) where o.conversation_id=${id}) as attempts`;
@@ -135,10 +137,22 @@ test('free-form product boundaries on isolated PostgreSQL', {timeout:180000}, as
     const first=turn(target,'An invented concurrent story.',idem);
     try {
       await reached;
+      assert.equal((await status(target,idem)).status,409);
       assert.equal((await turn(target,'An invented concurrent story.',idem)).status,409);
       assert.equal((await turn(target,'Another invented story.')).status,409);
     } finally {release();model.onCheck();}
     const completed=await first;assert.equal(completed.status,200);
+    const receipt=await status(target,idem);
+    assert.equal(receipt.status,200);
+    const body=await receipt.json() as Record<string,unknown>;
+    assert.equal(body.status,'committed');
+    assert.equal(body.turn_id,completed.body.turn_id);
+    assert.equal(body.answer,undefined);
+    assert.equal((await status(target,idem,other)).status,404);
+    const unrelated=await status(await create(),idem);
+    assert.equal((await unrelated.json() as {status:string}).status,'uncommitted');
+    alpha.set({scopes:scopes.filter(s=>s!=='conversation:read')});
+    try{assert.equal((await status(target,idem)).status,403);}finally{alpha.set({scopes});}
     assert.equal((await turn(target,'An invented concurrent story.',idem)).body.turn_id,completed.body.turn_id);
     assert.deepEqual(await counts(target),{turns:1,attempts:1});
   });
