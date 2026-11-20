@@ -1,4 +1,5 @@
 import { createServer } from 'node:http';
+import { channel } from 'node:diagnostics_channel';
 import { createAdmission } from '../ideeo/admission.ts';
 import { parseIdeeoConfiguration } from '../ideeo/config.ts';
 import { createIdeeoSessionRoutes } from '../routes/ideeo-session.ts';
@@ -8,13 +9,19 @@ import { createConversationGenerator } from '../ideeo/conversation-loop.ts';
 import { createCapabilities } from '../ideeo/capabilities.ts';
 
 export async function createIdeeoHost(rawConfiguration: unknown, secrets: Readonly<Record<string, string | undefined>>) {
+  const startup=channel('ideeo.product.startup');
+  startup.publish('configure');
   const config = parseIdeeoConfiguration(rawConfiguration);
+  startup.publish('admission');
   const admission = await createAdmission(config, secrets);
   const route = createIdeeoSessionRoutes(admission);
+  startup.publish('capabilities');
   const capabilities=config.capabilities?createCapabilities(config.capabilities,secrets):undefined;
   const generator = config.inference ? createConversationGenerator(config.inference,secrets,capabilities) : undefined;
+  startup.publish('storage');
   const store = config.storage ? await (await import('../ideeo/storage/conversations.ts')).createConversationStore(config.storage, config.tenants.map(t => t.tenantId), secrets) : undefined;
   const conversations = store ? createIdeeoConversationRoutes(createConversationService(admission, store,generator,capabilities), Boolean(capabilities)) : undefined;
+  startup.publish('routes_ready');
   const dispatch = async (req: import('node:http').IncomingMessage, res: import('node:http').ServerResponse) => {
     if (conversations && await conversations(req, res)) return;
     await route(req, res);

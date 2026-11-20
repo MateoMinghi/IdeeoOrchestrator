@@ -8,6 +8,8 @@ export async function launchModelFixture() {
   let fault='none', calls=0, redirects=0;
   let beforeReply:((call:number)=>Promise<void>)|undefined;
   let answerText: ((messages: readonly {role:string;content:string}[]) => string) | undefined;
+  let scriptedTool: ((messages: readonly {role:string;content:string}[]) =>
+    {name:string;args:Record<string,unknown>}|undefined) | undefined;
   const server=createServer(async(req,res)=>{
     if(req.url==='/redirect-target'){redirects++;res.writeHead(500);res.end();return;}
     calls++;const call=calls;
@@ -32,10 +34,12 @@ export async function launchModelFixture() {
         : prompt===fixturePrompts['synthetic.recall'] ? (messages.some(m=>m.role==='assistant' && m.content==='Join our synthetic picnic on Saturday.') ? 'The last invitation was: Join our synthetic picnic on Saturday.' : 'missing synthetic context')
         : prompt===fixturePrompts['synthetic.follow-up'] ? 'The synthetic color is blue.' : [...fixtureAnswers][0];
       const toolRound=prompt===fixturePrompts['synthetic.follow-up'] && messages.at(-1)?.role!=='tool';
-      const tool=toolRound || fault==='unknown-tool' || fault==='repeat-tool';
+      const scripted=scriptedTool?.(messages);
+      const tool=!!scripted || toolRound || fault==='unknown-tool' || fault==='repeat-tool';
+      const callId=scripted?'fixture-call-'+(1+messages.filter(m=>m.role==='tool').length):'fixture-call-1';
       const content=fault==='credential' ? credential : fault==='banking' ? 'Your balance is $123.45.' : fault==='secret' ? 'synthetic-private-output-canary' : fault==='empty' ? '' : tool ? null : answerText?.(messages) ?? text;
       reply(200,{choices:[{message:{role:fault==='wrong-role'?'user':'assistant',...(fault==='missing-content'||fault==='omitted-tool-content'&&tool?{}:{content}),reasoning_content:'synthetic-private-reasoning',reasoning_details:[{text:'synthetic-private-reasoning'}],
-        ...(tool ? {tool_calls:[{id:'fixture-call-1',type:'function',function:{name:fault==='unknown-tool'?'host_shell':'fixture_catalog',arguments:JSON.stringify({item:'color'})}}]} : {})},
+        ...(tool ? {tool_calls:[{id:callId,type:'function',function:{name:scripted?.name??(fault==='unknown-tool'?'host_shell':'fixture_catalog'),arguments:JSON.stringify(scripted?.args??{item:'color'})}}]} : {})},
         finish_reason:fault==='length'?'length':fault==='finish-mismatch'?'tool_calls':tool?'tool_calls':'stop'}],...(fault==='unknown-usage'?{}:{usage:{prompt_tokens:15,completion_tokens:10}})});
     } catch{reply(500,{});}
   });
@@ -44,6 +48,7 @@ export async function launchModelFixture() {
   return {url:`http://127.0.0.1:${address.port}/v1`,credential,observed,
     setFault(value:string){fault=value;calls=0;},onCheck(hook?:typeof beforeReply){beforeReply=hook;},
     setAnswer(answer?: typeof answerText){answerText=answer;},
+    setTool(script?:typeof scriptedTool){scriptedTool=script;},
     observations:()=>({calls,redirects}),
     stop:()=>new Promise<void>(resolve=>{server.close(()=>resolve());server.closeAllConnections();}),
   };

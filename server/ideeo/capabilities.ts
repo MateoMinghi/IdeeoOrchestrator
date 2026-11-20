@@ -2,7 +2,7 @@ import { ToolDirectory, SEARCH_TOOL, DESCRIBE_TOOL, CALL_TOOL, searchesCatalog }
 import { compileToolSchema } from '../mcp-schema-validator.ts';
 import { ChatToolSessionError, type ChatToolDefinition, type ChatToolSession } from '../drivers/chat-tool-session.ts';
 import { CAPABILITY_FAMILIES, type CapabilityView } from '../../shared/ideeo/capabilities.ts';
-import { capabilityScopeKey, type CapabilityConfiguration } from './capability-config.ts';
+import { capabilityScopeKey, capabilityValidator, type CapabilityConfiguration } from './capability-config.ts';
 import type { InferenceContext } from './inference.ts';
 import { executeCapability } from './capability-transport.ts';
 import { permittedCapabilityText, freeFormSystem } from './text-policy.ts';
@@ -18,7 +18,7 @@ export function createCapabilities(routes: readonly CapabilityConfiguration[], s
   const entries=routes.flatMap(route=>{
     const credential=secrets[route.credentialEnv];
     if(!credential||credential.length<20||credential.length>1024||/[^\x21-\x7e]/.test(credential)) throw new Error('Missing capability credential');
-    return route.tools.map(tool=>({route,credential,tool,validate:compileToolSchema(tool.inputSchema)}));
+    return route.tools.map(tool=>({route,credential,tool,validate:capabilityValidator(tool.inputSchema)}));
   });
   const permitted=(scope: CapabilityConfiguration['scope'], permissions: readonly string[])=>entries.filter(entry=>capabilityScopeKey(entry.route.scope)===capabilityScopeKey(scope)&&permissions.includes(entry.tool.permission));
   return {

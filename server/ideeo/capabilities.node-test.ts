@@ -4,13 +4,15 @@ import { createServer, type Server } from 'node:http';
 import { randomBytes, randomUUID } from 'node:crypto';
 import { readFile, writeFile, mkdir, open, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import { parseCapabilityConfiguration, type CapabilityConfiguration } from './capability-config.ts';
+import { setTimeout as delay } from 'node:timers/promises';
+import { capabilityValidator, parseCapabilityConfiguration, type CapabilityConfiguration } from './capability-config.ts';
 import { createCapabilityExecutor } from './capability-executor.ts';
 import { launchPostgresFixture } from '../../scripts/testing/postgres-fixture.ts';
 import { launchIdeeoFixture } from '../../scripts/testing/ideeo-fixture.ts';
 import { fixtureFetch } from '../../scripts/testing/fixture-http.ts';
 import { launchIdeeoBrowserFixture } from '../../scripts/testing/ideeo-browser-fixture.ts';
 import { workspaceFileTools } from './workspace-files.ts';
+import { workspaceSkillTools } from './workspace-skills.ts';
 import { createCapabilities } from './capabilities.ts';
 
 const scope={tenant_id:'alpha',membership_id:'member-1',client_id:'app',agent_account_id:'assistant-1',grant_id:'grant-1',channel:'sdk' as const,channel_binding_id:''};
@@ -21,6 +23,12 @@ async function close(server:Server){await new Promise<void>(resolve=>{server.clo
 test('capability configuration pins complete scope, schema, destination and permission',()=>{
   const route={scope,url:'http://127.0.0.1:32123/v1/ideeo/tools/call',credentialEnv:'WORKSPACE',tools:[tool]};
   assert.equal(parseCapabilityConfiguration([route],['alpha'])[0].tools[0].name,'write_note');
+  const schema=structuredClone(tool.inputSchema);
+  const first=capabilityValidator(schema);
+  assert.equal(capabilityValidator(schema),first);
+  assert.equal(first({text:'Workshop'}),true);
+  schema.properties.text.maxLength=3;
+  assert.equal(capabilityValidator(schema)({text:'Workshop'}),false);
   for(const changed of [{...route,url:'https://example.invalid/v1/ideeo/tools/call'},{...route,scope:{...scope,tenant_id:'beta'}},{...route,scope:{...scope,channel_binding_id:'wrong'}},
     {...route,tools:[tool,tool]},{...route,tools:[{...tool,permission:'*'}]},{...route,tools:[{...tool,name:'call_tool'}]},{...route,tools:[{...tool,inputSchema:{$ref:'https://example.invalid/schema'}}]}])assert.throws(()=>parseCapabilityConfiguration([changed],['alpha']));
 });
@@ -53,8 +61,20 @@ test('authenticated conversation executes scoped workspace tools through the Ope
   const filesRoot=join(workspace,'files');await mkdir(filesRoot);const files=await workspaceFileTools(filesRoot);
   const credential=randomBytes(32).toString('hex'), modelKey=randomBytes(32).toString('hex');
   let effects=0,afterEffect:(()=>void)|undefined,toolName='write_note',toolArgs:Record<string,unknown>={text:'Workshop Sunday at three.'},prelude:string|null=null,batch=1,batchInvalid=false,textOnly=false;
-  const registered=[tool,...browser.tools,...files.tools];
-  const handlers=new Map([...browser.handlers,...files.handlers]);
+  const skillCatalog=join(workspace,'skills.json');
+  await writeFile(skillCatalog,JSON.stringify([
+    {name:'workshop-supplies',description:'Prepare lavender supply kits.',enabled:true},
+    {name:'retired-workshop',description:'Withheld archived description.',enabled:false}
+  ]));
+  let skillReads=0;
+  let onSkillRead:((signal:AbortSignal)=>Promise<void>)|undefined;
+  const skills=workspaceSkillTools(async signal=>{
+    skillReads++;
+    await onSkillRead?.(signal);
+    return JSON.parse(await readFile(skillCatalog,{encoding:'utf8',signal}));
+  });
+  const registered=[tool,...browser.tools,...files.tools,...skills.tools];
+  const handlers=new Map([...browser.handlers,...files.handlers,...skills.handlers]);
   handlers.set('write_note',async(args)=>{effects++;await writeFile(join(workspace,'note.txt'),String(args.text));afterEffect?.();return 'The workshop note was saved.';});
   const executor=createCapabilityExecutor({scope,credential,tools:registered,claim:async id=>{try{const file=await open(join(receipts,id),'wx');await file.close();return true;}catch{return false;}},handlers});
   const endpoint=await listen(executor);cleanup.push(()=>close(executor));
@@ -72,7 +92,8 @@ test('authenticated conversation executes scoped workspace tools through the Ope
       const call=!textOnly&&!Array.isArray(last.content)&&(last.role!=='tool'||didSearch);
       const name=toolName;
       const args=toolArgs;
-      res.writeHead(200,{'content-type':'application/json'});res.end(JSON.stringify({choices:[{message:{role:'assistant',content:call?prelude:'The workshop note was saved.',
+      const answer=name==='skills_list'&&String(last.content).includes('lavender supply kits')?'Use the workshop supplies skill.':'The workshop note was saved.';
+      res.writeHead(200,{'content-type':'application/json'});res.end(JSON.stringify({choices:[{message:{role:'assistant',content:call?prelude:answer,
         ...(call?{tool_calls:Array.from({length:batch},(_,index)=>({id:`fixture-call-${didSearch?2:index+1}`,type:'function',function:{name,arguments:JSON.stringify(batchInvalid&&index===batch-1?{...args,unapproved:true}:args)}}))}:{})},finish_reason:call?'tool_calls':'stop'}],usage:{prompt_tokens:20,completion_tokens:10}}));
     }catch{res.writeHead(500);res.end();}
   });
@@ -83,7 +104,7 @@ test('authenticated conversation executes scoped workspace tools through the Ope
     storage:{mode:'synthetic',databaseEnv:'DB',keyringEnv:'KEYS',fingerprintKeyEnv:'FINGERPRINT',activeKeyId:'first',contentTtlSeconds:600,replayTtlSeconds:1200},
     secrets:{DB:pg.runtimeUrl,KEYS:JSON.stringify({alpha:{first:key()},beta:{first:key()}}),FINGERPRINT:key(),MODEL:modelKey,WORKSPACE:credential,IDEEO_FREE_FORM_EVALUATION:'synthetic-content-only'}});
   cleanup.push(()=>product.stop());
-  const scopes=['conversation:read','conversation:write','inference:invoke','inference:disclose','inference:disclose:images','tool:files:write','tool:files:read','tool:browser:interact'];
+  const scopes=['conversation:read','conversation:write','inference:invoke','inference:disclose','inference:disclose:images','tool:files:write','tool:files:read','tool:browser:interact','tool:skills:read'];
   product.tenants.forEach(tenant=>tenant.set({scopes}));
   const token=await product.tenants[0].token('sdk',{scope:scopes.join(' ')}),other=await product.tenants[1].token('sdk',{scope:scopes.join(' ')});
   const request=async(path:string,body?:unknown,key:string=randomUUID(),proof=token)=>{const response=await fixtureFetch(product.url+path,{method:body?'POST':'GET',headers:{authorization:`Bearer ${proof}`,...(body?{'content-type':'application/json','idempotency-key':key}:{})},...(body?{body:JSON.stringify(body)}:{})});return {status:response.status,retryAfter:response.headers.get('retry-after'),body:await response.json() as Record<string,any>};};
@@ -214,5 +235,72 @@ test('authenticated conversation executes scoped workspace tools through the Ope
     const serialized=JSON.stringify(observed);for(const value of [credential,token,other,modelKey])assert.ok(!serialized.includes(value));
     const rows=JSON.stringify(await pg.admin`select user_content,answer_content from ideeo.turns`);assert.ok(!rows.includes('Workshop Sunday'));assert.ok(!product.diagnostics().includes(credential));
     assert.ok((await readdir(receipts)).length>=3);
+  });
+  const skillInput={message:{text:'Find a skill for workshop supplies.',disclosure:'model'}};
+  toolName='skills_list';toolArgs={query:'workshop supplies'};
+  const attempts=async(path:string)=>Array.from(await pg.admin`select a.kind,a.status from ideeo.inference_attempts a
+    join ideeo.inference_operations o using(scope,request_key) where o.conversation_id=${path.split('/')[3]} order by a.created_at`,r=>[r.kind,r.status]);
+  await t.test('skills discovery authenticates the executor, screens results and replays the committed turn',async()=>{
+    assert.equal((await fixtureFetch(route.url,{method:'POST',body:'{}'})).status,401);
+    const path=await create(),idem=randomUUID();
+    const result=await request(path,skillInput,idem);
+    assert.equal(result.status,200);
+    assert.equal(result.body.answer.text,'Use the workshop supplies skill.');
+    const context=JSON.stringify(observed.at(-1));
+    assert.ok(context.includes('lavender supply kits'));
+    assert.ok(!context.includes('retired-workshop')&&!context.includes('archived description'));
+    const rows=await attempts(path);
+    assert.deepEqual(rows,[['model','finished'],['tool','finished'],['model','finished']]);
+    const calls=observed.length;
+    assert.equal((await request(path,skillInput,idem)).body.event_id,result.body.event_id);
+    assert.equal(skillReads,1);assert.equal(observed.length,calls);assert.deepEqual(await attempts(path),rows);
+  });
+  await t.test('skills discovery enforces caller scope, current read permission and disclosure after execution',async()=>{
+    const reads=skillReads;
+    const path=await create(),foreign=await create(other);
+    assert.equal((await request(foreign,skillInput,randomUUID(),other)).status,503);
+    product.tenants[0].set({scopes:scopes.filter(s=>s!=='tool:skills:read')});
+    try {
+      assert.equal((await request(path,skillInput)).status,503);
+      assert.equal(skillReads,reads);
+    } finally {product.tenants[0].set({scopes});}
+    const calls=observed.length;
+    onSkillRead=async()=>product.tenants[0].set({scopes:scopes.filter(s=>s!=='inference:disclose')});
+    try {
+      assert.equal((await request(path,skillInput)).status,503);
+      assert.equal(skillReads,reads+1);assert.equal(observed.length,calls+1);
+      assert.ok(!JSON.stringify(observed.slice(calls)).includes('lavender supply kits'));
+      assert.deepEqual((await request(path)).body.turns,[]);
+    } finally {onSkillRead=undefined;product.tenants[0].set({scopes});}
+  });
+  await t.test('cancelling a pending skills read aborts the executor and retains its debit and claim',async()=>{
+    const path=await create(),idem=randomUUID(),controller=new AbortController();
+    let acknowledge!:()=>void;
+    const stopped=new Promise<void>(resolve=>{acknowledge=resolve;});
+    onSkillRead=async signal=>{
+      controller.abort();
+      try {await delay(30000,undefined,{signal});}
+      finally {if(signal.aborted)acknowledge();}
+    };
+    const calls=observed.length,reads=skillReads;
+    try {
+      await assert.rejects(fixtureFetch(product.url+path,{method:'POST',signal:controller.signal,
+        headers:{authorization:'Bearer '+token,'content-type':'application/json','idempotency-key':idem},
+        body:JSON.stringify(skillInput)}),{code:'ABORT_ERR'});
+      await Promise.race([stopped,delay(3000,undefined,{ref:false}).then(()=>{throw Error('Skills cancellation timed out');})]);
+      const replay=await request(path,skillInput,idem);
+      assert.equal(replay.status,409);assert.equal(replay.body.error.code,'capability_reconciliation_required');
+      assert.deepEqual(await attempts(path),[['model','finished'],['tool','reserved']]);
+      assert.equal(skillReads,reads+1);assert.equal(observed.length,calls+1);
+      assert.deepEqual((await request(path)).body.turns,[]);
+    } finally {onSkillRead=undefined;}
+  });
+  await t.test('the tenant tool ceiling prevents a skills lookup before executor dispatch',async()=>{
+    const path=await create(),reads=skillReads,calls=observed.length;
+    await pg.admin`update ideeo.inference_budget set tool_attempts=64 where tenant_id='alpha' and day=(clock_timestamp() at time zone 'UTC')::date`;
+    const result=await request(path,skillInput);
+    assert.equal(result.status,409);assert.equal(result.body.error.code,'inference_budget_exhausted');
+    assert.equal(observed.length,calls);assert.equal(skillReads,reads);assert.deepEqual(await attempts(path),[]);
+    assert.deepEqual((await request(path)).body.turns,[]);
   });
 });

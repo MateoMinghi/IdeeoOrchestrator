@@ -1,0 +1,7 @@
+{"phase":"book workshop","outcome":"failed","error":{"name":"Error","code":"model_unavailable"}}
+{"phase":"before shutdown","process":{"exit_code":null,"signal_code":null},"lifecycle":[{"event":"spawn","generation":1,"elapsed_ms":15,"pid":22580},{"event":"listening","generation":1,"elapsed_ms":1321,"url":"http://127.0.0.1:11551"}],"bookings":0,"browser_actions":[],"model_calls":1}
+{"phase":"shutdown","fixture":"product","elapsed_ms":26,"outcome":"stopped"}
+{"phase":"shutdown","fixture":"browser workspace","elapsed_ms":2,"outcome":"stopped"}
+{"phase":"shutdown","fixture":"model","elapsed_ms":1,"outcome":"stopped"}
+{"phase":"shutdown","fixture":"PostgreSQL","elapsed_ms":2465,"outcome":"stopped"}
+{"phase":"after shutdown","process":{"exit_code":null,"signal_code":"SIGTERM"},"lifecycle":[{"event":"spawn","generation":1,"elapsed_ms":15,"pid":22580},{"event":"listening","generation":1,"elapsed_ms":1321,"url":"http://127.0.0.1:11551"},{"event":"stop_requested","generation":1,"elapsed_ms":0,"pid":22580},{"event":"exit","generation":1,"elapsed_ms":1619,"pid":22580,"code":null,"signal":"SIGTERM"},{"event":"stopped","generation":1,"elapsed_ms":19,"pid":22580,"code":null,"signal":"SIGTERM"}]}

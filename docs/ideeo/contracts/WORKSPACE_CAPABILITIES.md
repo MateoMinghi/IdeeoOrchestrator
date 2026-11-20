@@ -26,8 +26,10 @@ The local browser fixture uses OpenMaus's Chrome/CDP engine with a fresh profile
 
 The file adapter uses the four inherited OpenMaus host file tools with workspace-relative paths. Absolute paths, parent traversal and existing symbolic links are refused. The temporary file root is separate from executor receipts and browser profiles. This wrapper is not an OS sandbox: hostile concurrent filesystem changes, hard-link confinement and arbitrary customer processes require separate isolation qualification. Never mount the user's home or real customer files in this local fixture.
 
+The disposable Skills executor exposes `skills_list` with `tool:skills:read`. The trusted workspace supplies its catalog. Listing returns enabled names and descriptions. A query uses the OpenMaus input schema and skill ranking and returns up to eight matches. The fixture exercises current disclosure authority after the read, cancellation during the read, retained tool debits, replay and the shared tenant ceiling. Skill bodies, management, installation and execution remain outside this qualification.
+
 ## Remaining coverage
 
-Browser/file integration is a tested increment, not full capability parity. Computer control, connected apps/email, data, agents/delegation, memory, automation, skills, research, image generation, voice, meetings, hosting, devices and workspace settings still need concrete workspace composition and individual authorization/lifecycle tests. The source inventory is discovery evidence only. Production VMs, external credentials, approval interaction, long workflows, real-model tool semantics, React capability UX, independent review and human acceptance remain open.
+Computer control, connected apps/email, data, agents/delegation, memory, automation, research, image generation, voice, meetings, hosting, devices and workspace settings still need concrete workspace composition and individual authorization/lifecycle tests. The source inventory is discovery evidence only. Production VMs, external credentials, approval interaction, long workflows, real-model tool semantics, React capability UX, independent review and human acceptance remain open.
 
 See the [local recipe](../../verification/ideeo.md#local-workspace-capabilities) and [verification record](../development/VERIFICATION.md#local-workspace-capabilities--19-november-2026).

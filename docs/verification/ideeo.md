@@ -147,6 +147,14 @@ Each campaign is pre-debited to at most twelve model calls/two tools. Unknown us
 
 ## Local workspace capabilities
 
+Run the completed-booking restart comparison and related database/browser suites sequentially from the repository root on the Windows Chrome fixture host.
+
+```powershell
+node --experimental-strip-types --test --test-concurrency=1 server/ideeo/booking-restart.node-test.ts server/ideeo/restart.node-test.ts server/ideeo/capabilities.node-test.ts server/ideeo/deadlines.node-test.ts server/ideeo/workspace-budget.node-test.ts
+```
+
+The booking test prints its unique JSONL path under `output/`. Each first history read targets the reported loopback URL before the React client performs session admission for status or replay. Inspect the ledger and browser counters, child lifecycle, and individual shutdown records. The separate live booking diagnostic writes its shutdown outcomes beside its pre-cleanup report in a `.shutdown.jsonl` file.
+
 For failed-turn recovery, run the following suites sequentially. The restart fixture injects a model timeout, restarts the product on the same database, checks the failed key and sends a self-contained planning revision. The capability fixture exercises an actual workspace effect followed by a failed answer commit. The browser recipe in the free-form section also checks a lost first response and an edited draft after a rejected model answer.
 
 ```powershell

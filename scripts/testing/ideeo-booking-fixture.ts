@@ -51,5 +51,8 @@ export async function launchIdeeoBookingFixture(root:string) {
     const endpoint=await listen(executor);cleanup.push(()=>close(executor));
     const route:CapabilityConfiguration={scope,url:endpoint+'/v1/ideeo/tools/call',credentialEnv:'WORKSPACE',tools:browser.tools};
     return {route,credential,events,confirmation,bookings:()=>bookings,stop};
-  }catch(error){await stop();throw error;}
+  }catch(error){
+    try { await stop(); } catch(cleanupError) { throw new AggregateError([error,cleanupError],'Booking fixture setup and cleanup failed'); }
+    throw error;
+  }
 }

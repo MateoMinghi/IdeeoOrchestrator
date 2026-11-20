@@ -128,22 +128,37 @@ export async function createTenantFixture(id: string) {
   };
 }
 
+export type ProductLifecycleEvent = {
+  event:string; generation:number; elapsed_ms:number; code?:number|string|null; signal?:string|null; pid?:number; url?:string;
+};
+
 export async function launchIdeeoFixture(options: { storage?: StorageConfiguration; inference?: InferenceConfiguration; secrets?: Record<string, string>;
   capabilities?: readonly CapabilityConfiguration[];
   guardHostImports?: boolean;
   traceModelShape?: boolean;
   traceModelDetails?: boolean;
   startupTimeoutMs?: 10000 | 30000;
+  onLifecycle?: (entry:ProductLifecycleEvent)=>void;
   additionalTenants?: readonly { config: TenantConfiguration; credential: string }[] } = {}) {
   const root = await mkdtemp(join(tmpdir(), 'ideeo-admission-'));
   const tenants: Awaited<ReturnType<typeof createTenantFixture>>[] = [];
   let child: ReturnType<typeof spawn> | undefined;
+  let generation=0;
+  const lifecycle:ProductLifecycleEvent[]=[];
+  const record=(event:string,start:number,details:Partial<ProductLifecycleEvent>={})=>{
+    const entry={event,generation,elapsed_ms:Date.now()-start,...details};
+    lifecycle.push(entry);
+    options.onLifecycle?.(entry);
+  };
   const kill = async () => {
-    if (child && child.exitCode === null && child.signalCode === null) {
+    if (child?.pid && child.exitCode === null && child.signalCode === null) {
       const ownedChild = child;
+      const started=Date.now();
+      record('stop_requested',started,{pid:ownedChild.pid});
       const exited = new Promise<void>(resolve => ownedChild.once('exit', () => resolve()));
       ownedChild.kill();
       await exited;
+      record('stopped',started,{pid:ownedChild.pid,code:ownedChild.exitCode,signal:ownedChild.signalCode});
     }
   };
   const stop = async () => {
@@ -173,19 +188,23 @@ registerHooks({resolve(specifier,context,next){const result=next(specifier,conte
     if(options.traceModelDetails)environment.IDEEO_TRACE_MODEL_DETAILS='synthetic-content-only';
     for (const tenant of configuredTenants) environment[tenant.config.authority.credentialEnv] = tenant.credential;
     let logs = '';
-    const lifecycle:Array<{event:string;elapsed_ms:number;code?:number|null;signal?:string|null}>=[];
     const start = async () => {
-      const started=Date.now();lifecycle.push({event:'spawn',elapsed_ms:0});
+      generation++;
+      const started=Date.now();
       await writeFile(configPath, JSON.stringify(config));
-      child = spawn(process.execPath, ['--experimental-strip-types',...(options.guardHostImports?['--import',pathToFileURL(guardPath).href]:[]),...(options.traceModelShape?['--import',new URL('./model-wire-shape.mjs',import.meta.url).href]:[]), fileURLToPath(new URL('../../server/ideeo-main.ts', import.meta.url)), '--config', configPath],
-      { cwd: root, env: environment, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
+      child = spawn(process.execPath, ['--experimental-strip-types',...(options.onLifecycle?['--import',new URL('./product-startup.mjs',import.meta.url).href]:[]),...(options.guardHostImports?['--import',pathToFileURL(guardPath).href]:[]),...(options.traceModelShape?['--import',new URL('./model-wire-shape.mjs',import.meta.url).href]:[]), fileURLToPath(new URL('../../server/ideeo-main.ts', import.meta.url)), '--config', configPath],
+      { cwd: root, env: environment, windowsHide: true, stdio: options.onLifecycle?['ignore','pipe','pipe','ipc']:['ignore','pipe','pipe'] });
     const ownedChild = child;
+    ownedChild.on('message',phase=>{
+      if(typeof phase==='string'&&['preload','configure','admission','capabilities','storage','routes_ready'].includes(phase)) record(phase,started);
+    });
+    ownedChild.once('spawn',()=>record('spawn',started,{pid:ownedChild.pid}));
     child.stderr!.on('data', chunk => { logs = (logs + chunk.toString()).slice(options.traceModelShape?-32768:-4096); });
     return new Promise<string>((resolve, reject) => {
-      const timer = setTimeout(() => {lifecycle.push({event:'startup_timeout',elapsed_ms:Date.now()-started});reject(new Error('Fixture startup timed out'));}, options.startupTimeoutMs??10000);
-      ownedChild.once('error', () => { clearTimeout(timer); reject(new Error('Fixture startup failed')); });
+      const timer = setTimeout(() => {record('startup_timeout',started);reject(Object.assign(new Error('Fixture startup timed out'),{code:'ETIMEDOUT'}));}, options.startupTimeoutMs??10000);
+      ownedChild.once('error', (error:NodeJS.ErrnoException) => { record('child_error',started,{code:error.code});clearTimeout(timer); reject(error); });
       ownedChild.once('exit', (code,signal) => {
-        lifecycle.push({event:'exit',elapsed_ms:Date.now()-started,code,signal});
+        record('exit',started,{pid:ownedChild.pid,code,signal});
         clearTimeout(timer);
         const category = logs.includes('Host composition forbidden') ? 'host-import' : logs.match(/\bERR_[A-Z_]+\b/)?.[0] ?? 'startup';
         reject(new Error(`Fixture exited before readiness (${code}, ${category})`));
@@ -197,7 +216,7 @@ registerHooks({resolve(specifier,context,next){const result=next(specifier,conte
         try {
           const event = JSON.parse(output.split('\n')[0]);
           if (event.event !== 'listening' || !/^http:\/\/127\.0\.0\.1:\d+$/.test(event.url)) throw new Error('Invalid fixture address');
-          lifecycle.push({event:'listening',elapsed_ms:Date.now()-started});clearTimeout(timer); resolve(event.url);
+          record('listening',started,{url:event.url});clearTimeout(timer); resolve(event.url);
         } catch { clearTimeout(timer); reject(new Error('Invalid fixture readiness')); }
       });
     });
@@ -210,5 +229,8 @@ registerHooks({resolve(specifier,context,next){const result=next(specifier,conte
       diagnostics: () => logs,
       async configBytes() { return readFile(configPath); },
     };
-  } catch (error) { await stop(); throw error; }
+  } catch (error) {
+    try { await stop(); } catch (cleanupError) { throw new AggregateError([error,cleanupError],'Product fixture setup and cleanup failed'); }
+    throw error;
+  }
 }

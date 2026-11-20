@@ -524,3 +524,41 @@ The first run stopped before either API fixture started. One PostgreSQL `initdb`
 The serial developer regression run passed 104/104 across capabilities, the conversation loop, free-form and Gemini protocols, restart, wire diagnostics and workspace budgets. The new file-effect case received HTTP 200 headers and a partial final body. Its timeout left one finished model attempt, one finished tool attempt, one reserved model attempt and empty history. Replaying the same key returned HTTP 409 and the workspace counted exactly one file write. The run also exercised the native browser against the local fake booking site. [Regression log](../../../output/ideeo-deadlines-regression.log)
 
 The refreshed frozen-lockfile checkout passed the strict Ideeo server and full server TypeScript configurations. Targeted Oxlint exited successfully. The shared OpenMaus protocol and stream-retry suites passed 48/48 using throwaway homes. The first Vitest launch stopped in the config loader because esbuild could not read the parent directory under the sandbox. The same suites ran successfully outside it. Independent acceptance remains open.
+
+## Completed booking restart and workspace Skills
+
+**The readiness timeout reproduced after a completed booking.** On the third replacement the child spawned in 8 ms and had reported neither listening nor exit at 10,023 ms. The first two replacements had served the original turns and replayed the booking. The third received no history request. Its child exited during cleanup, and PostgreSQL stopped in 4,186 ms. The earlier post-listening reset and database shutdown timeout remain separate observations. [Failed cycle and cleanup](../../../output/ideeo-booking-restart-366a4662-9f54-4133-9c38-ae926ebe08f7.jsonl)
+
+**The final serial run passed 36/36 with no skips.** All five replacements listened in 1,604–2,464 ms under the original ten-second window. Each first authenticated history read verified both original turns in 63–84 ms. Status returned committed and the original turn ID. Exact replay returned the original event and answer. Every before/after pair showed five model calls, five model reservations, three tool reservations, three browser actions and one booking. The third, fresh turn committed with one additional model call. Shutdown succeeded for the product (35 ms), browser workspace and fake site (884 ms), model (1 ms) and PostgreSQL (3,223 ms). None of the six recorded product PIDs remained as Node processes. [Final cycle evidence](../../../output/ideeo-booking-restart-cd4f5a62-7312-4e7e-95c9-cc713c368112.jsonl) · [Final suite log](../../../output/ideeo-booking-restart-validated-schemas.log)
+
+The Windows checkout started on `dev` at `8fef115e65c58a9d753ca18ea365db43d2d6e14b`, one commit ahead of the local `origin/dev` ref at `6fe40846d4b397846f66a846fa6ce241c5cf2a21`. The untracked `.pnpm-store/` was present on entry. Node 24.15.0 ran the real product and shared OpenMaus loop. The React product client obtained generated tenant proofs and sent booking, planning, status, replay and fresh-turn requests. Only the first history read bypassed the client's session preflight. The isolated Chrome profile submitted the fake site's form and observed its confirmation. The loopback model extracted that confirmation from the tool result. Total live provider calls and spend were zero.
+
+```powershell
+node --experimental-strip-types --test --test-concurrency=1 server/ideeo/booking-restart.node-test.ts
+node --experimental-strip-types --test --test-concurrency=1 server/ideeo/booking-restart.node-test.ts server/ideeo/restart.node-test.ts server/ideeo/capabilities.node-test.ts server/ideeo/deadlines.node-test.ts server/ideeo/workspace-budget.node-test.ts
+```
+
+| Run | Result and disposition |
+| --- | --- |
+| Initial standalone | HTTP 503 before browser dispatch. The script supplied mnemonic call IDs outside the synthetic profile's accepted `fixture-call-N` format. Fixed ID generation in the fixture. [Failure and shutdown](../../../output/ideeo-booking-restart-8d523710-f492-4edf-8af7-154f576fc1f5.jsonl) |
+| First serial comparison | 32/32 before the Skills cases were added. The five booking replacements listened in 1,328–1,561 ms. [Cycles](../../../output/ideeo-booking-restart-951e503b-8629-4578-a4f2-99bbe6aee6e6.jsonl) · [Suite log](../../../output/ideeo-booking-restart-suites.log) |
+| Skills qualification | 34/36. The booking passed. The new budget assertion and its parent failed. Migration 004 checks both daily counters before any reservation. Corrected the test to require zero model attempts at the tool ceiling. [Failure log](../../../output/ideeo-booking-restart-skills-suites.log) · [Cycles](../../../output/ideeo-booking-restart-3b192338-a492-4f71-80ed-64c828df7046.jsonl) |
+| Readiness reproduction | 35/36. All Skills cases passed. The completed-booking regression captured the third-replacement timeout above. [Suite log](../../../output/ideeo-booking-restart-final.log) |
+| Instrumented standalone | 1/1. Added child milestones for preload, configuration, admission, capability registry construction, storage and route readiness. Five replacements listened in 1,463–1,960 ms. Their registry construction took 73–93 ms each. [Phase trace](../../../output/ideeo-booking-restart-8bf3def3-e13f-4e65-9d48-ce0413b64117.jsonl) |
+| Disposable Node module-cache trial | Five booking replacements passed in 2,148–3,273 ms. The cache showed no readiness improvement and was discarded. The exploratory suite finished 29/36. A browser request timed out, a subsequent capability restart missed readiness and later requests reached a closed port. Source edits overlapped the remaining suites, which were rerun against fixed source for the final comparison. [Cache trial](../../../output/ideeo-booking-restart-2deb04ba-54cb-49af-8c52-45c6a4adc3b7.jsonl) · [Suite log](../../../output/ideeo-booking-restart-cache.log) |
+
+Configuration parsing compiled all six browser schemas, and registry construction immediately compiled them again. The final change reuses the parser's validator for the same schema object and JSON content. The mutation check tightens a nested constraint and requires the new validator to reject the previously valid input. Registry construction took 0–2 ms on the five final replacements. Startup still performs schema validation and database role checks before reporting listening. The measurements establish the cost of redundant compilation. The timeout artifact predates the internal phase markers, so the cause of the full ten-second stall remains unresolved. Memory pressure remains unproved.
+
+The selected Skills operation is `skills_list` against an owned catalog of invented metadata. The isolated executor uses the OpenMaus schema and skill ranking. The tests cover authenticated dispatch, foreign tenants, removed read permission, disabled entries, disclosure revoked during the read, cancellation reaching the pending executor, durable debits and execution claims, replay, and the tenant ceiling. Production VM transport and isolation, skill management and execution, and Gemini's empty final response remain outside this result.
+
+The changed product and fixture sources, React client and both configurations were copied to the existing frozen-lockfile checkout and compared by SHA-256 before the strict checks. An earlier default-parallel compiler invocation was stopped after its private memory reached 4.4 GB. The final TypeScript 7.0.2 invocations ran serially with one checker. These settings apply to the compiler process.
+
+```powershell
+Set-Location .omb-scratch/ideeo-capability-check
+$env:GOMAXPROCS='2'
+$env:GOMEMLIMIT='1700MiB'
+node node_modules/typescript/bin/tsc --singleThreaded --checkers 1 --noEmit -p tsconfig.ideeo-server.json
+node node_modules/typescript/bin/tsc --singleThreaded --checkers 1 --noEmit -p tsconfig.server.json
+```
+
+Both strict configurations exited 0. Targeted Oxlint on the thirteen changed TypeScript/JavaScript sources and `git diff --check` also exited 0. All linked evidence files were present. A scan of the retained booking artifacts found zero database URL, bearer credential, JWT, provider-key or private-key patterns. The work remains local for review.

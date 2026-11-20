@@ -7,6 +7,7 @@ import { launchIdeeoFixture } from './ideeo-fixture.ts';
 import { launchIdeeoBookingFixture } from './ideeo-booking-fixture.ts';
 import { fixtureFetch } from './fixture-http.ts';
 import { readEvaluationKey } from './openai-key.ts';
+import { errorEvidence, stopWithEvidence } from './fixture-evidence.ts';
 
 const [flag,keyFile,...extra]=process.argv.slice(2),restartOnly=flag==='--restart-only'&&!keyFile;
 if(!restartOnly&&(flag!=='--key-file'||!keyFile||extra.length))throw new Error('Explicit authorized key file required');
@@ -16,6 +17,7 @@ let product:Awaited<ReturnType<typeof launchIdeeoFixture>>|undefined;
 let workspace:Awaited<ReturnType<typeof launchIdeeoBookingFixture>>|undefined;
 const observations:unknown[]=[];
 let phase='startup',failure:unknown,booked=false;
+const reportPath=`output/ideeo-booking-diagnosis-${new Date().toISOString().replace(/[:.]/g,'-')}.json`;
 try {
   phase='PostgreSQL startup';
   pg=await launchPostgresFixture();
@@ -63,8 +65,7 @@ try {
   }
 }catch(error){
   await new Promise(resolve=>setTimeout(resolve,100));
-  const code=error&&typeof error==='object'&&'code' in error?String(error.code):'unknown';
-  failure={phase,code:['ECONNRESET','ECONNREFUSED','ABORT_ERR','ERR_ASSERTION'].includes(code)?code:'other',process:product?.processStatus(),
+  failure={phase,...errorEvidence(error),process:product?.processStatus(),
     frames:error instanceof Error?error.stack?.split('\n').filter(line=>/^\s+at /.test(line)):undefined};
   console.log(JSON.stringify({failure}));process.exitCode=1;
 }finally{
@@ -76,11 +77,15 @@ try {
       wire:product?.diagnostics().split('\n').flatMap(line=>{try{const row=JSON.parse(line);return row.evaluation_wire_shape?[row.evaluation_wire_shape]:[];}catch{return [];}}),
       database_idle_timeouts:(pg?.diagnostics().match(/terminating connection due to idle-in-transaction timeout/g)??[]).length,process:product?.processStatus(),hashes,production_acceptance:false};
     const text=JSON.stringify(report,null,2);assert.ok(!text.includes(credential));
-    const path=`output/ideeo-booking-diagnosis-${new Date().toISOString().replace(/[:.]/g,'-')}.json`;
+    const path=reportPath;
     await writeFile(path,text+'\n');
     const escape=(value:unknown)=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]!));
     await writeFile(path.replace('.json','.html'),`<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Ideeo booking diagnosis</title><style>body{font:17px/1.6 system-ui;max-width:900px;margin:40px auto;padding:0 20px;background:#f5f5f2;color:#172b29}article{background:white;padding:24px;margin:20px 0;border-radius:12px}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}details pre{font-size:13px}</style><h1>Ideeo booking diagnosis</h1><p>Actual OpenAI model and native browser; invented data and local booking site.</p><p>Booking ${booked?'confirmed':'not confirmed'}. ${failure?'Campaign also encountered a separate failure.':''} Developer evidence; not production acceptance.</p>${observations.map(value=>{const row=value as {phase:string;status:number;elapsed_ms:number;input?:{message?:{text:string}};response:{answer?:{text:string}}};return `<article><h2>${escape(row.phase)}</h2><p>HTTP ${row.status} · ${row.elapsed_ms} ms</p>${row.input?.message?`<strong>You</strong><pre>${escape(row.input.message.text)}</pre>`:''}${row.response.answer?`<strong>Ideeo</strong><pre>${escape(row.response.answer.text)}</pre>`:`<details><summary>API response</summary><pre>${escape(JSON.stringify(row.response,null,2))}</pre></details>`}</article>`;}).join('')}<article><h2>Evidence</h2><pre>${escape(JSON.stringify({booked,failure,usage,actions:report.actions,lifecycle:report.lifecycle},null,2))}</pre></article></html>`);
     console.log(JSON.stringify({report:path,booked,usage}));
     if(!booked&&!restartOnly)process.exitCode=1;
-  }finally{try{await product?.stop();}finally{try{await workspace?.stop();}finally{await pg?.stop();}}}
+  }finally{
+    await stopWithEvidence(reportPath.replace('.json','.shutdown.jsonl'),[
+      {name:'product',stop:product?.stop},{name:'browser workspace',stop:workspace?.stop},{name:'PostgreSQL',stop:pg?.stop}
+    ]);
+  }
 }
